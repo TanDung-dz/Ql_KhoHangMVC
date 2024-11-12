@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace Ql_KhoHang.Controllers
 {
-    //Test
+    //Test123
 	public class HomeController : Controller
 	{
         private readonly ILogger<HomeController> _logger;
