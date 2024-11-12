@@ -1,0 +1,40 @@
+﻿@model List<Ql_KhoHang.Dtos.LoaiSanPhamWebDtos>
+
+@{
+    ViewData["Title"] = "Paged Categories";
+    Layout = null;
+}
+
+<h2>Paged Categories</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Order</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+      @*    @foreach (var category in Model)
+         {
+             <tr>
+                 <td>@category.Name</td>
+                 <td>@category.Description</td>
+                 <td>@category.Order</td>
+                 <td>
+                     <a asp-action="Details" asp-route-id="@category.CategoryId" class="btn btn-info">View</a>
+                     <a asp-action="Edit" asp-route-id="@category.CategoryId" class="btn btn-warning">Edit</a>
+                     <a asp-action="Delete" asp-route-id="@category.CategoryId" class="btn btn-danger">Delete</a>
+                 </td>
+             </tr>
+         } *@
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        <!-- Add pagination controls here as needed -->
+    </ul>
+</nav>

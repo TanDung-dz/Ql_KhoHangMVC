@@ -1,0 +1,76 @@
+﻿@using Ql_KhoHang.Dtos
+@{
+    Layout = null;
+}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <title>Quản lý kho hàng Logtra</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/logo/favicon.png">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/plugins/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="~/css/feathericon.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>
+    <link rel="stylesheet" href="~/plugins/morris/morris.css">
+    <link rel="stylesheet" href="~/css/style.css">
+</head>
+
+<body>
+    <div class="main-wrapper login-body">
+        <div class="login-wrapper" style="background-image: url(); background-repeat: no-repeat;">
+            <div class="container">
+                <div class="loginbox">
+                    <div class="login-left">
+                        <img src="~/assets/img/logo/logo-white.png" class="logo-outside" alt="thumb">
+                    </div>
+                    <div class="login-right">
+                        <div class="login-right-wrap">
+                            <h1>LOGIN</h1>
+                            <p class="account-subtitle">Please enter your account</p>
+                            <!-- Form đăng nhập -->
+                            <form asp-action="Login" method="post">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input class="form-control" name="username" type="text" placeholder="Tên tài khoản" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input class="form-control" name="password" type="password" placeholder="Mật khẩu" required>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thông báo lỗi đăng nhập nếu có -->
+    @if (TempData["LoginFailed"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi đăng nhập',
+                text: 'Vui lòng nhập lại tên đăng nhập và mật khẩu!',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+                confirmButtonClass: 'btn-success'
+            });
+        </script>
+    }
+
+    <script src="~/js/jquery-3.5.1.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="~/js/script.js"></script>
+</body>

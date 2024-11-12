@@ -1,0 +1,64 @@
+﻿@model List<Ql_KhoHang.Dtos.LoaiSanPhamWebDtos>
+
+@{
+    ViewData["Title"] = "Tìm kiếm danh mục";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <div class="row">
+                <h2>Tìm kiếm danh mục</h2>
+
+                <!-- Form tìm kiếm -->
+                <form asp-action="Search" method="get">
+                    <div class="form-group">
+                        <input type="text" name="keyword" class="form-control" placeholder="Nhập từ khóa tìm kiếm" value="@ViewData["Keyword"]" />
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Tìm kiếm</button>
+                </form>
+
+                <hr />
+
+                @if (Model != null && Model.Count > 0)
+                {
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên danh mục</th>
+                                <th>Mô tả</th>
+                                <th>Ngày thêm</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             @* @foreach (var category in Model)
+                             {
+                                 <tr>
+                                     <td>@category.CategoryId</td>
+                                     <td>@category.Name</td>
+                                     <td>@category.Description</td>
+                                     <td>@category.AddDate?.ToString("dd/MM/yyyy")</td>
+                                     <td>
+                                         <a asp-action="Details" asp-route-id="@category.CategoryId" class="btn btn-info btn-sm">Xem</a>
+                                         <a asp-action="Edit" asp-route-id="@category.CategoryId" class="btn btn-warning btn-sm">Sửa</a>
+                                         <form asp-action="Delete" asp-route-id="@category.CategoryId" method="post" style="display:inline;">
+                                             <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                                         </form>
+                                     </td>
+                                 </tr>
+                             } *@
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>Không tìm thấy danh mục nào phù hợp với từ khóa tìm kiếm.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+

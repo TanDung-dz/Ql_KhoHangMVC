@@ -1,0 +1,43 @@
+﻿@using Ql_KhoHang.Dtos
+
+
+<div class="navbar-menu-opt">
+    <div class="navbar-brand-tog">
+        <a class="navbar-brand g-nop" href="index.html">
+            <img src="~/assets/img/logo/logo-white.png" class="logo-display" alt="thumb">
+            <img src="~/assets/img/logo/logo.png" class="logo-scrolled" alt="thumb">
+        </a>
+        <button class="navbar-toggler toggler-spring">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+    <div class="collapse navbar-collapse justify-content-md-between">
+        <a class="navbar-brand nop" href="index.html">
+            <img src="~/assets/img/logo/logo-white.png" class="logo-display" alt="thumb">
+            <img src="~/assets/img/logo/logo.png" class="logo-scrolled" alt="thumb">
+        </a>
+        <ul class="navbar-nav navbar-mobile justify-content-md-center w-100">
+            @if (Model != null)
+            {
+                @foreach (var item in Model)
+                {
+                    <li>
+                        <a class="nav-link" href="@item.Link">@item.Name</a>
+                    </li>
+                }
+            }
+            else
+            {
+                <li>Không có dữ liệu.</li> <!-- Hoặc thông báo lỗi khác nếu Model là null -->
+            }
+        </ul>
+
+
+        <div class="search-cart nav-profile">
+            <a href="dang-nhap" class="btn-1 btn-sm">Login</a>
+        </div>
+
+
+     
+    </div>
+</div>

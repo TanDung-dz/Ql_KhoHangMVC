@@ -1,0 +1,52 @@
+﻿@model List<Ql_KhoHang.Dtos.LoaiSanPhamWebDtos>
+
+@{
+    ViewData["Title"] = "Chi Tiết Danh Mục";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <div class="row">
+                <h2>Chi Tiết Danh Mục</h2>
+
+                @* @if (Model != null)
+                {
+                    <div>
+                        <h3>@Model.Name</h3>
+                        <p><strong>ID:</strong> @Model.CategoryId</p>
+                        <p><strong>Mô tả:</strong> @Model.Description</p>
+                        <p><strong>Ngày thêm:</strong> @Model.AddDate?.ToString("dd/MM/yyyy")</p>
+                        <p><strong>Ngày cập nhật:</strong> @Model.UpdateDate?.ToString("dd/MM/yyyy")</p>
+                        <p><strong>Thứ tự:</strong> @Model.Order</p>
+                        <p><strong>Ẩn:</strong> @(Model.Hide == true ? "Có" : "Không")</p>
+
+
+
+                        @if (!string.IsNullOrEmpty(Model.Image))
+                        {
+                            <div>
+                                <p><strong>Ảnh:</strong></p>
+                                <img src="@Model.Image" alt="Ảnh danh mục" style="width:200px;height:auto;" />
+                            </div>
+                        }
+
+                        <div>
+                            <a asp-action="Edit" asp-route-id="@Model.CategoryId" class="btn btn-primary">Chỉnh sửa</a>
+                            <form asp-action="Delete" asp-route-id="@Model.CategoryId" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Xóa</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p>Không tìm thấy thông tin danh mục.</p>
+                } *@
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
