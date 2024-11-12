@@ -25,7 +25,7 @@ namespace Ql_KhoHang.Controllers
 			try
 			{
 				var client = _httpClientFactory.CreateClient();
-				var response = await client.GetAsync($"{_apiBaseUrl}/api/category/get");
+				var response = await client.GetAsync($"{_apiBaseUrl}/api/Menu/Get");
 
 				if (response.IsSuccessStatusCode)
 				{
@@ -42,11 +42,11 @@ namespace Ql_KhoHang.Controllers
 				ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
 			}
 			// Truy xuất thông tin người dùng từ Claims
-			var employeeId = User.Claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value;
+			var manguoidung = User.Claims.FirstOrDefault(c => c.Type == "MaNguoiDung")?.Value;
 			var name = User.Identity?.Name;
-			var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+			var quyen = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 			ViewBag.Username = name;
-			ViewBag.Role = role;
+			ViewBag.Role = quyen;
 
 			return View(categories);
 		}
@@ -58,7 +58,7 @@ namespace Ql_KhoHang.Controllers
 			LoaiSanPhamWebDtos category = null;
 
 			var client = _httpClientFactory.CreateClient();
-			var response = await client.GetAsync($"{_apiBaseUrl}/api/category/getbyid/{id}");
+			var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiSanPham/GetById/{id}");
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -80,7 +80,7 @@ namespace Ql_KhoHang.Controllers
 			List<LoaiSanPhamWebDtos> categories = new List<LoaiSanPhamWebDtos>();
 
 			var client = _httpClientFactory.CreateClient();
-			var response = await client.GetAsync($"{_apiBaseUrl}/api/category/search?keyword={keyword}");
+			var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiSanPham/Search/{keyword}");
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -98,7 +98,7 @@ namespace Ql_KhoHang.Controllers
 			List<LoaiSanPhamWebDtos> categories = new List<LoaiSanPhamWebDtos>();
 
 			var client = _httpClientFactory.CreateClient();
-			var response = await client.GetAsync($"{_apiBaseUrl}/api/category/paged?pageNumber={pageNumber}&pageSize={pageSize}");
+			var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiSanPham/paged?pageNumber={pageNumber}&pageSize={pageSize}");
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -117,7 +117,7 @@ namespace Ql_KhoHang.Controllers
 			{
 				var client = _httpClientFactory.CreateClient();
 				var jsonContent = new StringContent(JsonConvert.SerializeObject(newCategory), Encoding.UTF8, "application/json");
-				var response = await client.PostAsync($"{_apiBaseUrl}/api/category", jsonContent);
+				var response = await client.PostAsync($"{_apiBaseUrl}/api/LoaiSanPham", jsonContent);
 
 				if (response.IsSuccessStatusCode)
 				{
@@ -140,7 +140,7 @@ namespace Ql_KhoHang.Controllers
 			{
 				var client = _httpClientFactory.CreateClient();
 				var jsonContent = new StringContent(JsonConvert.SerializeObject(category), Encoding.UTF8, "application/json");
-				var response = await client.PutAsync($"{_apiBaseUrl}/api/category/{id}", jsonContent);
+				var response = await client.PutAsync($"{_apiBaseUrl}/api/LoaiSanPham/{id}", jsonContent);
 
 				if (response.IsSuccessStatusCode)
 				{
@@ -160,7 +160,7 @@ namespace Ql_KhoHang.Controllers
 		public async Task<IActionResult> Delete(int id)
 		{
 			var client = _httpClientFactory.CreateClient();
-			var response = await client.DeleteAsync($"{_apiBaseUrl}/api/category/{id}");
+			var response = await client.DeleteAsync($"{_apiBaseUrl}/api/LoaiSanPham/{id}");
 
 			if (response.IsSuccessStatusCode)
 			{
