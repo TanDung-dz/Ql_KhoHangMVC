@@ -1,0 +1,58 @@
+﻿@model Ql_KhoHang.Dtos.SanPhamWebDtos
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <div class="row">
+                <h2>Thêm mới danh mục</h2>
+
+                <form asp-action="Create" method="post">
+                    <div class="form-group">
+                        <label for="Name">Tên danh mục</label>
+                        <input type="text" class="form-control" id="Name" name="Name" value="@Model.TenSanPham" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Description">Mô tả</label>
+                        <textarea class="form-control" id="Description" name="Description">@Model.Mota</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Order">Thứ tự</label>
+                        <input type="number" class="form-control" id="Order" name="Order" value="@Model.SoLuong" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Link">Liên kết</label>
+                        <input type="text" class="form-control" id="Link" name="Link" value="@Model.DonGia" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Link">Liên kết</label>
+                        <input type="text" class="form-control" id="Link" name="Link" value="@Model.XuatXu" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Image">Hình ảnh (URL)</label>
+                        <input type="text" class="form-control" id="Image" name="Image" value="@Model.Image" />
+                    </div>
+
+                    @*  <div class="form-group form-check">
+                         <input type="checkbox" class="form-check-input" id="Hide" name="Hide" @(Model.Hide == true ? "checked" : "") />
+                         <label class="form-check-label" for="Hide">Ẩn danh mục</label>
+                     </div> *@
+
+                    <button type="submit" class="btn btn-primary mt-3">Thêm mới</button>
+                    <a asp-action="Index" class="btn btn-secondary mt-3">Hủy</a>
+                </form>
+            </div>
+            </div>
+            </div>
+            </div>
+
+
+
