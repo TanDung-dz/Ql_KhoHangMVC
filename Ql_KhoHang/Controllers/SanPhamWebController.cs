@@ -125,7 +125,7 @@ namespace Ql_KhoHang.Controllers
         public async Task<IActionResult> Search(string keyword)
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/search?keyword={keyword}");
+            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/Search?keyword={keyword}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -144,7 +144,7 @@ namespace Ql_KhoHang.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/getbyid/{id}");
+            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/Getbyid/{id}");
 
             if (response.IsSuccessStatusCode)
             {

@@ -1,58 +1,474 @@
 ﻿@model Ql_KhoHang.Dtos.SanPhamWebDtos
-
+@using Ql_KhoHang.Dtos
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
-<div class="main-wrapper">
-    <div class="page-wrapper">
-        <div class="content container-fluid px-3 my-3">
-            <div class="row">
-                <h2>Thêm mới danh mục</h2>
 
-                <form asp-action="Create" method="post">
-                    <div class="form-group">
-                        <label for="Name">Tên danh mục</label>
-                        <input type="text" class="form-control" id="Name" name="Name" value="@Model.TenSanPham" required />
-                    </div>
+@*  <div class="main-wrapper">
+     <div class="page-wrapper">
+         <div class="content container-fluid px-3 my-3">
+             <div class="row">
+                 <h2>Thêm mới danh mục</h2>
 
-                    <div class="form-group">
-                        <label for="Description">Mô tả</label>
-                        <textarea class="form-control" id="Description" name="Description">@Model.Mota</textarea>
-                    </div>
+                 <form asp-action="Create" method="post">
+                     <div class="form-group">
+                         <label for="Name">Tên danh mục</label>
+                         <input type="text" class="form-control" id="Name" name="Name" value="@Model.TenSanPham" required />
+                     </div>
 
-                    <div class="form-group">
-                        <label for="Order">Thứ tự</label>
-                        <input type="number" class="form-control" id="Order" name="Order" value="@Model.SoLuong" />
-                    </div>
+                     <div class="form-group">
+                         <label for="Description">Mô tả</label>
+                         <textarea class="form-control" id="Description" name="Description">@Model.Mota</textarea>
+                     </div>
 
-                    <div class="form-group">
-                        <label for="Link">Liên kết</label>
-                        <input type="text" class="form-control" id="Link" name="Link" value="@Model.DonGia" />
-                    </div>
+                     <div class="form-group">
+                         <label for="Order">Thứ tự</label>
+                         <input type="number" class="form-control" id="Order" name="Order" value="@Model.SoLuong" />
+                     </div>
 
-                    <div class="form-group">
-                        <label for="Link">Liên kết</label>
-                        <input type="text" class="form-control" id="Link" name="Link" value="@Model.XuatXu" />
-                    </div>
+                     <div class="form-group">
+                         <label for="Link">Liên kết</label>
+                         <input type="text" class="form-control" id="Link" name="Link" value="@Model.DonGia" />
+                     </div>
 
-                    <div class="form-group">
-                        <label for="Image">Hình ảnh (URL)</label>
-                        <input type="text" class="form-control" id="Image" name="Image" value="@Model.Image" />
-                    </div>
+                     <div class="form-group">
+                         <label for="Link">Liên kết</label>
+                         <input type="text" class="form-control" id="Link" name="Link" value="@Model.XuatXu" />
+                     </div>
 
-                    @*  <div class="form-group form-check">
-                         <input type="checkbox" class="form-check-input" id="Hide" name="Hide" @(Model.Hide == true ? "checked" : "") />
-                         <label class="form-check-label" for="Hide">Ẩn danh mục</label>
-                     </div> *@
+                     <div class="form-group">
+                         <label for="Image">Hình ảnh (URL)</label>
+                         <input type="text" class="form-control" id="Image" name="Image" value="@Model.Image" />
+                     </div>
 
-                    <button type="submit" class="btn btn-primary mt-3">Thêm mới</button>
-                    <a asp-action="Index" class="btn btn-secondary mt-3">Hủy</a>
-                </form>
-            </div>
-            </div>
-            </div>
-            </div>
+                     @*  <div class="form-group form-check">
+                          <input type="checkbox" class="form-check-input" id="Hide" name="Hide" @(Model.Hide == true ? "checked" : "") />
+                          <label class="form-check-label" for="Hide">Ẩn danh mục</label>
+                      </div> *@
+
+    @*                  <button type="submit" class="btn btn-primary mt-3">Thêm mới</button>
+                     <a asp-action="Index" class="btn btn-secondary mt-3">Hủy</a>
+                 </form>
+     </div>
+    </div>
+   </div>
+ </div> *@
 
 
+<div class="page-wrapper">
+	<div class="content pt-4">
+		<div class="content-invoice">
+
+			<ul class="nav nav-tabs nav-tabs-bottom nav-justified">
+				<li class="nav-item">
+					<a class="nav-link active" href="#bottom-justified-tab1" data-toggle="tab">
+						<i class="fas fa-file-alt" style="margin-right: 5px;"></i> Danh sách Sản Phẩm
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#bottom-justified-tab2" data-toggle="tab">
+						<i class="fas fa-clipboard-list" style="margin-right: 5px;"></i> Danh sách Sản Phẩm
+					</a>
+				</li>
+			</ul>
+
+			<style>
+				fieldset {
+					border: 1px solid #999999 !important;
+					margin-top: 10px;
+					position: relative;
+					border-radius: 4px;
+					background-color: #fff;
+				}
+			</style>
+
+			<div class="tab-content">
+				<div class="tab-pane show active" id="bottom-justified-tab1" style="margin-top: -5px;">
+
+					@if (TempData["AlertReturnMessage"] != null)
+					{
+
+						<script>
+							Swal.fire({
+								icon: 'success',
+								title: 'Khôi phục thành công!',
+								text: '@TempData["AlertReturnMessage"] đã khôi phục thành công',
+								showCloseButton: true,
+								confirmButtonText: 'Đóng',
+								confirmButtonClass: 'btn-success'
+							});
+						</script>
+
+					}
+
+					<div class="content container-fluid">
+						<div id="code-container" style="display: none;">
+							<fieldset>
+								<div style="display: flex;">
+									<div style="width: 160px; height: 150px;">
+										<div class="pl-2 pt-4">
+											<img class="avatar-img rounded-circle" style="object-fit:cover;"
+												 id="FrontImagePrv" src="~/img/noimage.jpg" alt="Image" width="150px" height="150px">
+										</div>
+									</div>
+									<div class="row py-1 px-3">
+										<div class="col-lg-12">
+											<form asp-action="Create" enctype="multipart/form-data">
+												<div class="row formtype">
+
+													@{
+														var idset = ViewData["idtd"];
+													}
+
+													<div class="col-md-3">
+														<div>
+															<label>Mã Sản phẩm</label>
+															<div>
+																<input type="text" asp-for="MaSanPham" value="@idset"
+																	   class="form-control">
+															</div>
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div>
+															<label>Tên đá</label>
+															<div>
+																<input type="text" asp-for="TenLoaiSanPham"
+																	   class="form-control">
+															</div>
+														</div>
+													</div>
+
+													<div class="col-md-3">
+														<label>Loại Sản Phẩm</label>
+														<select asp-for="MaLoaiSanPham" id="sample-select" required>
+															<option disabled selected value="">-- Chọn loại Sản Phẩm --</option>
+															@if (TempData["LoaiSanPham"] is List<LoaiSanPhamWebDtos> loaiSanPham)
+															{
+																@foreach (var itemsl in loaiSanPham)
+																{
+																	<option value="@itemsl.MaLoaiSanPham">
+																		@itemsl.TenLoaiSanPham
+																	</option>
+																}
+															}
+														</select>
+													</div>
+
+
+													<div class="col-md-3">
+														<div>
+															<label>Xuất xứ</label>
+															<input type="text" class="form-control" value="@Model.XuatXu" readonly />
+														</div>
+													</div>
+
+													<div class="col-md-3">
+														<div>
+															<label>Hãng sản xuất</label>
+															<input type="text" class="form-control" value="@Model.TenHangSanXuat" readonly />
+														</div>
+													</div>
+
+
+
+													<div class="col-md-3">
+														<div>
+															<label>Hình ảnh</label>
+															<div>
+																<input type="file" title="Chọn hình ảnh" asp-for="Image"
+																	   onchange="previewImage(event)" class="form-control" required>
+															</div>
+															<div>
+																<!-- Hiển thị ảnh xem trước -->
+																<img id="FrontImagePrv" src="#" alt="Preview Image" style="display:none; max-width: 100%; height: auto; margin-top: 10px;">
+															</div>
+														</div>
+													</div>
+
+													<script>
+														// Hàm xem trước hình ảnh
+														function previewImage(event) {
+															var reader = new FileReader();
+															reader.onload = function () {
+																var output = document.getElementById('FrontImagePrv');
+																output.src = reader.result;
+																output.style.display = 'block'; // Hiển thị ảnh sau khi chọn
+															}
+															reader.readAsDataURL(event.target.files[0]);
+														}
+													</script>
+
+													
+													<div class="col-md-5">
+														<div>
+															<label>Mô Tả</label>
+															<div>
+																<textarea type="text" asp-for="Mota"
+																		  rows="1" style="resize:none;" class="form-control"></textarea>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-md-11">
+													</div>
+													<div class="col-md-1">
+														<input type="submit"
+															   style="max-width: 70px;" class="btn btn-success btn-block mt-0 search_button" value="Thêm" />
+													</div>
+												</div>
+											</form>
+										</div>
+
+									</div>
+								</div>
+							</fieldset>
+						</div>
+						<style>
+							.table-invoice,
+							.table {
+								border: 1px solid #d9d9d9 !important;
+								position: relative;
+								border-radius: 4px;
+							}
+						</style>
+
+						<style>
+							.pagination {
+								padding-top: 12px;
+							}
+
+							.dataTables_length {
+								padding-bottom: 10px;
+							}
+						</style>
+
+
+						<div class="row mt-2">
+							<div class="col-sm-12">
+								<div class="card card-table table-invoice">
+									<div class="card-body px-3 py-3">
+										<div class="table-responsive">
+											@* //- dua toi create/// *@
+											<form asp-action="Create" method="get">
+
+												<div style="float: right; display: flex;" class="ml-4">
+
+													<div style="width: 200px;">
+														<select class="sample-select-loc" id="Loctheoloai" placeholder="-- Chọn loại Sản Phẩm --" name="Loctheoloai">
+															<option disabled selected value="">-- Chọn loại Sản Phẩm --</option>
+															@if (TempData["LoaiSanPham"] is List<LoaiSanPhamWebDtos> loaiSanPham1)
+															{
+																@foreach (var itemsl in loaiSanPham1)
+																{
+																	<option value="@itemsl.MaLoaiSanPham">
+																		@itemsl.TenLoaiSanPham
+																	</option>
+																}
+															}
+														</select>
+													</div>
+
+													<button type="submit" id="submitButton" class="btn btn-success" style="border: none; border-radius: 0px 5px 3px 0px; padding: 5px 7px;">
+														<i class='fas fa-search'></i>
+													</button>
+
+													<button class="btn btn-success" type="button"
+															style="margin-right: 10px;margin-left: 20px;" id="toggle-code-button" title="Hiện/Ần khung thêm">
+														<i class='fas fa-plus fa-spin'></i>
+													</button>
+												</div>
+											</form>
+
+											<table class="datatable table table-stripped table table-hover table-center mb-0">
+												<thead>
+													<tr>
+														<th>Mã Sản Phẩm</th>
+														<th>Tên Sản Phẩm</th>
+														<th>Xuất xứ</th>											
+														<th>Mô Tả</th>
+														<th class="text-right"></th>
+													</tr>
+												</thead>
+												<tbody>
+
+													@foreach (SanPhamWebDtos item in ViewBag.Daactive)
+													{
+														<tr>
+															<td>@item.MaSanPham</td>
+															<td>
+																<h2 class="table-avatar">
+																	@if (item.Image != null)
+																	{
+																		<a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="~/img/@item.Image" alt="User Image"></a>
+																	}
+																	else
+																	{
+																		<a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="~/img/noimage.jpg" alt="User Image"></a>
+																	}
+
+																	<a href="#">@item.TenLoaiSanPham</a>
+																</h2>
+															</td>
+
+															<td>@item.TenLoaiSanPham</td>
+															<td>@item.XuatXu</td>
+															
+															<td class="text-center">
+																<div class="actions">
+																	<a href="#"
+																	   class="btn btn-sm bg-success-light mr-2">
+																		Active
+																	</a>
+																</div>
+															</td>
+															<td class="text-right">
+																<a class="mr-2" title="Sửa" asp-action="Edit" asp-route-id="@item.MaLoaiSanPham"
+																   style="margin-left: 30px;">
+																	<i style="color: #009688;"
+																	   class="fas fa-edit"></i>
+																</a>
+																<a class="mr-2" title="Chi tiết" asp-action="Details" asp-route-id="@item.MaLoaiSanPham">
+																	<i style="color: #009688;"
+																	   class="fa fa-info-circle"></i>
+																</a>
+																<a class="mr-2" title="Ẩn" asp-action="Hidden" asp-route-id="@item.MaLoaiSanPham" onclick="return ConfirmDelete(this);">
+																	<i style="color: #e60000;"
+																	   class="fas fa-eye-slash"></i>
+																</a>
+															</td>
+														</tr>
+													}
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane" id="bottom-justified-tab2">
+					<div class="content container-fluid">
+						<style>
+							.table-invoice,
+							.table {
+								border: 1px solid #d9d9d9 !important;
+								position: relative;
+								border-radius: 4px;
+							}
+						</style>
+
+						<style>
+							.pagination {
+								padding-top: 12px;
+							}
+
+							.dataTables_length {
+								padding-bottom: 10px;
+							}
+						</style>
+
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="card card-table table-invoice">
+									<div class="card-body px-3 py-3">
+										<div class="table-responsive">
+											<table class="datatable table table-stripped table table-hover table-center mb-0">
+												<thead>
+													<tr>
+														<th>Mã Sản Phẩm</th>
+														<th>Tên Sản Phẩm</th>
+														<th>Xuất xứ</th>
+														<th>Mô Tả</th>
+														<th class="text-right"></th>
+													</tr>
+												</thead>
+												<tbody>
+													@foreach (SanPhamWebDtos item in ViewBag.Dadisable)
+													{
+														<tr>
+															<td>@item.MaSanPham</td>
+															<td>
+																<h2 class="table-avatar">
+																	@if (item.Image != null)
+																	{
+																		<a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="~/img/@item.Image" alt="User Image"></a>
+																	}
+																	else
+																	{
+																		<a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="~/img/noimage.jpg" alt="User Image"></a>
+																	}
+
+																	<a href="#">@item.TenSanPham</a>
+																</h2>
+															</td>
+															<td>@item.TenLoaiSanPham</td>
+															<td>@item.XuatXu</td>
+
+															
+															
+															<td class="text-center">
+																<div class="actions">
+																	<a href="#"
+																	   class="btn btn-sm bg-danger-light mr-2">
+																		Inactive
+																	</a>
+																</div>
+															</td>
+															<td class="text-right">
+																<a class="mr-2" title="Khôi phục" asp-action="Getback" asp-route-id="@item.MaSanPham" onclick="return ConfirmReturn(this);"
+																   style="margin-left: 30px;">
+																	<i style="color: #009688;"
+																	   class="fas fa-recycle"></i>
+																</a>
+															</td>
+														</tr>
+													}
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- <div class="tab-pane" id="bottom-justified-tab3">
+					Tab content 3
+				</div> -->
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	document.getElementById('toggle-code-button').addEventListener('click', function () {
+		var codeContainer = document.getElementById('code-container');
+		if (codeContainer.style.display === 'block') {
+			codeContainer.style.display = 'none';
+			this.innerHTML = '<i class="fas fa-plus fa-spin"></i>';
+		} else {
+			codeContainer.style.display = 'block';
+			this.innerHTML = '<i class="fas fa-minus fa-spin"></i>';
+		}
+	});
+
+</script>
+
+<script>
+	// Hàm xem trước hình ảnh
+	function previewImage(event) {
+		var reader = new FileReader();
+		reader.onload = function () {
+			var output = document.getElementById('FrontImagePrv');
+			output.src = reader.result;
+			output.style.display = 'block'; // Hiển thị ảnh sau khi chọn
+		}
+		reader.readAsDataURL(event.target.files[0]);
+	}
+</script>
 
