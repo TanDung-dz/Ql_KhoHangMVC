@@ -30,7 +30,15 @@ namespace Ql_KhoHang.Controllers
                 {
                     string data = await response.Content.ReadAsStringAsync();
                     products = JsonConvert.DeserializeObject<List<SanPhamWebDtos>>(data);
-                }
+					foreach (var product in products)
+					{
+						if (!string.IsNullOrEmpty(product.Image))
+						{
+							product.Image = $"{_apiBaseUrl}{product.Image}";
+							Console.WriteLine(product.Image); // In ra URL ảnh để kiểm tra
+						}
+					}
+				}
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Failed to load products from the API.");
@@ -40,8 +48,9 @@ namespace Ql_KhoHang.Controllers
             {
                 ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
             }
+			
 
-            return View(products);
+			return View(products);
         }
 
         [HttpGet]
@@ -72,13 +81,31 @@ namespace Ql_KhoHang.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(SanPhamWebDtos newProduct)
+        public async Task<IActionResult> Create(SanPhamWebDtos newProduct, IFormFile Img)
         {
             if (ModelState.IsValid)
             {
                 var client = _httpClientFactory.CreateClient();
-                var jsonContent = new StringContent(JsonConvert.SerializeObject(newProduct), Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"{_apiBaseUrl}/api/SanPham/CreateProduct", jsonContent);
+                var requestContent = new MultipartFormDataContent();
+
+                // Thêm các trường thông tin sản phẩm vào request
+                requestContent.Add(new StringContent(newProduct.TenSanPham ?? ""), "TenSanPham");
+                requestContent.Add(new StringContent(newProduct.Mota ?? ""), "Mota");
+                requestContent.Add(new StringContent(newProduct.SoLuong.ToString() ?? "0"), "SoLuong");
+                requestContent.Add(new StringContent(newProduct.DonGia.ToString() ?? "0"), "DonGia");
+                requestContent.Add(new StringContent(newProduct.XuatXu ?? ""), "XuatXu");
+                requestContent.Add(new StringContent(newProduct.MaLoaiSanPham.ToString()), "MaLoaiSanPham");
+                requestContent.Add(new StringContent(newProduct.MaHangSanXuat.ToString()), "MaHangSanXuat");
+
+                // Thêm file ảnh vào request nếu có
+                if (Img != null && Img.Length > 0)
+                {
+                    var imageContent = new StreamContent(Img.OpenReadStream());
+                    imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(Img.ContentType);
+                    requestContent.Add(imageContent, "Img", Img.FileName);
+                }
+
+                var response = await client.PostAsync($"{_apiBaseUrl}/api/SanPham/uploadfile", requestContent);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -92,6 +119,7 @@ namespace Ql_KhoHang.Controllers
 
             return View(newProduct);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)

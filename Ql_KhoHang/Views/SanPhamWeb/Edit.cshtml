@@ -1,8 +1,65 @@
-﻿
+﻿@model Ql_KhoHang.Dtos.SanPhamWebDtos
+
 @{
     ViewData["Title"] = "Edit";
-    Layout = "~/Views/SanPhamWeb/_MenuPartial.cshtml";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <h1>Edit Product</h1>
 
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="TenSanPham">Tên Sản Phẩm</label>
+                    <input type="text" class="form-control" id="TenSanPham" name="TenSanPham" value="@Model.TenSanPham" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="Mota">Mô Tả</label>
+                    <textarea class="form-control" id="Mota" name="Mota">@Model.Mota</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="SoLuong">Số Lượng</label>
+                    <input type="number" class="form-control" id="SoLuong" name="SoLuong" value="@Model.SoLuong" />
+                </div>
+
+                <div class="form-group">
+                    <label for="DonGia">Đơn Giá</label>
+                    <input type="number" class="form-control" id="DonGia" name="DonGia" value="@Model.DonGia" step="0.01" />
+                </div>
+
+                <div class="form-group">
+                    <label for="XuatXu">Xuất Xứ</label>
+                    <input type="text" class="form-control" id="XuatXu" name="XuatXu" value="@Model.XuatXu" />
+                </div>
+
+                <div class="form-group">
+                    <label for="MaLoaiSanPham">Loại Sản Phẩm</label>
+                    <input type="number" class="form-control" id="MaLoaiSanPham" name="MaLoaiSanPham" value="@Model.MaLoaiSanPham" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="MaHangSanXuat">Hãng Sản Xuất</label>
+                    <input type="number" class="form-control" id="MaHangSanXuat" name="MaHangSanXuat" value="@Model.MaHangSanXuat" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="Img">Hình Ảnh</label>
+                    @if (!string.IsNullOrEmpty(Model.Image))
+                    {
+                        <div>
+                            <img src="@Model.Image" alt="Product Image" width="150" height="150" class="img-thumbnail mb-2" />
+                        </div>
+                    }
+                    <input type="file" class="form-control-file" id="Img" name="Img" />
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">Lưu Thay Đổi</button>
+                <a asp-action="Index" class="btn btn-secondary mt-3">Hủy</a>
+            </form>
+        </div>
+    </div>
+</div>
