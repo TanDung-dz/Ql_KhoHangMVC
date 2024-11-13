@@ -49,7 +49,20 @@ app.UseEndpoints(endpoints =>
      pattern: "dang-nhap",
      defaults: new { controller = "NguoiDungWeb", action = "Login" });
 
+    endpoints.MapControllerRoute(
+     name: "trang-chu-admin",
+     pattern: "trang-chu-admin",
+     defaults: new { controller = "NguoiDungWeb", action = "Index" });
 
+    endpoints.MapControllerRoute(
+     name: "loai-san-pham",
+     pattern: "loai-san-pham",
+     defaults: new { controller = "LoaiSanPhamWeb", action = "Index" });
+
+    endpoints.MapControllerRoute(
+     name: "san-pham",
+     pattern: "san-pham",
+     defaults: new { controller = "SanPhamWeb", action = "Index" });
 
 });
 app.Run();

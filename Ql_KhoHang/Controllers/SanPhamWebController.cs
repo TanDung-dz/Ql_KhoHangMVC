@@ -16,28 +16,59 @@ namespace Ql_KhoHang.Controllers
             _apiBaseUrl = configuration["ApiSettings:BaseUrl"];
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
+            List<SanPhamWebDtos> products = new List<SanPhamWebDtos>();
+
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/Get");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string data = await response.Content.ReadAsStringAsync();
+                    products = JsonConvert.DeserializeObject<List<SanPhamWebDtos>>(data);
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Failed to load products from the API.");
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
+            }
+
+            return View(products);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            SanPhamWebDtos product = null;
+
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_apiBaseUrl}/api/Menu/Get");
+            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/GetById/{id}");
 
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var sanPhams = JsonConvert.DeserializeObject<IEnumerable<SanPhamWebDtos>>(data);
-                return View(sanPhams);
+                product = JsonConvert.DeserializeObject<SanPhamWebDtos>(data);
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Failed to load products from the API.");
-                return View(new List<SanPhamWebDtos>());
+                ModelState.AddModelError(string.Empty, "Failed to load product details.");
             }
+
+            return View(product);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            return View(new SanPhamWebDtos());
+            return View();
         }
 
         [HttpPost]
@@ -47,7 +78,7 @@ namespace Ql_KhoHang.Controllers
             {
                 var client = _httpClientFactory.CreateClient();
                 var jsonContent = new StringContent(JsonConvert.SerializeObject(newProduct), Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"{_apiBaseUrl}/api/SanPham", jsonContent);
+                var response = await client.PostAsync($"{_apiBaseUrl}/api/SanPham/CreateProduct", jsonContent);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -65,20 +96,22 @@ namespace Ql_KhoHang.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
+            SanPhamWebDtos product = null;
+
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/{id}");
+            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/GetById/{id}");
 
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var product = JsonConvert.DeserializeObject<SanPhamWebDtos>(data);
-                return View(product);
+                product = JsonConvert.DeserializeObject<SanPhamWebDtos>(data);
             }
             else
             {
                 ModelState.AddModelError(string.Empty, "Failed to load product details.");
-                return RedirectToAction("Index");
             }
+
+            return View(product);
         }
 
         [HttpPost]
@@ -88,7 +121,7 @@ namespace Ql_KhoHang.Controllers
             {
                 var client = _httpClientFactory.CreateClient();
                 var jsonContent = new StringContent(JsonConvert.SerializeObject(product), Encoding.UTF8, "application/json");
-                var response = await client.PutAsync($"{_apiBaseUrl}/api/SanPham/{id}", jsonContent);
+                var response = await client.PutAsync($"{_apiBaseUrl}/api/SanPham/UpdateProduct/{id}", jsonContent);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -107,7 +140,7 @@ namespace Ql_KhoHang.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.DeleteAsync($"{_apiBaseUrl}/api/SanPham/{id}");
+            var response = await client.DeleteAsync($"{_apiBaseUrl}/api/SanPham/DeleteProduct/{id}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -124,45 +157,29 @@ namespace Ql_KhoHang.Controllers
         [HttpGet]
         public async Task<IActionResult> Search(string keyword)
         {
+            List<SanPhamWebDtos> products = new List<SanPhamWebDtos>();
+
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/search?keyword={keyword}");
+            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/Search/{keyword}");
 
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var products = JsonConvert.DeserializeObject<IEnumerable<SanPhamWebDtos>>(data);
-                return View("Index", products);
+                products = JsonConvert.DeserializeObject<List<SanPhamWebDtos>>(data);
             }
             else
             {
                 ModelState.AddModelError(string.Empty, "Failed to search products.");
-                return View("Index", new List<SanPhamWebDtos>());
             }
-        }
 
-        [HttpGet]
-        public async Task<IActionResult> Details(int id)
-        {
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/getbyid/{id}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                var sanPham = JsonConvert.DeserializeObject<SanPhamWebDtos>(data);
-                return View(sanPham);
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Failed to load product details.");
-                return RedirectToAction("Index");
-            }
+            return View("Index", products);
         }
 
         public async Task<IActionResult> _MenuPartial()
         {
             return PartialView();
         }
+
         public async Task<IActionResult> _SidebarPartial()
         {
             return PartialView();

@@ -1,7 +1,7 @@
 ﻿@model Ql_KhoHang.Dtos.LoaiSanPhamWebDtos
 
 @{
-    ViewData["Title"] = "Thêm mới danh mục";
+    ViewData["Title"] = "Chỉnh sửa Loại Sản Phẩm";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
@@ -9,16 +9,16 @@
     <div class="page-wrapper">
         <div class="content container-fluid px-3 my-3">
             <div class="row">
-                <h2>Thêm mới danh mục</h2>
+                <h2>Chỉnh sửa Loại Sản Phẩm</h2>
 
-                <form asp-action="Create" method="post">
+                <form asp-action="Edit" method="post">
                     <div class="form-group">
-                        <label asp-for="TenLoaiSanPham">Tên danh mục</label>
-                        <input asp-for="TenLoaiSanPham" class="form-control" required />
+                        <label asp-for="TenLoaiSanPham">Tên Loại Sản Phẩm</label>
+                        <input asp-for="TenLoaiSanPham" class="form-control" />
                         <span asp-validation-for="TenLoaiSanPham" class="text-danger"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-primary mt-3">Thêm mới</button>
+                    <button type="submit" class="btn btn-primary mt-3">Lưu Thay Đổi</button>
                     <a asp-action="Index" class="btn btn-secondary mt-3">Hủy</a>
                 </form>
             </div>
