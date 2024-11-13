@@ -1,4 +1,4 @@
-﻿@model List<Ql_KhoHang.Dtos.LoaiSanPhamWebDtos>
+﻿@model Ql_KhoHang.Dtos.LoaiSanPhamWebDtos
 
 @{
     ViewData["Title"] = "Chi Tiết Danh Mục";
@@ -8,42 +8,25 @@
     <div class="page-wrapper">
         <div class="content container-fluid px-3 my-3">
             <div class="row">
-                <h2>Chi Tiết Danh Mục</h2>
+                <div>
+                    <h4>Thông tin Loại Sản Phẩm</h4>
+                    <hr />
+                    <dl class="row">
+                        <dt class="col-sm-2">Mã Loại Sản Phẩm</dt>
+                        <dd class="col-sm-10">@Model.MaLoaiSanPham</dd>
 
-                @* @if (Model != null)
-                {
-                    <div>
-                        <h3>@Model.Name</h3>
-                        <p><strong>ID:</strong> @Model.CategoryId</p>
-                        <p><strong>Mô tả:</strong> @Model.Description</p>
-                        <p><strong>Ngày thêm:</strong> @Model.AddDate?.ToString("dd/MM/yyyy")</p>
-                        <p><strong>Ngày cập nhật:</strong> @Model.UpdateDate?.ToString("dd/MM/yyyy")</p>
-                        <p><strong>Thứ tự:</strong> @Model.Order</p>
-                        <p><strong>Ẩn:</strong> @(Model.Hide == true ? "Có" : "Không")</p>
+                        <dt class="col-sm-2">Tên Loại Sản Phẩm</dt>
+                        <dd class="col-sm-10">@Model.TenLoaiSanPham</dd>
+                    </dl>
+                </div>
 
-
-
-                        @if (!string.IsNullOrEmpty(Model.Image))
-                        {
-                            <div>
-                                <p><strong>Ảnh:</strong></p>
-                                <img src="@Model.Image" alt="Ảnh danh mục" style="width:200px;height:auto;" />
-                            </div>
-                        }
-
-                        <div>
-                            <a asp-action="Edit" asp-route-id="@Model.CategoryId" class="btn btn-primary">Chỉnh sửa</a>
-                            <form asp-action="Delete" asp-route-id="@Model.CategoryId" method="post" style="display:inline;">
-                                <button type="submit" class="btn btn-danger">Xóa</button>
-                            </form>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <p>Không tìm thấy thông tin danh mục.</p>
-                } *@
-
+                <div>
+                    <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+                    <a asp-action="Edit" asp-route-id="Model.MaLoaiSanPham" class="btn btn-primary">Chỉnh sửa</a>
+                    <form asp-action="Delete" asp-route-id="Model.MaLoaiSanPham" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
+                    </form>
+                </div>
 
             </div>
         </div>

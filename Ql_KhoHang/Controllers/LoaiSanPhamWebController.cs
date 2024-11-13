@@ -25,7 +25,7 @@ namespace Ql_KhoHang.Controllers
 			try
 			{
 				var client = _httpClientFactory.CreateClient();
-				var response = await client.GetAsync($"{_apiBaseUrl}/api/Menu/Get");
+				var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiSanPham/Get");
 
 				if (response.IsSuccessStatusCode)
 				{
@@ -108,16 +108,20 @@ namespace Ql_KhoHang.Controllers
 
 			return View("Index", categories);
 		}
-
-		// Action tạo mới danh mục
-		[HttpPost]
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+        // Action tạo mới danh mục
+        [HttpPost]
 		public async Task<IActionResult> Create(LoaiSanPhamWebDtos newCategory)
 		{
 			if (ModelState.IsValid)
 			{
 				var client = _httpClientFactory.CreateClient();
 				var jsonContent = new StringContent(JsonConvert.SerializeObject(newCategory), Encoding.UTF8, "application/json");
-				var response = await client.PostAsync($"{_apiBaseUrl}/api/LoaiSanPham", jsonContent);
+				var response = await client.PostAsync($"{_apiBaseUrl}/api/LoaiSanPham/CreateProductType", jsonContent);
 
 				if (response.IsSuccessStatusCode)
 				{
@@ -131,16 +135,36 @@ namespace Ql_KhoHang.Controllers
 
 			return View(newCategory);
 		}
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            LoaiSanPhamWebDtos category = null;
 
-		// Action cập nhật danh mục
-		[HttpPost]
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiSanPham/GetById/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                category = JsonConvert.DeserializeObject<LoaiSanPhamWebDtos>(data);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Failed to load category details.");
+            }
+
+            return View(category);
+        }
+
+        // Action cập nhật danh mục
+        [HttpPost]
 		public async Task<IActionResult> Edit(int id, LoaiSanPhamWebDtos category)
 		{
 			if (ModelState.IsValid)
 			{
 				var client = _httpClientFactory.CreateClient();
 				var jsonContent = new StringContent(JsonConvert.SerializeObject(category), Encoding.UTF8, "application/json");
-				var response = await client.PutAsync($"{_apiBaseUrl}/api/LoaiSanPham/{id}", jsonContent);
+				var response = await client.PutAsync($"{_apiBaseUrl}/api/LoaiSanPham/UpdateProductType/{id}", jsonContent);
 
 				if (response.IsSuccessStatusCode)
 				{
@@ -160,7 +184,7 @@ namespace Ql_KhoHang.Controllers
 		public async Task<IActionResult> Delete(int id)
 		{
 			var client = _httpClientFactory.CreateClient();
-			var response = await client.DeleteAsync($"{_apiBaseUrl}/api/LoaiSanPham/{id}");
+			var response = await client.DeleteAsync($"{_apiBaseUrl}/api/LoaiSanPham/DeleteProductType/{id}");
 
 			if (response.IsSuccessStatusCode)
 			{

@@ -1,4 +1,4 @@
-﻿@using Ql_KhoHang.Dtos
+﻿@model IEnumerable<Ql_KhoHang.Dtos.SanPhamWebDtos>
 @{
     ViewData["Title"] = "SanPham";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -7,29 +7,32 @@
     <div class="page-wrapper">
         <div class="content container-fluid px-3 my-3">
             <div class="row">
-                <h2>SanPham</h2>
+                <h2>Danh Sách Sản Phẩm</h2>
 
                 <div class="mb-3 d-flex justify-content-between">
-                    <!-- Nút thêm mới danh mục -->
-                    <a asp-action="Create" class="btn btn-primary">Them Moi San Pham</a>
+                    <!-- Nút thêm mới sản phẩm -->
+                    <a asp-action="Create" class="btn btn-primary">Thêm Mới Sản Phẩm</a>
 
-                    <!-- Form tìm kiếm danh mục -->
+                    <!-- Form tìm kiếm sản phẩm -->
                     <form asp-action="Search" method="get" class="form-inline d-flex">
                         <input type="text" name="keyword" class="form-control" placeholder="Search by keyword" />
-                        <button type="submit" class="btn btn-secondary ml-2">Search</button>
+                        <button type="submit" class="btn btn-secondary ml-2">Tìm kiếm</button>
                     </form>
                 </div>
 
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Ma San Pham</th>
-                            <th>Ten San Pham</th>
-                            <th>Mo Ta</th>
-                            <th>Image</th>
-                            <th>Them Ngay</th>
-                            <th>Cap Nhap Ngay</th>                                           
-                            <th>TrangThai</th>
+                            <th>Mã Sản Phẩm</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Mô Tả</th>
+                            <th>Hình Ảnh</th>
+                            <th>Số Lượng</th>
+                            <th>Đơn Giá</th>
+                            <th>Xuất Xứ</th>
+                            <th>Loại Sản Phẩm</th>
+                            <th>Hãng Sản Xuất</th>
+                            <th>Thao Tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,28 +41,25 @@
                             <tr>
                                 <td>@sanpham.MaSanPham</td>
                                 <td>@sanpham.TenSanPham</td>
-                                <td>@sanpham.Details</td>
+                                <td>@sanpham.Mota</td>
                                 <td>
                                     @if (!string.IsNullOrEmpty(sanpham.Image))
                                     {
                                         <img src="@sanpham.Image" alt="@sanpham.TenSanPham" width="50" height="50" />
                                     }
                                 </td>
-                                <td>@sanpham.AddDate?.ToString("yyyy-MM-dd")</td>
-                                <td>@sanpham.UpdateDate?.ToString("yyyy-MM-dd")</td>
-                                <td>@sanpham.Order</td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(sanpham.Link))
-                                    {
-                                        <a href="@sanpham.Link" target="_blank">View Link</a>
-                                    }
-                                </td>
-                                <td>@(sanpham.Hide == true ? "Yes" : "No")</td>
+                                <td>@sanpham.SoLuong</td>
+                                <td>@sanpham.DonGia?.ToString("C")</td>
+                                <td>@sanpham.XuatXu</td>
+                                <td>@sanpham.TenLoaiSanPham</td>
+                                <td>@sanpham.TenHangSanXuat</td>
                                 <td>
                                     <!-- Nút hành động -->
-                                    <a asp-action="Details" asp-route-id="@sanpham.CategoryId" class="btn btn-info btn-sm">View</a>
-                                    <form asp-action="Edit" asp-route-id="@sanpham.CategoryId" asp-controller="SanPham" method="post" class="btn btn-warning btn-sm">Edit</form>
-                                    <form asp-action="Delete" asp-route-id="@sanpham.CategoryId" asp-controller="SanPham" method="post" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this category?');">Delete</form>
+                                    <a asp-action="Details" asp-route-id="@sanpham.MaSanPham" class="btn btn-info btn-sm">Xem</a>
+                                    <a asp-action="Edit" asp-route-id="@sanpham.MaSanPham" class="btn btn-warning btn-sm">Sửa</a>
+                                    <form asp-action="Delete" asp-route-id="@sanpham.MaSanPham" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</button>
+                                    </form>
                                 </td>
                             </tr>
                         }
@@ -70,4 +70,3 @@
         </div>
     </div>
 </div>
-
