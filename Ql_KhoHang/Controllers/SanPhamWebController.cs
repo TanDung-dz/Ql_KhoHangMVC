@@ -1,82 +1,50 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Ql_KhoHang.Dtos;
-using System.Text;
+using Ql_KhoHang.Services;
+using System.Security.Claims;
 
 namespace Ql_KhoHang.Controllers
 {
     public class SanPhamWebController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly string _apiBaseUrl;
+        private readonly SanPhamService _sanPhamService;
+        private readonly LoaiSanPhamService _loaiSanPhamService;
+        private readonly HangSanXuatService _hangSanXuatService;
 
-        public SanPhamWebController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public SanPhamWebController(SanPhamService sanPhamService, LoaiSanPhamService loaiSanPhamService, HangSanXuatService hangSanXuatService)
         {
-            _httpClientFactory = httpClientFactory;
-            _apiBaseUrl = configuration["ApiSettings:BaseUrl"];
+            _sanPhamService = sanPhamService;
+            _loaiSanPhamService = loaiSanPhamService;
+            _hangSanXuatService = hangSanXuatService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            List<SanPhamWebDtos> products = new List<SanPhamWebDtos>();
-
-            try
-            {
-                var client = _httpClientFactory.CreateClient();
-                var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/Get");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    string data = await response.Content.ReadAsStringAsync();
-                    products = JsonConvert.DeserializeObject<List<SanPhamWebDtos>>(data);
-					foreach (var product in products)
-					{
-						if (!string.IsNullOrEmpty(product.Image))
-						{
-							product.Image = $"{_apiBaseUrl}{product.Image}";
-							Console.WriteLine(product.Image); // In ra URL ảnh để kiểm tra
-						}
-					}
-				}
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Failed to load products from the API.");
-                }
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
-            }
-			
-
-			return View(products);
+            SetUserClaims();
+            var products = await _sanPhamService.GetAllAsync();
+            return View(products);
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            SanPhamWebDtos product = null;
-
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/GetById/{id}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                product = JsonConvert.DeserializeObject<SanPhamWebDtos>(data);
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Failed to load product details.");
-            }
-
+            SetUserClaims();
+            var product = await _sanPhamService.GetByIdAsync(id);
             return View(product);
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            SetUserClaims();
+            // Lấy danh sách loại sản phẩm và hãng sản xuất
+            var loaiSanPhams = await _loaiSanPhamService.GetAllAsync();
+            var hangSanXuats = await _hangSanXuatService.GetAllAsync();
+
+            // Gửi dữ liệu đến View thông qua ViewBag
+            ViewBag.LoaiSanPhams = loaiSanPhams;
+            ViewBag.HangSanXuats = hangSanXuats;
             return View(new SanPhamWebDtos());
         }
 
@@ -85,74 +53,56 @@ namespace Ql_KhoHang.Controllers
         {
             if (ModelState.IsValid)
             {
-                var client = _httpClientFactory.CreateClient();
-                var requestContent = new MultipartFormDataContent();
+                // Gọi service để lưu sản phẩm mới
+                var success = await _sanPhamService.CreateAsync(newProduct, Img);
 
-                // Thêm các trường thông tin sản phẩm vào request
-                requestContent.Add(new StringContent(newProduct.TenSanPham ?? ""), "TenSanPham");
-                requestContent.Add(new StringContent(newProduct.Mota ?? ""), "Mota");
-                requestContent.Add(new StringContent(newProduct.SoLuong.ToString() ?? "0"), "SoLuong");
-                requestContent.Add(new StringContent(newProduct.DonGia.ToString() ?? "0"), "DonGia");
-                requestContent.Add(new StringContent(newProduct.XuatXu ?? ""), "XuatXu");
-                requestContent.Add(new StringContent(newProduct.MaLoaiSanPham.ToString()), "MaLoaiSanPham");
-                requestContent.Add(new StringContent(newProduct.MaHangSanXuat.ToString()), "MaHangSanXuat");
-
-                // Thêm file ảnh vào request nếu có
-                if (Img != null && Img.Length > 0)
+                if (success)
                 {
-                    var imageContent = new StreamContent(Img.OpenReadStream());
-                    imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(Img.ContentType);
-                    requestContent.Add(imageContent, "Img", Img.FileName);
-                }
-
-                var response = await client.PostAsync($"{_apiBaseUrl}/api/SanPham/uploadfile", requestContent);
-
-                if (response.IsSuccessStatusCode)
-                {
+                    TempData["SuccessMessage"] = "Thêm sản phẩm thành công!";
                     return RedirectToAction("Index");
                 }
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Failed to create product.");
                 }
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
             }
+
+            // Nếu có lỗi, tải lại danh sách Loại Sản Phẩm và Hãng Sản Xuất
+            ViewBag.LoaiSanPhams = await _loaiSanPhamService.GetAllAsync();
+            ViewBag.HangSanXuats = await _hangSanXuatService.GetAllAsync();
 
             return View(newProduct);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            SanPhamWebDtos product = null;
+            SetUserClaims();
+            var product = await _sanPhamService.GetByIdAsync(id);
+            // Lấy danh sách loại sản phẩm và hãng sản xuất
+            var loaiSanPhams = await _loaiSanPhamService.GetAllAsync();
+            var hangSanXuats = await _hangSanXuatService.GetAllAsync();
 
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/GetById/{id}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                product = JsonConvert.DeserializeObject<SanPhamWebDtos>(data);
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Failed to load product details.");
-            }
-
+            // Gửi dữ liệu đến View thông qua ViewBag
+            ViewBag.LoaiSanPhams = loaiSanPhams;
+            ViewBag.HangSanXuats = hangSanXuats;
             return View(product);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, SanPhamWebDtos product)
+        public async Task<IActionResult> Edit(int id, SanPhamWebDtos product, IFormFile Img)
         {
             if (ModelState.IsValid)
             {
-                var client = _httpClientFactory.CreateClient();
-                var jsonContent = new StringContent(JsonConvert.SerializeObject(product), Encoding.UTF8, "application/json");
-                var response = await client.PutAsync($"{_apiBaseUrl}/api/SanPham/UpdateProduct/{id}", jsonContent);
+                var success = await _sanPhamService.UpdateAsync(id, product, Img);
 
-                if (response.IsSuccessStatusCode)
+                if (success)
                 {
+                    TempData["SuccessMessage"] = "Sửa sản phẩm thành công!";
                     return RedirectToAction("Index");
                 }
                 else
@@ -160,21 +110,19 @@ namespace Ql_KhoHang.Controllers
                     ModelState.AddModelError(string.Empty, "Failed to update product.");
                 }
             }
-
+            // Nếu có lỗi, tải lại danh sách Loại Sản Phẩm và Hãng Sản Xuất
+            ViewBag.LoaiSanPhams = await _loaiSanPhamService.GetAllAsync();
+            ViewBag.HangSanXuats = await _hangSanXuatService.GetAllAsync();
             return View(product);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.DeleteAsync($"{_apiBaseUrl}/api/SanPham/DeleteProduct/{id}");
+            var success = await _sanPhamService.DeleteAsync(id);
 
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index");
-            }
-            else
+            if (!success)
             {
                 ModelState.AddModelError(string.Empty, "Failed to delete product.");
             }
@@ -185,32 +133,13 @@ namespace Ql_KhoHang.Controllers
         [HttpGet]
         public async Task<IActionResult> Search(string keyword)
         {
-            List<SanPhamWebDtos> products = new List<SanPhamWebDtos>();
-
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/Search/{keyword}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                products = JsonConvert.DeserializeObject<List<SanPhamWebDtos>>(data);
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Failed to search products.");
-            }
-
+            var products = await _sanPhamService.SearchAsync(keyword);
             return View("Index", products);
         }
-
-        public async Task<IActionResult> _MenuPartial()
+        private void SetUserClaims()
         {
-            return PartialView();
-        }
-
-        public async Task<IActionResult> _SidebarPartial()
-        {
-            return PartialView();
+            ViewBag.Username = User.Identity?.Name;
+            ViewBag.Role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
         }
     }
 }

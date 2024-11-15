@@ -1,0 +1,30 @@
+﻿@model Ql_KhoHang.Dtos.HangSanXuatWebDtos
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <div class="row mb-3">
+                <h1>Sửa Hãng Sản Xuất</h1>
+
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="MaHangSanXuat" />
+
+                    <div class="form-group">
+                        <label for="TenHangSanXuat">Tên Hãng Sản Xuất</label>
+                        <input type="text" asp-for="TenHangSanXuat" class="form-control" />
+                        <span asp-validation-for="TenHangSanXuat" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

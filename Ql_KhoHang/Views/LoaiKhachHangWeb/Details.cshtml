@@ -1,0 +1,38 @@
+﻿@model Ql_KhoHang.Dtos.LoaiKhachHangWebDtos
+
+@{
+    ViewData["Title"] = "Chi tiết Loại Khách Hàng";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <h2 class="mb-4">Chi tiết Loại Khách Hàng</h2>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th>Mã Loại</th>
+                    <td>@Model.MaLoai</td>
+                </tr>
+                <tr>
+                    <th>Tên Loại</th>
+                    <td>@Model.TenLoai</td>
+                </tr>
+                <tr>
+                    <th>Chiết Khấu Xuất Hàng</th>
+                    <td>@Model.ChietKhauXuatHang</td>
+                </tr>
+                <tr>
+                    <th>Chi Phí Vận Chuyển</th>
+                    <td>@Model.ChiPhiVanChuyen</td>
+                </tr>
+            </table>
+
+            <div class="mt-3">
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                <a asp-action="Edit" asp-route-id="@Model.MaLoai" class="btn btn-warning">Sửa</a>
+            </div>
+        </div>
+    </div>
+</div>

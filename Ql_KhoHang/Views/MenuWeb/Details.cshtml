@@ -1,0 +1,50 @@
+﻿@model Ql_KhoHang.Dtos.MenuWebDtos
+
+@{
+    ViewData["Title"] = "Chi tiết Menu";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <h2 class="mb-4">Chi tiết Menu</h2>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th>Mã Menu</th>
+                    <td>@Model.MenuId</td>
+                </tr>
+                <tr>
+                    <th>Tên Menu</th>
+                    <td>@Model.Name</td>
+                </tr>
+                <tr>
+                    <th>Thứ tự</th>
+                    <td>@Model.Order</td>
+                </tr>
+                <tr>
+                    <th>Liên kết</th>
+                    <td>@Model.Link</td>
+                </tr>
+                <tr>
+                    <th>Ẩn</th>
+                    <td>@(Model.Hide == true ? "Có" : "Không")</td>
+                </tr>
+                <tr>
+                    <th>Mã Người Dùng</th>
+                    <td>@Model.MaNguoiDung</td>
+                </tr>
+                <tr>
+                    <th>Tên Người Dùng</th>
+                    <td>@Model.TenNguoiDung</td>
+                </tr>
+            </table>
+
+            <div class="mt-3">
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                <a asp-action="Edit" asp-route-id="@Model.MenuId" class="btn btn-warning">Sửa</a>
+            </div>
+        </div>
+    </div>
+</div>

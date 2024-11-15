@@ -5,50 +5,44 @@ using System.Security.Claims;
 
 namespace Ql_KhoHang.Controllers
 {
-    public class LoaiSanPhamWebController : Controller
+    public class MenuWebController : Controller
     {
-        private readonly LoaiSanPhamService _loaiSanPhamService;
+        private readonly MenuService _menuService;
 
-        public LoaiSanPhamWebController(LoaiSanPhamService loaiSanPhamService)
+        public MenuWebController(MenuService menuService)
         {
-            _loaiSanPhamService = loaiSanPhamService;
+            _menuService = menuService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             SetUserClaims();
-            var categories = await _loaiSanPhamService.GetAllAsync();
-            return View(categories);
+            var menus = await _menuService.GetAllAsync();
+            return View(menus);
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
             SetUserClaims();
-            var category = await _loaiSanPhamService.GetByIdAsync(id);
-            return View(category);
+            var menu = await _menuService.GetByIdAsync(id);
+            return View(menu);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Search(string keyword)
-        {
-            SetUserClaims();
-            var categories = await _loaiSanPhamService.SearchAsync(keyword);
-            return View("Index", categories);
-        }
         [HttpGet]
         public IActionResult Create()
         {
             SetUserClaims();
             return View();
         }
+
         [HttpPost]
-        public async Task<IActionResult> Create(LoaiSanPhamWebDtos newCategory)
+        public async Task<IActionResult> Create(MenuWebDtos newMenu)
         {
             if (ModelState.IsValid)
             {
-                var success = await _loaiSanPhamService.CreateAsync(newCategory);
+                var success = await _menuService.CreateAsync(newMenu);
 
                 if (success)
                 {
@@ -56,27 +50,27 @@ namespace Ql_KhoHang.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Failed to create category.");
+                    ModelState.AddModelError(string.Empty, "Failed to create menu.");
                 }
             }
 
-            return View(newCategory);
+            return View(newMenu);
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             SetUserClaims();
-            var category = await _loaiSanPhamService.GetByIdAsync(id);
-            return View(category);
+            var menu = await _menuService.GetByIdAsync(id);
+            return View(menu);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, LoaiSanPhamWebDtos category)
+        public async Task<IActionResult> Edit(int id, MenuWebDtos menu)
         {
             if (ModelState.IsValid)
             {
-                var success = await _loaiSanPhamService.UpdateAsync(id, category);
+                var success = await _menuService.UpdateAsync(id, menu);
 
                 if (success)
                 {
@@ -84,24 +78,40 @@ namespace Ql_KhoHang.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Failed to update category.");
+                    ModelState.AddModelError(string.Empty, "Failed to update menu.");
                 }
             }
 
-            return View(category);
+            return View(menu);
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var success = await _loaiSanPhamService.DeleteAsync(id);
+            var success = await _menuService.DeleteAsync(id);
 
             if (!success)
             {
-                ModelState.AddModelError(string.Empty, "Failed to delete category.");
+                ModelState.AddModelError(string.Empty, "Failed to delete menu.");
             }
 
             return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public async Task<IActionResult> Search(string keyword)
+        {
+            SetUserClaims();
+            var menus = await _menuService.SearchAsync(keyword);
+            return View("Index", menus);
+        }
+        public async Task<IActionResult> _MenuPartial()
+        {
+            return PartialView();
+        }
+
+        public async Task<IActionResult> _SidebarPartial()
+        {
+            return PartialView();
         }
         private void SetUserClaims()
         {
