@@ -1,211 +1,97 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Ql_KhoHang.Dtos;
-using System.Security.Claims;
-using System.Text;
+using Ql_KhoHang.Services;
 
 namespace Ql_KhoHang.Controllers
 {
-	public class LoaiSanPhamWebController : Controller
-	{
-		private readonly IHttpClientFactory _httpClientFactory;
-		private readonly string _apiBaseUrl;
+    public class LoaiSanPhamWebController : Controller
+    {
+        private readonly LoaiSanPhamService _loaiSanPhamService;
 
-		public LoaiSanPhamWebController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
-		{
-			_httpClientFactory = httpClientFactory;
-			_apiBaseUrl = configuration["ApiSettings:BaseUrl"];
-		}
-
-		[HttpGet]
-		public async Task<IActionResult> Index()
-		{
-			List<LoaiSanPhamWebDtos> categories = new List<LoaiSanPhamWebDtos>();
-
-			try
-			{
-				var client = _httpClientFactory.CreateClient();
-				var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiSanPham/Get");
-
-				if (response.IsSuccessStatusCode)
-				{
-					string data = await response.Content.ReadAsStringAsync();
-					categories = JsonConvert.DeserializeObject<List<LoaiSanPhamWebDtos>>(data);
-				}
-				else
-				{
-					ModelState.AddModelError(string.Empty, "Failed to load categories from the API.");
-				}
-			}
-			catch (Exception ex)
-			{
-				ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
-			}
-			// Truy xuất thông tin người dùng từ Claims
-			var manguoidung = User.Claims.FirstOrDefault(c => c.Type == "MaNguoiDung")?.Value;
-			var name = User.Identity?.Name;
-			var quyen = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-			ViewBag.Username = name;
-			ViewBag.Role = quyen;
-
-			return View(categories);
-		}
-
-		// Action lấy danh mục theo ID
-		[HttpGet]
-		public async Task<IActionResult> Details(int id)
-		{
-			LoaiSanPhamWebDtos category = null;
-
-			var client = _httpClientFactory.CreateClient();
-			var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiSanPham/GetById/{id}");
-
-			if (response.IsSuccessStatusCode)
-			{
-				var data = await response.Content.ReadAsStringAsync();
-				category = JsonConvert.DeserializeObject<LoaiSanPhamWebDtos>(data);
-			}
-			else
-			{
-				ModelState.AddModelError(string.Empty, "Failed to load category details.");
-			}
-
-			return View(category);
-		}
-
-		// Action tìm kiếm danh mục
-		[HttpGet]
-		public async Task<IActionResult> Search(string keyword)
-		{
-			List<LoaiSanPhamWebDtos> categories = new List<LoaiSanPhamWebDtos>();
-
-			var client = _httpClientFactory.CreateClient();
-			var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiSanPham/Search/{keyword}");
-
-			if (response.IsSuccessStatusCode)
-			{
-				var data = await response.Content.ReadAsStringAsync();
-				categories = JsonConvert.DeserializeObject<List<LoaiSanPhamWebDtos>>(data);
-			}
-
-			return View("Index", categories);
-		}
-
-		// Action lấy danh mục theo phân trang
-		[HttpGet]
-		public async Task<IActionResult> GetPaged(int pageNumber = 1, int pageSize = 5)
-		{
-			List<LoaiSanPhamWebDtos> categories = new List<LoaiSanPhamWebDtos>();
-
-			var client = _httpClientFactory.CreateClient();
-			var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiSanPham/paged?pageNumber={pageNumber}&pageSize={pageSize}");
-
-			if (response.IsSuccessStatusCode)
-			{
-				var data = await response.Content.ReadAsStringAsync();
-				categories = JsonConvert.DeserializeObject<List<LoaiSanPhamWebDtos>>(data);
-			}
-
-			return View("Index", categories);
-		}
-        [HttpGet]
-        public IActionResult Create()
+        public LoaiSanPhamWebController(LoaiSanPhamService loaiSanPhamService)
         {
-            return View();
+            _loaiSanPhamService = loaiSanPhamService;
         }
-        // Action tạo mới danh mục
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var categories = await _loaiSanPhamService.GetAllAsync();
+            return View(categories);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var category = await _loaiSanPhamService.GetByIdAsync(id);
+            return View(category);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Search(string keyword)
+        {
+            var categories = await _loaiSanPhamService.SearchAsync(keyword);
+            return View("Index", categories);
+        }
+
         [HttpPost]
-		public async Task<IActionResult> Create(LoaiSanPhamWebDtos newCategory)
-		{
-			if (ModelState.IsValid)
-			{
-				var client = _httpClientFactory.CreateClient();
-				var jsonContent = new StringContent(JsonConvert.SerializeObject(newCategory), Encoding.UTF8, "application/json");
-				var response = await client.PostAsync($"{_apiBaseUrl}/api/LoaiSanPham/CreateProductType", jsonContent);
+        public async Task<IActionResult> Create(LoaiSanPhamWebDtos newCategory)
+        {
+            if (ModelState.IsValid)
+            {
+                var success = await _loaiSanPhamService.CreateAsync(newCategory);
 
-				if (response.IsSuccessStatusCode)
-				{
-					return RedirectToAction("Index");
-				}
-				else
-				{
-					ModelState.AddModelError(string.Empty, "Failed to create category.");
-				}
-			}
+                if (success)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Failed to create category.");
+                }
+            }
 
-			return View(newCategory);
-		}
+            return View(newCategory);
+        }
+
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            LoaiSanPhamWebDtos category = null;
+            var category = await _loaiSanPhamService.GetByIdAsync(id);
+            return View(category);
+        }
 
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiSanPham/GetById/{id}");
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, LoaiSanPhamWebDtos category)
+        {
+            if (ModelState.IsValid)
+            {
+                var success = await _loaiSanPhamService.UpdateAsync(id, category);
 
-            if (response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                category = JsonConvert.DeserializeObject<LoaiSanPhamWebDtos>(data);
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Failed to load category details.");
+                if (success)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Failed to update category.");
+                }
             }
 
             return View(category);
         }
 
-        // Action cập nhật danh mục
         [HttpPost]
-		public async Task<IActionResult> Edit(int id, LoaiSanPhamWebDtos category)
-		{
-			if (ModelState.IsValid)
-			{
-				var client = _httpClientFactory.CreateClient();
-				var jsonContent = new StringContent(JsonConvert.SerializeObject(category), Encoding.UTF8, "application/json");
-				var response = await client.PutAsync($"{_apiBaseUrl}/api/LoaiSanPham/UpdateProductType/{id}", jsonContent);
+        public async Task<IActionResult> Delete(int id)
+        {
+            var success = await _loaiSanPhamService.DeleteAsync(id);
 
-				if (response.IsSuccessStatusCode)
-				{
-					return RedirectToAction("Index");
-				}
-				else
-				{
-					ModelState.AddModelError(string.Empty, "Failed to update category.");
-				}
-			}
+            if (!success)
+            {
+                ModelState.AddModelError(string.Empty, "Failed to delete category.");
+            }
 
-			return View(category);
-		}
-
-		// Action xóa danh mục (ẩn danh mục)
-		[HttpPost]
-		public async Task<IActionResult> Delete(int id)
-		{
-			var client = _httpClientFactory.CreateClient();
-			var response = await client.DeleteAsync($"{_apiBaseUrl}/api/LoaiSanPham/DeleteProductType/{id}");
-
-			if (response.IsSuccessStatusCode)
-			{
-				return RedirectToAction("Index");
-			}
-			else
-			{
-				ModelState.AddModelError(string.Empty, "Failed to delete category.");
-			}
-
-			return RedirectToAction("Index");
-		}
-		public async Task<IActionResult> _MenuPartial()
-		{
-			return PartialView();
-		}
-		public async Task<IActionResult> _SidebarPartial()
-		{
-			return PartialView();
-		}
-
-	}
-
+            return RedirectToAction("Index");
+        }
+    }
 }

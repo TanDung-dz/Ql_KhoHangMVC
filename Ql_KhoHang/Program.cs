@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Ql_KhoHang.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 var connectionString =
 builder.Configuration.GetConnectionString("WebsiteQLKhohangConnection");
+
+
+builder.Services.AddScoped<LoaiSanPhamService>();
 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).
