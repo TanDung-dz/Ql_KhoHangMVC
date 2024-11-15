@@ -1,0 +1,66 @@
+﻿@model List<Ql_KhoHang.Dtos.MenuWebDtos>
+
+@{
+    ViewData["Title"] = "Danh sách Menu";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <form asp-action="Search" method="get" class="d-flex">
+                        <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm..." />
+                        <button type="submit" class="btn btn-primary ms-2">Tìm kiếm</button>
+                    </form>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a asp-action="Create" class="btn btn-primary">Tạo mới</a>
+                </div>
+            </div>
+
+            <table class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th>Mã Menu</th>
+                        <th>Tên Menu</th>
+                        <th>Thứ tự</th>
+                        <th>Liên kết</th>
+                        <th>Ẩn</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.MenuId</td>
+                                <td>@item.Name</td>
+                                <td>@item.Order</td>
+                                <td>@item.Link</td>
+                                <td>@(item.Hide == true ? "Có" : "Không")</td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@item.MenuId" class="btn btn-info">Chi tiết</a>
+                                    <a asp-action="Edit" asp-route-id="@item.MenuId" class="btn btn-warning">Sửa</a>
+                                    <form asp-action="Delete" asp-route-id="@item.MenuId" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center">Không tìm thấy menu nào.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

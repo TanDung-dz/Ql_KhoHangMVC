@@ -7,6 +7,5 @@ namespace Ql_KhoHang.Dtos
 
 		public string? TenLoaiSanPham { get; set; }
 
-		//public virtual ICollection<SanPham> SanPhams { get; set; } = new List<SanPham>();
 	}
 }

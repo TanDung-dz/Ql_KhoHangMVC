@@ -12,6 +12,14 @@ builder.Configuration.GetConnectionString("WebsiteQLKhohangConnection");
 
 
 builder.Services.AddScoped<LoaiSanPhamService>();
+builder.Services.AddScoped<NguoiDungService>();
+builder.Services.AddScoped<SanPhamService>();
+builder.Services.AddScoped<HangSanXuatService>();
+builder.Services.AddScoped<MenuService>();
+builder.Services.AddScoped<LoaiKhachHangService>();
+
+
+
 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).

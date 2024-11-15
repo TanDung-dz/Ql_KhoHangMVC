@@ -1,23 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Net.Http;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Ql_KhoHang.Dtos;
+using Ql_KhoHang.Services;
+using System.Security.Claims;
 
 namespace Ql_KhoHang.Controllers
 {
     public class NguoiDungWebController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly string _apiBaseUrl;
+        private readonly NguoiDungService _nguoiDungService;
 
-        public NguoiDungWebController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public NguoiDungWebController(NguoiDungService nguoiDungService)
         {
-            _httpClientFactory = httpClientFactory;
-            _apiBaseUrl = configuration["ApiSettings:BaseUrl"];
+            _nguoiDungService = nguoiDungService;
         }
 
         [HttpGet]
@@ -35,47 +31,27 @@ namespace Ql_KhoHang.Controllers
                 return View();
             }
 
-            var client = _httpClientFactory.CreateClient();
-            var loginUrl = $"{_apiBaseUrl}/api/NguoiDung/Login/login?username=" + username + "&password=" + password;
+            var user = await _nguoiDungService.LoginAsync(username, password);
 
-            var loginData = new
+            if (user != null)
             {
-                username = username,
-                password = password
-            };
-
-            var jsonContent = new StringContent(JsonConvert.SerializeObject(loginData), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync(loginUrl, jsonContent);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                var user = JsonConvert.DeserializeObject<NguoiDungWebDtos>(data);
-
-                if (user != null)
+                // Thiết lập thông tin đăng nhập dưới dạng Claims
+                var claims = new List<Claim>
                 {
-                    // Thiết lập thông tin đăng nhập dưới dạng Claims
-                    var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, user.TenNguoiDung ?? ""),
-                        new Claim("MaNguoiDung", user.MaNguoiDung.ToString()),
-                        new Claim(ClaimTypes.Role, user.Quyen.ToString() ?? "0")
-                    };
+                    new Claim(ClaimTypes.Name, user.TenNguoiDung ?? ""),
+                    new Claim("MaNguoiDung", user.MaNguoiDung.ToString()),
+                    new Claim(ClaimTypes.Role, user.Quyen.ToString() ?? "0")
+                };
 
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var authProperties = new AuthenticationProperties
-                    {
-                        IsPersistent = true
-                    };
-
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-
-                    return RedirectToAction("Index", "NguoiDungWeb");
-                }
-                else
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
                 {
-                    ModelState.AddModelError(string.Empty, "Login failed: Unable to retrieve user information.");
-                }
+                    IsPersistent = true
+                };
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+                return RedirectToAction("Index", "NguoiDungWeb");
             }
             else
             {
@@ -84,11 +60,12 @@ namespace Ql_KhoHang.Controllers
 
             return View();
         }
+
         [HttpGet]
         public IActionResult Index()
         {
             // Truy xuất thông tin người dùng từ Claims
-            var employeeId = User.Claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value;
+            var employeeId = User.Claims.FirstOrDefault(c => c.Type == "MaNguoiDung")?.Value;
             var name = User.Identity?.Name;
             var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
@@ -102,6 +79,7 @@ namespace Ql_KhoHang.Controllers
 
             return View(userViewModel);
         }
+
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
@@ -109,14 +87,15 @@ namespace Ql_KhoHang.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
         }
+
         public async Task<IActionResult> _MenuPartial()
         {
             return PartialView();
         }
+
         public async Task<IActionResult> _SidebarPartial()
         {
             return PartialView();
         }
-
     }
 }
