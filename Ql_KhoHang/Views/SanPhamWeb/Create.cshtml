@@ -4,47 +4,74 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
+
 <div class="main-wrapper">
     <div class="page-wrapper">
-        <div class="content container-fluid px-3 my-3">
+        <div class="content container-fluid px-3 my-4">
             <div class="row">
                 <h2>Thêm mới sản phẩm</h2>
-
-                <form asp-action="Create" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="TenSanPham">Tên sản phẩm</label>
-                        <input type="text" class="form-control" id="TenSanPham" name="TenSanPham" value="@Model.TenSanPham" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="Mota">Mô tả</label>
-                        <textarea class="form-control" id="Mota" name="Mota">@Model.Mota</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="SoLuong">Số lượng</label>
-                        <input type="number" class="form-control" id="SoLuong" name="SoLuong" value="@Model.SoLuong" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="DonGia">Đơn giá</label>
-                        <input type="text" class="form-control" id="DonGia" name="DonGia" value="@Model.DonGia" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="XuatXu">Xuất xứ</label>
-                        <input type="text" class="form-control" id="XuatXu" name="XuatXu" value="@Model.XuatXu" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="Img">Hình ảnh</label>
-                        <input type="file" class="form-control" id="Img" name="Img" />
-                    </div>
-
-                    <button type="submit" class="btn btn-primary mt-3">Thêm mới</button>
-                    <a asp-action="Index" class="btn btn-secondary mt-3">Hủy</a>
-                </form>
             </div>
+
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="TenSanPham">Tên Sản Phẩm</label>
+                    <input type="text" class="form-control" asp-for="TenSanPham" placeholder="Tên sản phẩm" />
+                    <span asp-validation-for="TenSanPham" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="Mota">Mô tả</label>
+                    <textarea class="form-control" asp-for="Mota" placeholder="Mô tả sản phẩm"></textarea>
+                    <span asp-validation-for="Mota" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="SoLuong">Số lượng</label>
+                    <input type="number" class="form-control" asp-for="SoLuong" placeholder="Số lượng" />
+                    <span asp-validation-for="SoLuong" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="DonGia">Đơn giá</label>
+                    <input type="number" class="form-control" asp-for="DonGia" placeholder="Đơn giá" step="0.01" />
+                    <span asp-validation-for="DonGia" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="XuatXu">Xuất xứ</label>
+                    <input type="text" class="form-control" asp-for="XuatXu" placeholder="Xuất xứ" />
+                    <span asp-validation-for="XuatXu" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="Img">Hình ảnh</label>
+                    <input type="file" class="form-control-file" id="Img" name="Img" />
+                </div>
+
+                <div class="form-group">
+                    <label for="MaLoaiSanPham">Loại Sản Phẩm</label>
+                    <select asp-for="MaLoaiSanPham" class="form-control">
+                        <option value="">Chọn loại sản phẩm</option>
+                        <!-- Thêm các option cho loại sản phẩm, bạn cần truyền dữ liệu từ controller -->
+                    </select>
+                    <span asp-validation-for="MaLoaiSanPham" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="MaHangSanXuat">Hãng Sản Xuất</label>
+                    <select asp-for="MaHangSanXuat" class="form-control">
+                        <option value="">Chọn hãng sản xuất</option>
+                        <!-- Thêm các option cho hãng sản xuất, bạn cần truyền dữ liệu từ controller -->
+                    </select>
+                    <span asp-validation-for="MaHangSanXuat" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Thêm mới</button>
+            </form>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

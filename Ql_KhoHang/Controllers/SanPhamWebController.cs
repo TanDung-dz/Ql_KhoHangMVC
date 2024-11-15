@@ -77,7 +77,7 @@ namespace Ql_KhoHang.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            return View(new SanPhamWebDtos());
         }
 
         [HttpPost]
