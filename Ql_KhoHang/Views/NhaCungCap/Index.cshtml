@@ -1,0 +1,94 @@
+﻿@model IEnumerable<Ql_KhoHang.Dtos.NhacungcapDto>
+@{
+    ViewData["Title"] = "Nhà Cung Cấp";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <div class="row">
+                <h2>Danh Sách Nhà Cung Cấp</h2>
+
+                <div class="mb-3 d-flex justify-content-between">
+                    <!-- Nút thêm mới nhà cung cấp -->
+                    <a asp-action="Create" class="btn btn-primary">Thêm Mới Nhà Cung Cấp</a>
+
+                    <!-- Form tìm kiếm nhà cung cấp -->
+                    <form asp-action="Index" method="get" class="form-inline d-flex">
+                        <input type="text" name="keyword" class="form-control" placeholder="Search by keyword" value="@ViewBag.Keyword" />
+                        <button type="submit" class="btn btn-secondary ml-2">Tìm kiếm</button>
+                    </form>
+                </div>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Mã NCC</th>
+                            <th>Tên Nhà Cung Cấp</th>
+                            <th>Địa Chỉ</th>
+                            <th>Email</th>
+                            <th>Số Điện Thoại</th>
+                            <th>Hình Ảnh</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var supplier in Model)
+                        {
+                            <tr>
+                                <td>@supplier.MaNhaCungCap</td>
+                                <td>@supplier.TenNhaCungCap</td>
+                                <td>@supplier.DiaChi</td>
+                                <td>@supplier.Email</td>
+                                <td>@supplier.Sdt</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(supplier.Image))
+                                    {
+                                        <img src="@supplier.Image" alt="Supplier Image" width="50" height="50" />
+                                    }
+                                </td>
+                                <td>
+                                    <!-- Nút hành động -->
+                                    <a asp-action="Details" asp-route-id="@supplier.MaNhaCungCap" class="btn btn-info btn-sm">Chi tiết</a>
+                                    <a asp-action="Edit" asp-route-id="@supplier.MaNhaCungCap" class="btn btn-warning btn-sm">Sửa</a>
+                                    <form asp-action="Delete" asp-route-id="@supplier.MaNhaCungCap" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa nhà cung cấp này?');">Xóa</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Thành công!',
+                        text: '@Html.Raw(TempData["SuccessMessage"])',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Lỗi!',
+                        text: '@Html.Raw(TempData["ErrorMessage"])',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+    </script>
+}

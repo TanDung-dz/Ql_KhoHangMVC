@@ -17,7 +17,6 @@ namespace Ql_KhoHang.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // Truy xuất thông tin người dùng từ Claims
             SetUserClaims();
             var manufacturers = await _hangSanXuatService.GetAllAsync();
             return View(manufacturers);
@@ -26,7 +25,6 @@ namespace Ql_KhoHang.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            // Truy xuất thông tin người dùng từ Claims
             SetUserClaims();
             var manufacturer = await _hangSanXuatService.GetByIdAsync(id);
             return View(manufacturer);
@@ -35,7 +33,6 @@ namespace Ql_KhoHang.Controllers
         [HttpGet]
         public async Task<IActionResult> Search(string keyword)
         {
-            // Truy xuất thông tin người dùng từ Claims
             SetUserClaims();
             var manufacturers = await _hangSanXuatService.SearchAsync(keyword);
             return View("Index", manufacturers);
@@ -44,7 +41,6 @@ namespace Ql_KhoHang.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            // Truy xuất thông tin người dùng từ Claims
             SetUserClaims();
             return View();
         }
@@ -58,12 +54,17 @@ namespace Ql_KhoHang.Controllers
 
                 if (success)
                 {
+                    TempData["SuccessMessage"] = "Tạo nhà sản xuất thành công!";
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Failed to create manufacturer.");
+                    TempData["ErrorMessage"] = "Không thể tạo nhà sản xuất.";
                 }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ.";
             }
 
             return View(newManufacturer);
@@ -72,7 +73,6 @@ namespace Ql_KhoHang.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            // Truy xuất thông tin người dùng từ Claims
             SetUserClaims();
             var manufacturer = await _hangSanXuatService.GetByIdAsync(id);
             return View(manufacturer);
@@ -87,12 +87,17 @@ namespace Ql_KhoHang.Controllers
 
                 if (success)
                 {
+                    TempData["SuccessMessage"] = "Cập nhật nhà sản xuất thành công!";
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Failed to update manufacturer.");
+                    TempData["ErrorMessage"] = "Không thể cập nhật nhà sản xuất.";
                 }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ.";
             }
 
             return View(manufacturer);
@@ -103,9 +108,13 @@ namespace Ql_KhoHang.Controllers
         {
             var success = await _hangSanXuatService.DeleteAsync(id);
 
-            if (!success)
+            if (success)
             {
-                ModelState.AddModelError(string.Empty, "Failed to delete manufacturer.");
+                TempData["SuccessMessage"] = "Xóa nhà sản xuất thành công!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Không thể xóa nhà sản xuất.";
             }
 
             return RedirectToAction("Index");
@@ -120,6 +129,7 @@ namespace Ql_KhoHang.Controllers
         {
             return PartialView();
         }
+
         private void SetUserClaims()
         {
             ViewBag.Username = User.Identity?.Name;

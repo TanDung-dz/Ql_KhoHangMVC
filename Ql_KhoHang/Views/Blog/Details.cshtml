@@ -1,0 +1,37 @@
+﻿@model Ql_KhoHang.Dtos.BlogWebDtos
+@{
+    ViewData["Title"] = "Chi Tiết Blog";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <h2>Chi Tiết Blog</h2>
+            <div class="card">
+                <div class="card-header">Thông Tin Blog</div>
+                <div class="card-body">
+                    <p><strong>Mã Blog:</strong> @Model.BlogId</p>
+                    <p><strong>Mô Tả:</strong> @Model.Mota</p>
+                    <p><strong>Liên Kết:</strong> <a href="@Model.Link" target="_blank">@Model.Link</a></p>
+                    <p><strong>Người Dùng:</strong> @Model.TenNguoiDung</p>
+                    <p><strong>Ẩn:</strong> @(Model.Hide == true ? "Có" : "Không")</p>
+                    <p>
+                        <strong>Hình Ảnh:</strong>
+                        @if (!string.IsNullOrEmpty(Model.Anh))
+                        {
+                            <img src="@Model.Anh" alt="Blog Image" width="150" height="150" />
+                        }
+                        else
+                        {
+                            <span>Không có ảnh</span>
+                        }
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="Index" class="btn btn-secondary">Quay Lại</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

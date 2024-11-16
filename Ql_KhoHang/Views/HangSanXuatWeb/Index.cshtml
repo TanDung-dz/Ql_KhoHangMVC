@@ -12,7 +12,7 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <form asp-action="Search" method="get" class="d-flex">
-                        <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm..." />
+                        <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm..." value="@ViewBag.Keyword" />
                         <button type="submit" class="btn btn-primary ms-2">Tìm kiếm</button>
                     </form>
                 </div>
@@ -38,10 +38,10 @@
                                 <td>@item.MaHangSanXuat</td>
                                 <td>@item.TenHangSanXuat</td>
                                 <td>
-                                    <a asp-action="Details" asp-route-id="@item.MaHangSanXuat" class="btn btn-info">Chi tiết</a>
-                                    <a asp-action="Edit" asp-route-id="@item.MaHangSanXuat" class="btn btn-warning">Sửa</a>
+                                    <a asp-action="Details" asp-route-id="@item.MaHangSanXuat" class="btn btn-info btn-sm">Chi tiết</a>
+                                    <a asp-action="Edit" asp-route-id="@item.MaHangSanXuat" class="btn btn-warning btn-sm">Sửa</a>
                                     <form asp-action="Delete" asp-route-id="@item.MaHangSanXuat" method="post" style="display:inline;">
-                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</button>
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</button>
                                     </form>
                                 </td>
                             </tr>
@@ -58,3 +58,36 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Hiển thị thông báo thành công
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Thành công!',
+                    text: '@Html.Raw(TempData["SuccessMessage"])',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                            });
+            </text>
+        }
+
+            // Hiển thị thông báo lỗi
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Lỗi!',
+                    text: '@Html.Raw(TempData["ErrorMessage"])',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                            });
+            </text>
+        }
+    </script>
+}
+

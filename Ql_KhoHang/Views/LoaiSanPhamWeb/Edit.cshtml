@@ -25,4 +25,36 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <!-- Validation Scripts -->
+    <partial name="_ValidationScriptsPartial" />
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Hiển thị thông báo thành công
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Thành công!',
+                        text: '@Html.Raw(TempData["SuccessMessage"])',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
 
+        // Hiển thị thông báo lỗi
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Lỗi!',
+                        text: '@Html.Raw(TempData["ErrorMessage"])',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+    </script>
+}

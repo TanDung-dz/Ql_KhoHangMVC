@@ -40,18 +40,35 @@ namespace Ql_KhoHang.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(MenuWebDtos newMenu)
         {
+            // Lấy thông tin người dùng từ Claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "MaNguoiDung")?.Value;
+
+            if (int.TryParse(userIdClaim, out var userId))
+            {
+                newMenu.MaNguoiDung = userId;
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Không thể lấy thông tin người dùng.";
+                return RedirectToAction("Index");
+            }
             if (ModelState.IsValid)
             {
                 var success = await _menuService.CreateAsync(newMenu);
 
                 if (success)
                 {
+                    TempData["SuccessMessage"] = "Tạo menu thành công!";
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Failed to create menu.");
+                    TempData["ErrorMessage"] = "Không thể tạo menu.";
                 }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ.";
             }
 
             return View(newMenu);
@@ -68,18 +85,35 @@ namespace Ql_KhoHang.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, MenuWebDtos menu)
         {
+            // Lấy thông tin người dùng từ Claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "MaNguoiDung")?.Value;
+
+            if (int.TryParse(userIdClaim, out var userId))
+            {
+                menu.MaNguoiDung = userId;
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Không thể lấy thông tin người dùng.";
+                return RedirectToAction("Index");
+            }
             if (ModelState.IsValid)
             {
                 var success = await _menuService.UpdateAsync(id, menu);
 
                 if (success)
                 {
+                    TempData["SuccessMessage"] = "Cập nhật menu thành công!";
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Failed to update menu.");
+                    TempData["ErrorMessage"] = "Không thể cập nhật menu.";
                 }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ.";
             }
 
             return View(menu);
@@ -90,20 +124,36 @@ namespace Ql_KhoHang.Controllers
         {
             var success = await _menuService.DeleteAsync(id);
 
-            if (!success)
+            if (success)
             {
-                ModelState.AddModelError(string.Empty, "Failed to delete menu.");
+                TempData["SuccessMessage"] = "Xóa menu thành công!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Không thể xóa menu.";
             }
 
             return RedirectToAction("Index");
         }
+
         [HttpGet]
         public async Task<IActionResult> Search(string keyword)
         {
             SetUserClaims();
             var menus = await _menuService.SearchAsync(keyword);
+
+            if (menus == null || !menus.Any())
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy menu.";
+            }
+            else
+            {
+                TempData["SuccessMessage"] = $"Tìm thấy {menus.Count()} kết quả.";
+            }
+
             return View("Index", menus);
         }
+
         public async Task<IActionResult> _MenuPartial()
         {
             return PartialView();
@@ -113,6 +163,7 @@ namespace Ql_KhoHang.Controllers
         {
             return PartialView();
         }
+
         private void SetUserClaims()
         {
             ViewBag.Username = User.Identity?.Name;

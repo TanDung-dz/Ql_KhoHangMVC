@@ -1,0 +1,139 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Ql_KhoHang.Dtos;
+using Ql_KhoHang.Services;
+using System.Security.Claims;
+
+namespace Ql_KhoHang.Controllers
+{
+    public class NhaCungCapController : Controller
+    {
+        private readonly NhaCungCapService _nhaCungCapService;
+
+        public NhaCungCapController(NhaCungCapService nhaCungCapService)
+        {
+            _nhaCungCapService = nhaCungCapService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index(string? keyword)
+        {
+            SetUserClaims();
+            IEnumerable<NhacungcapDto> suppliers;
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                suppliers = await _nhaCungCapService.SearchAsync(keyword);
+                if (!suppliers.Any())
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy nhà cung cấp nào.";
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = $"Tìm thấy {suppliers.Count()} kết quả.";
+                }
+            }
+            else
+            {
+                suppliers = await _nhaCungCapService.GetAllAsync();
+            }
+
+            ViewBag.Keyword = keyword; // Để giữ từ khóa trong input tìm kiếm
+            return View(suppliers);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            SetUserClaims();
+            var supplier = await _nhaCungCapService.GetByIdAsync(id);
+            if (supplier == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy nhà cung cấp.";
+                return RedirectToAction("Index");
+            }
+            return View(supplier);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            SetUserClaims();
+            return View(new NhacungcapDto());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(NhacungcapDto newSupplier, IFormFile Img)
+        {
+            if (ModelState.IsValid)
+            {
+                var success = await _nhaCungCapService.CreateAsync(newSupplier, Img);
+                if (success)
+                {
+                    TempData["SuccessMessage"] = "Thêm mới nhà cung cấp thành công!";
+                    return RedirectToAction("Index");
+                }
+                TempData["ErrorMessage"] = "Không thể thêm mới nhà cung cấp.";
+            }
+            return View(newSupplier);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            SetUserClaims();
+            var supplier = await _nhaCungCapService.GetByIdAsync(id);
+            if (supplier == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy nhà cung cấp.";
+                return RedirectToAction("Index");
+            }
+            return View(supplier);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, NhacungcapDto updatedSupplier, IFormFile Img)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var success = await _nhaCungCapService.UpdateAsync(id, updatedSupplier, Img);
+                if (success)
+                {
+                    TempData["SuccessMessage"] = "Cập nhật nhà cung cấp thành công!";
+                    return RedirectToAction("Index");
+                }
+                TempData["ErrorMessage"] = "Không thể cập nhật nhà cung cấp.";
+            }
+            return View(updatedSupplier);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var success = await _nhaCungCapService.DeleteAsync(id);
+            if (success)
+            {
+                TempData["SuccessMessage"] = "Xóa nhà cung cấp thành công!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Không thể xóa nhà cung cấp.";
+            }
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> _MenuPartial()
+        {
+            return PartialView();
+        }
+
+        public async Task<IActionResult> _SidebarPartial()
+        {
+            return PartialView();
+        }
+        private void SetUserClaims()
+        {
+            ViewBag.Username = User.Identity?.Name;
+            ViewBag.Role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        }
+    }
+}

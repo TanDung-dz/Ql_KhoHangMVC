@@ -1,24 +1,27 @@
 ﻿@model List<Ql_KhoHang.Dtos.LoaiKhachHangWebDtos>
 
 @{
-    ViewData["Title"] = "LoaiKhachHang";
+    ViewData["Title"] = "Loại Khách Hàng";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
+
 <div class="main-wrapper">
     <div class="page-wrapper">
         <div class="content container-fluid px-3 my-3">
             <div class="row mb-3">
-                <div class="col-md-6 text-right">
+                <div class="col-md-6">
                     <form asp-action="Search" asp-controller="LoaiKhachHangWeb" method="get">
                         <div class="input-group">
-                            <input type="text" name="keyword" class="form-control mr-2" placeholder="Nhập từ khóa tìm kiếm..." />
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary mr-2">Tìm kiếm</button>
-                            </div>
+                            <input type="text" name="keyword" class="form-control" placeholder="Nhập từ khóa tìm kiếm..." value="@ViewBag.Keyword" />
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                         </div>
                     </form>
                 </div>
+                <div class="col-md-6 text-end">
+                    <a asp-action="Create" asp-controller="LoaiKhachHangWeb" class="btn btn-success">Thêm mới</a>
+                </div>
             </div>
+
             <div class="card">
                 <div class="card-header">
                     Danh sách Loại Khách Hàng
@@ -46,11 +49,11 @@
                                         <td>@customerType.ChietKhauXuatHang</td>
                                         <td>@customerType.ChiPhiVanChuyen</td>
                                         <td>
-                                            <div class="btn-group mr-2">
-                                                <a asp-action="Details" asp-route-id="@customerType.MaLoai" class="btn btn-info mr-2">Chi tiết</a>
-                                                <a asp-action="Edit" asp-route-id="@customerType.MaLoai" class="btn btn-warning mr-2">Chỉnh sửa</a>
+                                            <div class="btn-group">
+                                                <a asp-action="Details" asp-route-id="@customerType.MaLoai" class="btn btn-info btn-sm">Chi tiết</a>
+                                                <a asp-action="Edit" asp-route-id="@customerType.MaLoai" class="btn btn-warning btn-sm">Chỉnh sửa</a>
                                                 <form asp-action="Delete" asp-route-id="@customerType.MaLoai" method="post" style="display:inline;">
-                                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
                                                 </form>
                                             </div>
                                         </td>
@@ -67,12 +70,40 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="card-footer">
-                    <div class="d-flex justify-content-end">
-                        <a asp-action="Create" asp-controller="LoaiKhachHangWeb" class="btn btn-success">Thêm mới Loại Khách Hàng</a>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Hiển thị thông báo thành công
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Thành công!',
+                    text: '@Html.Raw(TempData["SuccessMessage"])',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                            });
+            </text>
+        }
+
+            // Hiển thị thông báo lỗi
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Lỗi!',
+                    text: '@Html.Raw(TempData["ErrorMessage"])',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                            });
+            </text>
+        }
+    </script>
+}
+
