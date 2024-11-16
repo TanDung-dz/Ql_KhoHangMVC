@@ -48,7 +48,13 @@
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<SanPhamWebDtos>(data);
+                var product = JsonConvert.DeserializeObject<SanPhamWebDtos>(data);
+				if (!string.IsNullOrEmpty(product.Image))
+				{
+					product.Image = $"{_apiBaseUrl}{product.Image}";
+				}
+				return product;
+
             }
 
             return null;

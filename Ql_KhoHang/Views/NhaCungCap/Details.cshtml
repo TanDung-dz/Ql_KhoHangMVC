@@ -1,0 +1,29 @@
+﻿@model Ql_KhoHang.Dtos.NhacungcapDto
+@{
+    ViewData["Title"] = "Chi Tiết Nhà Cung Cấp";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <h2>Chi Tiết Nhà Cung Cấp</h2>
+
+            <div class="card">
+                <div class="card-body">
+                    <p><strong>Tên Nhà Cung Cấp:</strong> @Model.TenNhaCungCap</p>
+                    <p><strong>Địa Chỉ:</strong> @Model.DiaChi</p>
+                    <p><strong>Email:</strong> @Model.Email</p>
+                    <p><strong>Số Điện Thoại:</strong> @Model.Sdt</p>
+                    @if (!string.IsNullOrEmpty(Model.Image))
+                    {
+                        <p><strong>Hình Ảnh:</strong></p>
+                        <img src="@Model.Image" alt="Supplier Image" width="150" height="150" />
+                    }
+                </div>
+            </div>
+
+            <a asp-action="Index" class="btn btn-secondary mt-3">Quay lại</a>
+        </div>
+    </div>
+</div>

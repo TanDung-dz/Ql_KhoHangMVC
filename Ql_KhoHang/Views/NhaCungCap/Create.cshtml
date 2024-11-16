@@ -1,0 +1,80 @@
+﻿@model Ql_KhoHang.Dtos.NhacungcapDto
+@{
+    ViewData["Title"] = "Thêm Mới Nhà Cung Cấp";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <h2>Thêm Mới Nhà Cung Cấp</h2>
+
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="TenNhaCungCap">Tên Nhà Cung Cấp</label>
+                    <input type="text" class="form-control" asp-for="TenNhaCungCap" placeholder="Tên nhà cung cấp" />
+                    <span asp-validation-for="TenNhaCungCap" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="DiaChi">Địa Chỉ</label>
+                    <input type="text" class="form-control" asp-for="DiaChi" placeholder="Địa chỉ" />
+                    <span asp-validation-for="DiaChi" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="Email">Email</label>
+                    <input type="email" class="form-control" asp-for="Email" placeholder="Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="Sdt">Số Điện Thoại</label>
+                    <input type="text" class="form-control" asp-for="Sdt" placeholder="Số điện thoại" />
+                    <span asp-validation-for="Sdt" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="Img">Hình Ảnh</label>
+                    <input type="file" class="form-control-file" id="Img" name="Img" />
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">Thêm mới</button>
+                <a asp-action="Index" class="btn btn-secondary mt-3">Hủy</a>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <!-- Validation Scripts -->
+    <partial name="_ValidationScriptsPartial" />
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Hiển thị thông báo thành công
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                        Swal.fire({
+                            title: 'Thành công!',
+                            text: '@Html.Raw(TempData["SuccessMessage"])',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+            </text>
+        }
+
+        // Hiển thị thông báo lỗi
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                        Swal.fire({
+                            title: 'Lỗi!',
+                            text: '@Html.Raw(TempData["ErrorMessage"])',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+            </text>
+        }
+    </script>
+}

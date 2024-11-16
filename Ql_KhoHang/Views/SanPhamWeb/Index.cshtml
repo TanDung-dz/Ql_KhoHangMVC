@@ -8,13 +8,7 @@
         <div class="content container-fluid px-3 my-3">
             <div class="row">
                 <h2>Danh Sách Sản Phẩm</h2>
-                @if (TempData["SuccessMessage"] != null)
-                {
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        @TempData["SuccessMessage"]
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                }
+
                 <div class="mb-3 d-flex justify-content-between">
                     <!-- Nút thêm mới sản phẩm -->
                     <a asp-action="Create" class="btn btn-primary">Thêm Mới Sản Phẩm</a>
@@ -76,3 +70,35 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Hiển thị thông báo thành công
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Thành công!',
+                    text: '@Html.Raw(TempData["SuccessMessage"])',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                            });
+            </text>
+        }
+
+            // Hiển thị thông báo lỗi
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Lỗi!',
+                    text: '@Html.Raw(TempData["ErrorMessage"])',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                            });
+            </text>
+        }
+    </script>
+}

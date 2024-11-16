@@ -35,14 +35,26 @@ namespace Ql_KhoHang.Controllers
         {
             SetUserClaims();
             var categories = await _loaiSanPhamService.SearchAsync(keyword);
+
+            if (categories == null || !categories.Any())
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy loại sản phẩm.";
+            }
+            else
+            {
+                TempData["SuccessMessage"] = $"Tìm thấy {categories.Count()} kết quả.";
+            }
+
             return View("Index", categories);
         }
+
         [HttpGet]
         public IActionResult Create()
         {
             SetUserClaims();
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Create(LoaiSanPhamWebDtos newCategory)
         {
@@ -52,12 +64,17 @@ namespace Ql_KhoHang.Controllers
 
                 if (success)
                 {
+                    TempData["SuccessMessage"] = "Tạo loại sản phẩm thành công!";
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Failed to create category.");
+                    TempData["ErrorMessage"] = "Không thể tạo loại sản phẩm.";
                 }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ.";
             }
 
             return View(newCategory);
@@ -80,12 +97,17 @@ namespace Ql_KhoHang.Controllers
 
                 if (success)
                 {
+                    TempData["SuccessMessage"] = "Cập nhật loại sản phẩm thành công!";
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Failed to update category.");
+                    TempData["ErrorMessage"] = "Không thể cập nhật loại sản phẩm.";
                 }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ.";
             }
 
             return View(category);
@@ -96,13 +118,18 @@ namespace Ql_KhoHang.Controllers
         {
             var success = await _loaiSanPhamService.DeleteAsync(id);
 
-            if (!success)
+            if (success)
             {
-                ModelState.AddModelError(string.Empty, "Failed to delete category.");
+                TempData["SuccessMessage"] = "Xóa loại sản phẩm thành công!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Không thể xóa loại sản phẩm.";
             }
 
             return RedirectToAction("Index");
         }
+
         private void SetUserClaims()
         {
             ViewBag.Username = User.Identity?.Name;

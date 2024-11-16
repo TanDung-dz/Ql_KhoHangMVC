@@ -45,7 +45,7 @@ namespace Ql_KhoHang.Services
         {
             var client = _httpClientFactory.CreateClient();
             var jsonContent = new StringContent(JsonConvert.SerializeObject(newMenu), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync($"{_apiBaseUrl}/api/Menu/Create", jsonContent);
+            var response = await client.PostAsync($"{_apiBaseUrl}/api/Menu/CreateMenu", jsonContent);
             return response.IsSuccessStatusCode;
         }
 
@@ -53,14 +53,14 @@ namespace Ql_KhoHang.Services
         {
             var client = _httpClientFactory.CreateClient();
             var jsonContent = new StringContent(JsonConvert.SerializeObject(menu), Encoding.UTF8, "application/json");
-            var response = await client.PutAsync($"{_apiBaseUrl}/api/Menu/Update/{id}", jsonContent);
+            var response = await client.PutAsync($"{_apiBaseUrl}/api/Menu/UpdateMenu/{id}", jsonContent);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.DeleteAsync($"{_apiBaseUrl}/api/Menu/Delete/{id}");
+            var response = await client.DeleteAsync($"{_apiBaseUrl}/api/Menu/DeleteMenu/{id}");
             return response.IsSuccessStatusCode;
         }
         public async Task<List<MenuWebDtos>> SearchAsync(string keyword)
