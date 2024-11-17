@@ -66,6 +66,34 @@
                     </tbody>
                 </table>
 
+                <!-- Phân trang -->
+                <nav>
+                    <ul class="pagination">
+                        <!-- Nút quay lại -->
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage - 1)&pageSize=@ViewBag.PageSize">Trước</a>
+                            </li>
+                        }
+
+                        <!-- Danh sách các trang -->
+                        @for (var i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize">@i</a>
+                            </li>
+                        }
+
+                        <!-- Nút tiến -->
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage + 1)&pageSize=@ViewBag.PageSize">Sau</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -84,7 +112,7 @@
                     text: '@Html.Raw(TempData["SuccessMessage"])',
                     icon: 'success',
                     confirmButtonText: 'OK'
-                            });
+                                        });
             </text>
         }
 
@@ -97,7 +125,7 @@
                     text: '@Html.Raw(TempData["ErrorMessage"])',
                     icon: 'error',
                     confirmButtonText: 'OK'
-                            });
+                                        });
             </text>
         }
     </script>

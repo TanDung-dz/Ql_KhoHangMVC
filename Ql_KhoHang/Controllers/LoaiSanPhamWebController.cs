@@ -15,12 +15,46 @@ namespace Ql_KhoHang.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? keyword, int pageNumber = 1, int pageSize = 10)
         {
             SetUserClaims();
-            var categories = await _loaiSanPhamService.GetAllAsync();
-            return View(categories);
+            IEnumerable<LoaiSanPhamWebDtos> allCategories;
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                allCategories = await _loaiSanPhamService.SearchAsync(keyword);
+                if (!allCategories.Any())
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy loại sản phẩm nào.";
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = $"Tìm thấy {allCategories.Count()} kết quả.";
+                }
+            }
+            else
+            {
+                allCategories = await _loaiSanPhamService.GetAllAsync();
+            }
+
+            // Tính toán dữ liệu phân trang
+            var paginatedCategories = allCategories
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Tính tổng số trang
+            int totalPages = (int)Math.Ceiling(allCategories.Count() / (double)pageSize);
+
+            // Gửi thông tin phân trang tới View
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.Keyword = keyword; // Giữ từ khóa trong input tìm kiếm
+
+            return View(paginatedCategories);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)

@@ -60,6 +60,35 @@
                         }
                     </tbody>
                 </table>
+                <!-- Phân trang -->
+                <nav>
+                    <ul class="pagination">
+                        <!-- Nút quay lại -->
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage - 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">Trước</a>
+                            </li>
+                        }
+
+                        <!-- Danh sách các trang -->
+                        @for (var i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">@i</a>
+                            </li>
+                        }
+
+                        <!-- Nút tiến -->
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage + 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">Sau</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+
             </div>
         </div>
     </div>
