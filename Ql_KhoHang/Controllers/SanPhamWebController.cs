@@ -19,12 +19,31 @@ namespace Ql_KhoHang.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9)
         {
             SetUserClaims();
-            var products = await _sanPhamService.GetAllAsync();
-            return View(products);
+
+            // Lấy tất cả sản phẩm từ API
+            var allProducts = await _sanPhamService.GetAllAsync();
+
+            // Tính toán dữ liệu phân trang
+            var paginatedProducts = allProducts
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Tính tổng số trang
+            int totalPages = (int)Math.Ceiling(allProducts.Count / (double)pageSize);
+
+            // Gửi thông tin phân trang tới View
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = totalPages;
+
+            return View(paginatedProducts);
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)

@@ -15,12 +15,46 @@ namespace Ql_KhoHang.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? keyword, int pageNumber = 1, int pageSize = 10)
         {
             SetUserClaims();
-            var menus = await _menuService.GetAllAsync();
-            return View(menus);
+            IEnumerable<MenuWebDtos> allMenus;
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                allMenus = await _menuService.SearchAsync(keyword);
+                if (!allMenus.Any())
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy menu nào.";
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = $"Tìm thấy {allMenus.Count()} kết quả.";
+                }
+            }
+            else
+            {
+                allMenus = await _menuService.GetAllAsync();
+            }
+
+            // Tính toán dữ liệu phân trang
+            var paginatedMenus = allMenus
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Tính tổng số trang
+            int totalPages = (int)Math.Ceiling(allMenus.Count() / (double)pageSize);
+
+            // Gửi thông tin phân trang tới View
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.Keyword = keyword; // Để giữ từ khóa trong input tìm kiếm
+
+            return View(paginatedMenus);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)

@@ -15,31 +15,46 @@ namespace Ql_KhoHang.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? keyword)
+        public async Task<IActionResult> Index(string? keyword, int pageNumber = 1, int pageSize = 9)
         {
             SetUserClaims();
-            IEnumerable<NhacungcapDto> suppliers;
+            IEnumerable<NhacungcapDto> allSuppliers;
 
             if (!string.IsNullOrEmpty(keyword))
             {
-                suppliers = await _nhaCungCapService.SearchAsync(keyword);
-                if (!suppliers.Any())
+                allSuppliers = await _nhaCungCapService.SearchAsync(keyword);
+                if (!allSuppliers.Any())
                 {
                     TempData["ErrorMessage"] = "Không tìm thấy nhà cung cấp nào.";
                 }
                 else
                 {
-                    TempData["SuccessMessage"] = $"Tìm thấy {suppliers.Count()} kết quả.";
+                    TempData["SuccessMessage"] = $"Tìm thấy {allSuppliers.Count()} kết quả.";
                 }
             }
             else
             {
-                suppliers = await _nhaCungCapService.GetAllAsync();
+                allSuppliers = await _nhaCungCapService.GetAllAsync();
             }
 
+            // Tính toán dữ liệu phân trang
+            var paginatedSuppliers = allSuppliers
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Tính tổng số trang
+            int totalPages = (int)Math.Ceiling(allSuppliers.Count() / (double)pageSize);
+
+            // Gửi thông tin phân trang tới View
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = totalPages;
             ViewBag.Keyword = keyword; // Để giữ từ khóa trong input tìm kiếm
-            return View(suppliers);
+
+            return View(paginatedSuppliers);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)

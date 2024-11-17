@@ -15,12 +15,46 @@ namespace Ql_KhoHang.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? keyword, int pageNumber = 1, int pageSize = 10)
         {
             SetUserClaims();
-            var manufacturers = await _hangSanXuatService.GetAllAsync();
-            return View(manufacturers);
+            IEnumerable<HangSanXuatWebDtos> allManufacturers;
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                allManufacturers = await _hangSanXuatService.SearchAsync(keyword);
+                if (!allManufacturers.Any())
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy hãng sản xuất nào.";
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = $"Tìm thấy {allManufacturers.Count()} kết quả.";
+                }
+            }
+            else
+            {
+                allManufacturers = await _hangSanXuatService.GetAllAsync();
+            }
+
+            // Tính toán dữ liệu phân trang
+            var paginatedManufacturers = allManufacturers
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Tính tổng số trang
+            int totalPages = (int)Math.Ceiling(allManufacturers.Count() / (double)pageSize);
+
+            // Gửi thông tin phân trang tới View
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.Keyword = keyword; // Để giữ từ khóa tìm kiếm
+
+            return View(paginatedManufacturers);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)

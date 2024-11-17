@@ -15,12 +15,46 @@ namespace Ql_KhoHang.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? keyword, int pageNumber = 1, int pageSize = 10)
         {
             SetUserClaims();
-            var loaiKhachHangs = await _loaiKhachHangService.GetAllAsync();
-            return View(loaiKhachHangs);
+            IEnumerable<LoaiKhachHangWebDtos> allLoaiKhachHang;
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                allLoaiKhachHang = await _loaiKhachHangService.SearchAsync(keyword);
+                if (!allLoaiKhachHang.Any())
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy loại khách hàng nào.";
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = $"Tìm thấy {allLoaiKhachHang.Count()} kết quả.";
+                }
+            }
+            else
+            {
+                allLoaiKhachHang = await _loaiKhachHangService.GetAllAsync();
+            }
+
+            // Tính toán dữ liệu phân trang
+            var paginatedLoaiKhachHang = allLoaiKhachHang
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Tính tổng số trang
+            int totalPages = (int)Math.Ceiling(allLoaiKhachHang.Count() / (double)pageSize);
+
+            // Gửi thông tin phân trang tới View
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.Keyword = keyword; // Để giữ từ khóa tìm kiếm
+
+            return View(paginatedLoaiKhachHang);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)

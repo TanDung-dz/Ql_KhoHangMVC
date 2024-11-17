@@ -15,33 +15,46 @@ namespace Ql_KhoHang.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? keyword)
+        public async Task<IActionResult> Index(string? keyword, int pageNumber = 1, int pageSize = 10)
         {
             SetUserClaims();
-            IEnumerable<BlogWebDtos> blogs;
+            IEnumerable<BlogWebDtos> allBlogs;
 
             if (!string.IsNullOrEmpty(keyword))
             {
-                // Tìm kiếm nếu từ khóa được cung cấp
-                blogs = await _blogService.SearchAsync(keyword);
-                if (!blogs.Any())
+                allBlogs = await _blogService.SearchAsync(keyword);
+                if (!allBlogs.Any())
                 {
                     TempData["ErrorMessage"] = "Không tìm thấy blog nào.";
                 }
                 else
                 {
-                    TempData["SuccessMessage"] = $"Tìm thấy {blogs.Count()} kết quả.";
+                    TempData["SuccessMessage"] = $"Tìm thấy {allBlogs.Count()} kết quả.";
                 }
             }
             else
             {
-                // Lấy toàn bộ blog nếu không có từ khóa
-                blogs = await _blogService.GetAllAsync();
+                allBlogs = await _blogService.GetAllAsync();
             }
 
-            ViewBag.Keyword = keyword; // Để giữ từ khóa trong input tìm kiếm
-            return View(blogs);
+            // Tính toán dữ liệu phân trang
+            var paginatedBlogs = allBlogs
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Tính tổng số trang
+            int totalPages = (int)Math.Ceiling(allBlogs.Count() / (double)pageSize);
+
+            // Gửi thông tin phân trang tới View
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.Keyword = keyword; // Giữ từ khóa tìm kiếm
+
+            return View(paginatedBlogs);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)
