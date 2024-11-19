@@ -1,0 +1,69 @@
+﻿@model Ql_KhoHang.Dtos.NguoiDungWebDtos
+@{
+    ViewData["Title"] = "Chi Tiết Người Dùng";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <h2>Chi Tiết Người Dùng</h2>
+            <dl class="row">
+                <dt class="col-sm-3">Mã Người Dùng</dt>
+                <dd class="col-sm-9">@Model.MaNguoiDung</dd>
+
+                <dt class="col-sm-3">Tên Đăng Nhập</dt>
+                <dd class="col-sm-9">@Model.TenDangNhap</dd>
+
+                <dt class="col-sm-3">Tên Người Dùng</dt>
+                <dd class="col-sm-9">@Model.TenNguoiDung</dd>
+
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
+
+                <dt class="col-sm-3">Số Điện Thoại</dt>
+                <dd class="col-sm-9">@Model.Sdt</dd>
+
+                <dt class="col-sm-3">Ngày Đăng Ký</dt>
+                <dd class="col-sm-9">@Model.NgayDk</dd>
+
+                <dt class="col-sm-3">Quyền</dt>
+                <dd class="col-sm-9">@Model.Quyen</dd>
+            </dl>
+            <a asp-action="IndexAdmin" class="btn btn-secondary">Quay Lại</a>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <!-- Validation Scripts -->
+    <partial name="_ValidationScriptsPartial" />
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Hiển thị thông báo thành công
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Thành công!',
+                    text: '@Html.Raw(TempData["SuccessMessage"])',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                                        });
+            </text>
+        }
+
+            // Hiển thị thông báo lỗi
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Lỗi!',
+                    text: '@Html.Raw(TempData["ErrorMessage"])',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                                        });
+            </text>
+        }
+    </script>
+}

@@ -1,0 +1,44 @@
+﻿@model Ql_KhoHang.Dtos.NhanVienKhoDto
+@{
+    ViewData["Title"] = "Chi Tiết Nhân Viên Kho";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <h2>Chi Tiết Nhân Viên Kho</h2>
+            <table class="table">
+                <tr>
+                    <th>Mã Nhân Viên</th>
+                    <td>@Model.MaNhanVienKho</td>
+                </tr>
+                <tr>
+                    <th>Tên Nhân Viên</th>
+                    <td>@Model.TenNhanVien</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>@Model.Email</td>
+                </tr>
+                <tr>
+                    <th>Số Điện Thoại</th>
+                    <td>@Model.Sdt</td>
+                </tr>
+                <tr>
+                    <th>Ngày Sinh</th>
+                    <td>@Model.NamSinh?.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <th>Hình Ảnh</th>
+                    <td>
+                        @if (!string.IsNullOrEmpty(Model.Hinhanh))
+                        {
+                            <img src="@Model.Hinhanh" alt="Nhân Viên Kho" width="150" />
+                        }
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

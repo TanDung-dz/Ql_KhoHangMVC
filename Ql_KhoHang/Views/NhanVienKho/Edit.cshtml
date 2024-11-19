@@ -1,0 +1,41 @@
+﻿@model Ql_KhoHang.Dtos.NhanVienKhoDto
+@{
+    ViewData["Title"] = "Sửa Nhân Viên Kho";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <h2>Sửa Nhân Viên Kho</h2>
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="TenNhanVien">Tên Nhân Viên</label>
+                    <input type="text" class="form-control" id="TenNhanVien" name="TenNhanVien" value="@Model.TenNhanVien" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="Email">Email</label>
+                    <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="Sdt">Số Điện Thoại</label>
+                    <input type="number" class="form-control" id="Sdt" name="Sdt" value="@Model.Sdt" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="NamSinh">Ngày Sinh</label>
+                    <input type="date" class="form-control" id="NamSinh" name="NamSinh" value="@Model.NamSinh?.ToString("yyyy-MM-dd")" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="Img">Hình Ảnh</label>
+                    <input type="file" class="form-control" id="Img" name="Img" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Cập Nhật</button>
+            </form>
+        </div>
+    </div>
+</div>
