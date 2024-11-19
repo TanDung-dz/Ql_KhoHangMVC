@@ -26,12 +26,9 @@
 					<i class="fas fa-user"></i> <span> Người dùng </span> <span class="menu-arrow"></span>
 				</a>
 				<ul class="submenu_class" style="display: none;">
-					(nv == null)
-					{
-					<li><a asp-area="" asp-controller="Taikhoans" asp-action="Create"> Tài khoản </a></li>
-					<li><a asp-area="" asp-controller="Nhanviens" asp-action="Create"> Nhân viên </a></li>
-					}
-					<li><a asp-area="" asp-controller="Khachhangs" asp-action="Create"> Khách hàng </a></li>
+					<li><a asp-area="" asp-controller="NguoiDungWeb" asp-action="IndexAdmin"> Tài khoản </a></li>
+					<li><a asp-area="" asp-controller="NhanVienKho" asp-action="Index"> Nhân viên kho</a></li>
+					<li><a asp-area="" asp-controller="KhachHangWeb" asp-action="Index"> Khách hàng </a></li>
 					<li><a asp-area="" asp-controller="Nhacungcaps" asp-action="Create"> Nhà cung cấp </a></li>
 					<li><a asp-area="" asp-controller="Donvivanchuyens" asp-action="Create"> Đơn vị vận chuyển </a></li>
 				</ul>

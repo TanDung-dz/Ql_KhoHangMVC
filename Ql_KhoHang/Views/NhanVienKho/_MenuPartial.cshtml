@@ -1,0 +1,38 @@
+﻿
+<div class="header-left">
+	<a asp-area="" asp-controller="Home" asp-action="Index" class="logo">                <img src="~/assets/img/logo/logo.png" class="logo-scrolled" alt="thumb"> </a>
+	<a asp-area="" asp-controller="Home" asp-action="Index" class="logo logo-small">     <img src="~/assets/img/logo/logo.png" class="logo-scrolled" alt="thumb"> </a>
+</div>
+
+
+<a href="javascript:void(0);" id="toggle_btn"> <i class="fe fe-text-align-left"></i> </a>
+<a class="mobile_btn" id="mobile_btn"> <i class="fas fa-bars"></i> </a>
+
+<ul class="nav user-menu">
+	@{
+		<li class="nav-item dropdown has-arrow">
+			<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+				<span class="user-img">
+					<img class="rounded-circle" src="https://png.pngtree.com/png-vector/20220124/ourmid/pngtree-hand-drawn-cartoon-workplace-business-villain-office-worker-png-image_4263629.png" width="31" alt="Hình ảnh">
+				</span>
+			</a>
+			<div class="dropdown-menu">
+				<div class="user-header">
+					<div class="avatar avatar-sm">
+						<img src="https://png.pngtree.com/png-vector/20220124/ourmid/pngtree-hand-drawn-cartoon-workplace-business-villain-office-worker-png-image_4263629.png" alt="Hình ảnh" class="avatar-img rounded-circle">
+					</div>
+					<div class="user-text">
+						<h6>@ViewBag.Username</h6>
+						<p class="text-muted mb-0">
+							@(ViewBag.Role == "1" ? "Quản lý" : "Nhân viên")
+						</p>
+					</div>
+				</div>
+				<form asp-controller="User" asp-action="Logout" method="post" style="display: inline;">
+					<button type="submit" class="dropdown-item">Đăng xuất</button>
+				</form>
+
+			</div>
+		</li>
+	}
+</ul>

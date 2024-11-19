@@ -19,8 +19,8 @@ builder.Services.AddScoped<MenuService>();
 builder.Services.AddScoped<LoaiKhachHangService>();
 builder.Services.AddScoped<BlogService>();
 builder.Services.AddScoped<NhaCungCapService>();
-
-
+builder.Services.AddScoped<KhachHangService>();
+builder.Services.AddScoped<NhanVienKhoService>();
 
 
 

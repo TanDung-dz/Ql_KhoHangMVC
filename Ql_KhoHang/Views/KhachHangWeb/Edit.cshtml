@@ -1,0 +1,37 @@
+﻿@model Ql_KhoHang.Dtos.KhachHangDto
+@{
+    ViewData["Title"] = "Sửa Khách Hàng";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <h2>Sửa Khách Hàng</h2>
+            <form asp-action="Edit" method="post">
+                <div class="form-group">
+                    <label for="MaKhachHang">Mã Khách Hàng</label>
+                    <input type="text" class="form-control" id="MaKhachHang" name="MaKhachHang" value="@Model.MaKhachHang" readonly hidden/>
+                </div>
+
+                <div class="form-group">
+                    <label for="TenKhachHang">Tên Khách Hàng</label>
+                    <input type="text" class="form-control" id="TenKhachHang" name="TenKhachHang" value="@Model.TenKhachHang" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="MaLoai">Loại Khách Hàng</label>
+                    <select class="form-control" id="MaLoai" name="MaLoai" required>
+                        @foreach (var item in ViewBag.LoaiKhachHangs)
+                        {
+                            <option value="@item.MaLoai" selected="@((item.MaLoai == Model.MaLoai) ? "selected" : null)">@item.TenLoai</option>
+
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-warning">Cập Nhật Khách Hàng</button>
+            </form>
+        </div>
+    </div>
+</div>
