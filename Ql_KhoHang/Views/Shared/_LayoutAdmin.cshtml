@@ -1,7 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <title>Ware House Clother</title>
@@ -27,14 +26,18 @@
         <div class="row">
             <!-- Sidebar -->
             <div class="col-md-3 sidebar">
-                <div class="sidebar-inner slimscroll" style="height:auto">
-                    @await Html.PartialAsync("_SidebarPartial")
+                <div class="sidebar-inner slimscroll">
+                    <div id="sidebar-menu" class="sidebar-menu">
+                        @await Html.PartialAsync("_SidebarPartial")
+                    </div>
                 </div>
             </div>
 
             <!-- Main Content -->
-            <div class="col-md-9">
-                @RenderBody()
+            <div class="container">
+                <div class="col-md-9">
+                    @RenderBody()
+                </div>
             </div>
         </div>
     </div>
