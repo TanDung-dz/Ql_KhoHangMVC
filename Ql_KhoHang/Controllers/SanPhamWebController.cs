@@ -19,12 +19,22 @@ namespace Ql_KhoHang.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9)
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9, string keyword = "")
         {
             SetUserClaims();
 
-            // Lấy tất cả sản phẩm từ API
-            var allProducts = await _sanPhamService.GetAllAsync();
+            List<SanPhamWebDtos> allProducts;
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                // Nếu có keyword, thực hiện tìm kiếm
+                allProducts = await _sanPhamService.SearchAsync(keyword);
+            }
+            else
+            {
+                // Nếu không có keyword, lấy toàn bộ sản phẩm
+                allProducts = await _sanPhamService.GetAllAsync();
+            }
 
             // Tính toán dữ liệu phân trang
             var paginatedProducts = allProducts
@@ -39,9 +49,11 @@ namespace Ql_KhoHang.Controllers
             ViewBag.CurrentPage = pageNumber;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalPages = totalPages;
+            ViewBag.Keyword = keyword; // Gửi keyword hiện tại tới View để giữ nguyên giá trị tìm kiếm
 
             return View(paginatedProducts);
         }
+
 
 
 
@@ -140,20 +152,14 @@ namespace Ql_KhoHang.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var success = await _sanPhamService.DeleteAsync(id);
-
-            if (!success)
+            if (success)
             {
-                ModelState.AddModelError(string.Empty, "Failed to delete product.");
+                TempData["SuccessMessage"] = "Sửa sản phẩm thành công!";
+                return RedirectToAction("Index");
             }
-
+            else
+                ModelState.AddModelError(string.Empty, "Failed to delete product.");
             return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Search(string keyword)
-        {
-            var products = await _sanPhamService.SearchAsync(keyword);
-            return View("Index", products);
         }
         private void SetUserClaims()
         {

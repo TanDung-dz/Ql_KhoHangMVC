@@ -20,7 +20,7 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <!-- Nút thêm mới người dùng -->
-                    <a asp-action="CreateAdmin" asp-controller="NguoiDungWeb" class="btn btn-success">Thêm mới</a>
+                    <a asp-action="Create" asp-controller="NguoiDungWeb" class="btn btn-success">Thêm mới</a>
                 </div>
             </div>
 
@@ -66,9 +66,9 @@
                                         <td>@(user.Sdt?.ToString() ?? "Chưa có số điện thoại")</td>
                                         <td>
                                             <div class="btn-group">
-                                                <a asp-action="DetailsAdmin" asp-route-id="@user.MaNguoiDung" class="btn btn-info btn-sm">Chi tiết</a>
-                                                <a asp-action="EditAdmin" asp-route-id="@user.MaNguoiDung" class="btn btn-warning btn-sm">Chỉnh sửa</a>
-                                                <form asp-action="DeleteAdmin" asp-route-id="@user.MaNguoiDung" method="post" style="display:inline;">
+                                                <a asp-action="Details" asp-route-id="@user.MaNguoiDung" class="btn btn-info btn-sm">Chi tiết</a>
+                                                <a asp-action="Edit" asp-route-id="@user.MaNguoiDung" class="btn btn-warning btn-sm">Chỉnh sửa</a>
+                                                <form asp-action="Delete" asp-route-id="@user.MaNguoiDung" method="post" style="display:inline;">
                                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
                                                 </form>
                                             </div>

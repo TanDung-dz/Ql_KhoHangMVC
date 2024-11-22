@@ -14,11 +14,12 @@ namespace Ql_KhoHang.Dtos
 
         public string? Email { get; set; }
 
-        public int? Sdt { get; set; }
+        public string? Sdt { get; set; }
 
         public DateTime? NgayDk { get; set; }
         public int? Quyen { get; set; }
+        public bool? Hide { get; set; }
 
-        
+
     }
 }

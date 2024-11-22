@@ -32,6 +32,10 @@
                     {
                         product.Image = $"{_apiBaseUrl}{product.Image}";
                     }
+                    if (!string.IsNullOrEmpty(product.MaVach))
+                    {
+                        product.MaVach = $"{_apiBaseUrl}{product.MaVach}";
+                    }
                 }
 
                 return products;
@@ -53,7 +57,11 @@
 				{
 					product.Image = $"{_apiBaseUrl}{product.Image}";
 				}
-				return product;
+                if (!string.IsNullOrEmpty(product.MaVach))
+                {
+                    product.MaVach = $"{_apiBaseUrl}{product.MaVach}";
+                }
+                return product;
 
             }
 
@@ -82,7 +90,7 @@
                 requestContent.Add(imageContent, "Img", Img.FileName);
             }
 
-            var response = await client.PostAsync($"{_apiBaseUrl}/api/SanPham/CreateProductWithImage/uploadfile", requestContent);
+            var response = await client.PostAsync($"{_apiBaseUrl}/api/SanPham/CreateProduct/uploadfile", requestContent);
 
             return response.IsSuccessStatusCode;
         }

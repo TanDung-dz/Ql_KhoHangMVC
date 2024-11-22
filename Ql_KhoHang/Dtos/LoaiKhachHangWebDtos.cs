@@ -10,5 +10,6 @@ namespace Ql_KhoHang.Dtos
 		public decimal? ChietKhauXuatHang { get; set; }
 
 		public decimal? ChiPhiVanChuyen { get; set; }
-	}
+        public bool? Hide { get; set; }
+    }
 }
