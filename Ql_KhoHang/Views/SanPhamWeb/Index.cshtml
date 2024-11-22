@@ -1,106 +1,118 @@
 ﻿@model IEnumerable<Ql_KhoHang.Dtos.SanPhamWebDtos>
 @{
-    ViewData["Title"] = "SanPham";
+    ViewData["Title"] = "Danh Sách Sản Phẩm";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 <div class="main-wrapper">
     <div class="page-wrapper">
         <div class="content container-fluid px-3 my-3">
             <div class="row">
-                <h2>Danh Sách Sản Phẩm</h2>
+                <div class="col-md-12 d-flex justify-content-between align-items-center mb-3">
+                    <h2>Danh Sách Sản Phẩm</h2>
 
-                <div class="mb-3 d-flex justify-content-between">
-                    <!-- Nút thêm mới sản phẩm -->
-                    <a asp-action="Create" class="btn btn-primary">Thêm Mới Sản Phẩm</a>
-
-                    <!-- Form tìm kiếm sản phẩm -->
-                    <form asp-action="Search" method="get" class="form-inline d-flex">
-                        <input type="text" name="keyword" class="form-control" placeholder="Search by keyword" />
-                        <button type="submit" class="btn btn-secondary ml-2">Tìm kiếm</button>
+                    <!-- Form tìm kiếm -->
+                    <form asp-action="Index" method="get" class="form-inline d-flex">
+                        <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control" placeholder="Tìm kiếm sản phẩm..." />
+                        <button type="submit" class="btn btn-primary ml-2">Tìm kiếm</button>
                     </form>
                 </div>
-
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Mã Sản Phẩm</th>
-                            <th>Tên Sản Phẩm</th>
-                            <th>Mô Tả</th>
-                            <th>Hình Ảnh</th>
-                            <th>Số Lượng</th>
-                            <th>Đơn Giá</th>
-                            <th>Xuất Xứ</th>
-                            <th>Loại Sản Phẩm</th>
-                            <th>Hãng Sản Xuất</th>
-                            <th>Thao Tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var sanpham in Model)
-                        {
-                            <tr>
-                                <td>@sanpham.MaSanPham</td>
-                                <td>@sanpham.TenSanPham</td>
-                                <td>@sanpham.Mota</td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(sanpham.Image))
-                                    {
-                                        <img src="@sanpham.Image" alt="@sanpham.TenSanPham" width="50" height="50" />
-                                    }
-                                </td>
-                                <td>@sanpham.SoLuong</td>
-                                <td>@sanpham.DonGia?.ToString("C")</td>
-                                <td>@sanpham.XuatXu</td>
-                                <td>@sanpham.TenLoaiSanPham</td>
-                                <td>@sanpham.TenHangSanXuat</td>
-                                <td>
-                                    <!-- Nút hành động -->
-                                    <a asp-action="Details" asp-route-id="@sanpham.MaSanPham" class="btn btn-info btn-sm">Xem</a>
-                                    <a asp-action="Edit" asp-route-id="@sanpham.MaSanPham" class="btn btn-warning btn-sm">Sửa</a>
-                                    <form asp-action="Delete" asp-route-id="@sanpham.MaSanPham" method="post" style="display:inline;">
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-
-                <!-- Phân trang -->
-                <nav>
-                    <ul class="pagination">
-                        <!-- Nút quay lại -->
-                        @if (ViewBag.CurrentPage > 1)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage - 1)&pageSize=@ViewBag.PageSize">Trước</a>
-                            </li>
-                        }
-
-                        <!-- Danh sách các trang -->
-                        @for (var i = 1; i <= ViewBag.TotalPages; i++)
-                        {
-                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                                <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize">@i</a>
-                            </li>
-                        }
-
-                        <!-- Nút tiến -->
-                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage + 1)&pageSize=@ViewBag.PageSize">Sau</a>
-                            </li>
-                        }
-                    </ul>
-                </nav>
             </div>
+
+            <!-- Bảng hiển thị sản phẩm -->
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên Sản Phẩm</th>
+                                <th>Hình Ảnh</th>
+                                <th>Mã vạch</th>
+                                <th>Số Lượng</th>
+                                <th>Đơn Giá</th>
+                                <th>Loại Sản Phẩm</th>
+                                <th>Hãng Sản Xuất</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!Model.Any())
+                            {
+                                <tr>
+                                    <td colspan="8" class="text-center">Không có sản phẩm nào.</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var sanpham in Model)
+                                {
+                                    <tr>
+                                        <td>@sanpham.MaSanPham</td>
+                                        <td>@sanpham.TenSanPham</td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(sanpham.Image))
+                                            {
+                                                <img src="@sanpham.Image" alt="@sanpham.TenSanPham" width="50" height="50" />
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(sanpham.MaVach))
+                                            {
+                                                <img src="@sanpham.MaVach" alt="@sanpham.TenSanPham" width="50" height="50" />
+                                            }
+                                        </td>
+                                        <td>@sanpham.SoLuong</td>
+                                        <td>@sanpham.DonGia?.ToString("C")</td>
+                                        <td>@sanpham.TenLoaiSanPham</td>
+                                        <td>@sanpham.TenHangSanXuat</td>
+                                        <td>
+                                            <a asp-action="Details" asp-route-id="@sanpham.MaSanPham" class="btn btn-info btn-sm">Xem</a>
+                                            <a asp-action="Edit" asp-route-id="@sanpham.MaSanPham" class="btn btn-warning btn-sm">Sửa</a>
+                                            <form asp-action="Delete" asp-route-id="@sanpham.MaSanPham" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Phân trang -->
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <!-- Nút quay lại -->
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage - 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">Trước</a>
+                        </li>
+                    }
+
+                    <!-- Danh sách các trang -->
+                    @for (var i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">@i</a>
+                        </li>
+                    }
+
+                    <!-- Nút tiến -->
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage + 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">Sau</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Hiển thị thông báo thành công
@@ -112,7 +124,7 @@
                     text: '@Html.Raw(TempData["SuccessMessage"])',
                     icon: 'success',
                     confirmButtonText: 'OK'
-                                        });
+                            });
             </text>
         }
 
@@ -125,7 +137,7 @@
                     text: '@Html.Raw(TempData["ErrorMessage"])',
                     icon: 'error',
                     confirmButtonText: 'OK'
-                                        });
+                            });
             </text>
         }
     </script>

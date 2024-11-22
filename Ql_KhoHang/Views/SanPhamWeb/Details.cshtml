@@ -1,8 +1,70 @@
-﻿
+﻿@model Ql_KhoHang.Dtos.SanPhamWebDtos
+
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/SanPhamWeb/_MenuPartial.cshtml";
+    ViewData["Title"] = "Chi Tiết Sản Phẩm";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Details</h1>
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content container-fluid px-3 my-3">
+            <h2 class="mb-4">Chi Tiết Sản Phẩm</h2>
 
+            <!-- Thông tin sản phẩm -->
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">Mã Sản Phẩm:</dt>
+                        <dd class="col-sm-8">@Model.MaSanPham</dd>
+
+                        <dt class="col-sm-4">Tên Sản Phẩm:</dt>
+                        <dd class="col-sm-8">@Model.TenSanPham</dd>
+
+                        <dt class="col-sm-4">Mô Tả:</dt>
+                        <dd class="col-sm-8">@Model.Mota</dd>
+
+                        <dt class="col-sm-4">Số Lượng:</dt>
+                        <dd class="col-sm-8">@Model.SoLuong</dd>
+
+                        <dt class="col-sm-4">Đơn Giá:</dt>
+                        <dd class="col-sm-8">@Model.DonGia?.ToString("C")</dd>
+
+                        <dt class="col-sm-4">Xuất Xứ:</dt>
+                        <dd class="col-sm-8">@Model.XuatXu</dd>
+
+                        <dt class="col-sm-4">Loại Sản Phẩm:</dt>
+                        <dd class="col-sm-8">@Model.TenLoaiSanPham</dd>
+
+                        <dt class="col-sm-4">Hãng Sản Xuất:</dt>
+                        <dd class="col-sm-8">@Model.TenHangSanXuat</dd>
+                    </dl>
+                </div>
+
+                <div class="col-md-6">
+                    <!-- Hiển thị hình ảnh sản phẩm -->
+                    @if (!string.IsNullOrEmpty(Model.Image))
+                    {
+                        <img src="@Model.Image" alt="@Model.TenSanPham" class="img-fluid mb-3" style="max-width: 100%;" />
+                    }
+
+                    <!-- Hiển thị mã vạch sản phẩm -->
+                    @if (!string.IsNullOrEmpty(Model.MaVach))
+                    {
+                        <h5>Mã Vạch:</h5>
+                        <img src="@Model.MaVach" alt="Mã vạch sản phẩm" class="img-fluid" style="max-width: 100%; height: auto;" />
+                    }
+                    else
+                    {
+                        <p class="text-muted">Không có mã vạch cho sản phẩm này.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Nút hành động -->
+            <div class="mt-4">
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                <a asp-action="Edit" asp-route-id="@Model.MaSanPham" class="btn btn-warning">Sửa</a>
+            </div>
+        </div>
+    </div>
+</div>

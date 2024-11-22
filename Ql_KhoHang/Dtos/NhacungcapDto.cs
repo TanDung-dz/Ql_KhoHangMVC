@@ -6,7 +6,8 @@
         public string? TenNhaCungCap { get; set; }
         public string? DiaChi { get; set; }
         public string? Email { get; set; }
-        public int? Sdt { get; set; }
+        public string? Sdt { get; set; }
         public string? Image { get; set; }
+        public bool? Hide { get; set; }
     }
 }

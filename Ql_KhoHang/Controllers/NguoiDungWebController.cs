@@ -137,8 +137,8 @@ namespace Ql_KhoHang.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            SetUserClaims();
-            return View();
+            var model = new NguoiDungWebDtos(); // Khởi tạo một instance của Model
+            return View(model);
         }
 
         [HttpPost]
@@ -151,7 +151,7 @@ namespace Ql_KhoHang.Controllers
                 if (success)
                 {
                     TempData["SuccessMessage"] = "Tạo người dùng thành công!";
-                    return RedirectToAction("IndexAdmin");
+                    return RedirectToAction("Index2");
                 }
                 else
                 {
@@ -173,7 +173,7 @@ namespace Ql_KhoHang.Controllers
             if (user == null)
             {
                 TempData["ErrorMessage"] = "Người dùng không tồn tại.";
-                return RedirectToAction("IndexAdmin");
+                return RedirectToAction("Index2");
             }
             return View(user);
         }
@@ -188,7 +188,7 @@ namespace Ql_KhoHang.Controllers
                 if (success)
                 {
                     TempData["SuccessMessage"] = "Cập nhật thông tin người dùng thành công!";
-                    return RedirectToAction("IndexAdmin");
+                    return RedirectToAction("Index2");
                 }
                 else
                 {
@@ -218,7 +218,7 @@ namespace Ql_KhoHang.Controllers
                 TempData["ErrorMessage"] = "Không thể xóa người dùng.";
             }
 
-            return RedirectToAction("IndexAdmin");
+            return RedirectToAction("Index2");
         }
         public async Task<IActionResult> _MenuPartial()
         {
