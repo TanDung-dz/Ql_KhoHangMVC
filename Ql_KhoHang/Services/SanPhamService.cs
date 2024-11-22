@@ -142,16 +142,20 @@
                 var data = await response.Content.ReadAsStringAsync();
                 var products = JsonConvert.DeserializeObject<List<SanPhamWebDtos>>(data);
 
-                // Gắn URL đầy đủ cho ảnh
-                foreach (var product in products)
-                {
-                    if (!string.IsNullOrEmpty(product.Image))
-                    {
-                        product.Image = $"{_apiBaseUrl}{product.Image}";
-                    }
-                }
+				// Gắn URL đầy đủ cho ảnh
+				foreach (var product in products)
+				{
+					if (!string.IsNullOrEmpty(product.Image))
+					{
+						product.Image = $"{_apiBaseUrl}{product.Image}";
+					}
+					if (!string.IsNullOrEmpty(product.MaVach))
+					{
+						product.MaVach = $"{_apiBaseUrl}{product.MaVach}";
+					}
+				}
 
-                return products;
+				return products;
             }
 
             return new List<SanPhamWebDtos>();
