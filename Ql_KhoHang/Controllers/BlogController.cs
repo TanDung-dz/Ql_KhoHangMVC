@@ -18,7 +18,7 @@ namespace Ql_KhoHang.Controllers
         public async Task<IActionResult> Index(string? keyword, int pageNumber = 1, int pageSize = 10)
         {
             SetUserClaims();
-            IEnumerable<BlogWebDtos> allBlogs;
+            IEnumerable<BlogDto> allBlogs;
 
             if (!string.IsNullOrEmpty(keyword))
             {
@@ -73,11 +73,11 @@ namespace Ql_KhoHang.Controllers
         public IActionResult Create()
         {
             SetUserClaims();
-            return View(new BlogWebDtos());
+            return View(new BlogDto());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(BlogWebDtos newBlog, IFormFile Img)
+        public async Task<IActionResult> Create(BlogDto newBlog, IFormFile Img)
         {
             // Lấy thông tin người dùng từ Claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "MaNguoiDung")?.Value;
@@ -120,7 +120,7 @@ namespace Ql_KhoHang.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, BlogWebDtos updatedBlog, IFormFile Img)
+        public async Task<IActionResult> Edit(int id, BlogDto updatedBlog, IFormFile Img)
         {
             if (ModelState.IsValid)
             {
@@ -181,6 +181,7 @@ namespace Ql_KhoHang.Controllers
         {
             ViewBag.Username = User.Identity?.Name;
             ViewBag.Role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            ViewBag.HinhAnh = User.Claims.FirstOrDefault(c => c.Type == "HinhAnh")?.Value;
         }
     }
 }

@@ -130,6 +130,7 @@ namespace Ql_KhoHang.Controllers
 		{
 			ViewBag.Username = User.Identity?.Name;
 			ViewBag.Role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-		}
+            ViewBag.HinhAnh = User.Claims.FirstOrDefault(c => c.Type == "HinhAnh")?.Value;
+        }
 	}
 }

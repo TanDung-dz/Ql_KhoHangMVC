@@ -4,94 +4,101 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<div class="main-wrapper">
-    <div class="page-wrapper">
-        <div class="content container-fluid px-3 my-3">
-            <div class="row">
-                <h2>Danh Sách Nhà Cung Cấp</h2>
+<div class="row">
+    <h2>Danh Sách Nhà Cung Cấp</h2>
 
-                <div class="mb-3 d-flex justify-content-between">
-                    <!-- Nút thêm mới nhà cung cấp -->
-                    <a asp-action="Create" class="btn btn-primary">Thêm Mới Nhà Cung Cấp</a>
+    <div class="mb-3 d-flex justify-content-between">
+        <!-- Nút thêm mới nhà cung cấp -->
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> Thêm Mới
+        </a>
 
-                    <!-- Form tìm kiếm nhà cung cấp -->
-                    <form asp-action="Index" method="get" class="form-inline d-flex">
-                        <input type="text" name="keyword" class="form-control" placeholder="Search by keyword" value="@ViewBag.Keyword" />
-                        <button type="submit" class="btn btn-secondary ml-2">Tìm kiếm</button>
-                    </form>
-                </div>
-
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Mã NCC</th>
-                            <th>Tên Nhà Cung Cấp</th>
-                            <th>Địa Chỉ</th>
-                            <th>Email</th>
-                            <th>Số Điện Thoại</th>
-                            <th>Hình Ảnh</th>
-                            <th>Thao Tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var supplier in Model)
-                        {
-                            <tr>
-                                <td>@supplier.MaNhaCungCap</td>
-                                <td>@supplier.TenNhaCungCap</td>
-                                <td>@supplier.DiaChi</td>
-                                <td>@supplier.Email</td>
-                                <td>@supplier.Sdt</td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(supplier.Image))
-                                    {
-                                        <img src="@supplier.Image" alt="Supplier Image" width="50" height="50" />
-                                    }
-                                </td>
-                                <td>
-                                    <!-- Nút hành động -->
-                                    <a asp-action="Details" asp-route-id="@supplier.MaNhaCungCap" class="btn btn-info btn-sm">Chi tiết</a>
-                                    <a asp-action="Edit" asp-route-id="@supplier.MaNhaCungCap" class="btn btn-warning btn-sm">Sửa</a>
-                                    <form asp-action="Delete" asp-route-id="@supplier.MaNhaCungCap" method="post" style="display:inline;">
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa nhà cung cấp này?');">Xóa</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-                <!-- Phân trang -->
-                <nav>
-                    <ul class="pagination">
-                        <!-- Nút quay lại -->
-                        @if (ViewBag.CurrentPage > 1)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage - 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">Trước</a>
-                            </li>
-                        }
-
-                        <!-- Danh sách các trang -->
-                        @for (var i = 1; i <= ViewBag.TotalPages; i++)
-                        {
-                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                                <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">@i</a>
-                            </li>
-                        }
-
-                        <!-- Nút tiến -->
-                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage + 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">Sau</a>
-                            </li>
-                        }
-                    </ul>
-                </nav>
-
-            </div>
-        </div>
+        <!-- Form tìm kiếm nhà cung cấp -->
+        <form asp-action="Index" method="get" class="form-inline d-flex">
+            <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm..." value="@ViewBag.Keyword" />
+            <button type="submit" class="btn btn-secondary ml-2">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
     </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Mã NCC</th>
+                <th>Tên Nhà Cung Cấp</th>
+                <th>Địa Chỉ</th>
+                <th>Email</th>
+                <th>Số Điện Thoại</th>
+                <th>Hình Ảnh</th>
+                <th>Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var supplier in Model)
+            {
+                <tr>
+                    <td>@supplier.MaNhaCungCap</td>
+                    <td>@supplier.TenNhaCungCap</td>
+                    <td>@supplier.DiaChi</td>
+                    <td>@supplier.Email</td>
+                    <td>@supplier.Sdt</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(supplier.Image))
+                        {
+                            <img src="@supplier.Image" alt="Supplier Image" width="50" height="50" class="img-thumbnail" />
+                        }
+                    </td>
+                    <td>
+                        <!-- Nút hành động -->
+                        <a asp-action="Details" asp-route-id="@supplier.MaNhaCungCap" class="btn btn-info btn-sm" title="Chi tiết">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@supplier.MaNhaCungCap" class="btn btn-warning btn-sm" title="Sửa">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form asp-action="Delete" asp-route-id="@supplier.MaNhaCungCap" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa nhà cung cấp này?');">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <!-- Phân trang -->
+    <nav>
+        <ul class="pagination">
+            <!-- Nút quay lại -->
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage - 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword" title="Trước">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+            }
+
+            <!-- Danh sách các trang -->
+            @for (var i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">@i</a>
+                </li>
+            }
+
+            <!-- Nút tiến -->
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage + 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword" title="Sau">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>
 
 @section Scripts {
@@ -102,10 +109,10 @@
             <text>
                     Swal.fire({
                         title: 'Thành công!',
-                        text: '@Html.Raw(TempData["SuccessMessage"])',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
+                    text: '@Html.Raw(TempData["SuccessMessage"])',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                                });
             </text>
         }
         @if (TempData["ErrorMessage"] != null)
@@ -113,10 +120,10 @@
             <text>
                     Swal.fire({
                         title: 'Lỗi!',
-                        text: '@Html.Raw(TempData["ErrorMessage"])',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
+                    text: '@Html.Raw(TempData["ErrorMessage"])',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                                });
             </text>
         }
     </script>

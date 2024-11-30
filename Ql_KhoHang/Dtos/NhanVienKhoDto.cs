@@ -8,6 +8,6 @@
 		public string? Sdt { get; set; }
 		public DateTime? NamSinh { get; set; }
 		public string? Hinhanh { get; set; }
-        public bool? Hide { get; set; }
-    }
+		public bool? Hide { get; set; }
+	}
 }
