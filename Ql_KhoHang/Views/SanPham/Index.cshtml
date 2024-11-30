@@ -1,0 +1,173 @@
+﻿@model IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>
+
+@{
+    ViewData["Title"] = "Sản Phẩm";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12 d-flex justify-content-between align-items-center mb-3">
+        <h2>Danh Sách Sản Phẩm</h2>
+        <!-- Nút Thêm Mới -->
+        <a asp-action="Create" class="btn btn-primary" data-bs-toggle="tooltip" title="Thêm mới sản phẩm">
+            <i class="fas fa-plus"></i>
+        </a>
+        <!-- Form tìm kiếm -->
+        <form asp-action="Index" method="get" class="form-inline d-flex">
+            <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control" placeholder="Tìm kiếm sản phẩm..." />
+            <button type="submit" class="btn btn-primary ml-2" data-bs-toggle="tooltip" title="Tìm kiếm">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Bảng hiển thị sản phẩm -->
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Mô tả</th>
+                    <th>Hình Ảnh</th>
+                    <th>Mã vạch</th>
+                    <th>Số Lượng</th>
+                    <th>Đơn Giá</th>
+                    <th>Khối lượng</th>
+                    <th>Kích thước</th>
+                    <th>Xuất xứ</th>
+                    <th>Ngày tạo</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày cập nhật</th>
+                    <th>Loại Sản Phẩm</th>
+                    <th>Hãng Sản Xuất</th>
+                    <th>Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="16" class="text-center">Không có sản phẩm nào.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var sanpham in Model)
+                    {
+                        <tr>
+                            <td>@sanpham.MaSanPham</td>
+                            <td>@sanpham.TenSanPham</td>
+                            <td>@sanpham.Mota</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(sanpham.Image))
+                                {
+                                    <img src="@sanpham.Image" alt="@sanpham.TenSanPham" width="50" height="50" />
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(sanpham.MaVach))
+                                {
+                                    <img src="@sanpham.MaVach" alt="@sanpham.TenSanPham" width="50" height="50" />
+                                }
+                            </td>
+                            <td>@sanpham.SoLuong</td>
+                            <td>@sanpham.DonGia?.ToString("C")</td>
+                            <td>@sanpham.KhoiLuong</td>
+                            <td>@sanpham.KichThuoc</td>
+                            <td>@sanpham.XuatXu</td>
+                            <td>@sanpham.NgayTao</td>
+                            <td>@sanpham.TrangThai</td>
+                            <td>@sanpham.NgayCapNhat</td>
+                            <td>@sanpham.TenLoaiSanPham</td>
+                            <td>@sanpham.TenHangSanXuat</td>
+                            <td>
+                                <!-- Nút Xem -->
+                                <a asp-action="Details" asp-route-id="@sanpham.MaSanPham" class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Xem chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <!-- Nút Sửa -->
+                                <a asp-action="Edit" asp-route-id="@sanpham.MaSanPham" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Chỉnh sửa">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <!-- Nút Xóa -->
+                                <form asp-action="Delete" asp-route-id="@sanpham.MaSanPham" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Xóa sản phẩm" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Phân trang -->
+<nav>
+    <ul class="pagination justify-content-center">
+        <!-- Nút quay lại -->
+        @if (ViewBag.CurrentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage - 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">Trước</a>
+            </li>
+        }
+
+        <!-- Danh sách các trang -->
+        @for (var i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">@i</a>
+            </li>
+        }
+
+        <!-- Nút tiến -->
+        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage + 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">Sau</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Kích hoạt tooltip
+        $(document).ready(function () {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        });
+
+        // Hiển thị thông báo thành công
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Thành công!',
+                    text: '@Html.Raw(TempData["SuccessMessage"])',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                            });
+            </text>
+        }
+
+            // Hiển thị thông báo lỗi
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Lỗi!',
+                    text: '@Html.Raw(TempData["ErrorMessage"])',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                            });
+            </text>
+        }
+    </script>
+}

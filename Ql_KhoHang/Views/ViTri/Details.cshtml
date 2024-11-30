@@ -1,0 +1,18 @@
+﻿@model Ql_KhoHang.Dtos.VitriDto
+
+@{
+    ViewData["Title"] = "Chi tiết Vị Trí";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Chi tiết Vị Trí</h2>
+
+<div class="card">
+    <div class="card-body">
+        <p><strong>Khu vực:</strong> @Model.KhuVuc</p>
+        <p><strong>Tầng:</strong> @Model.Tang</p>
+        <p><strong>Kệ:</strong> @Model.Ke</p>
+        <p><strong>Mô tả:</strong> @Model.Mota</p>
+        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    </div>
+</div>

@@ -15,7 +15,7 @@ namespace Ql_KhoHang.Services
             _apiBaseUrl = configuration["ApiSettings:BaseUrl"];
         }
 
-        public async Task<List<HangSanXuatWebDtos>> GetAllAsync()
+        public async Task<List<HangSanXuatDto>> GetAllAsync()
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiBaseUrl}/api/HangSanXuat/Get");
@@ -23,12 +23,12 @@ namespace Ql_KhoHang.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<HangSanXuatWebDtos>>(data);
+                return JsonConvert.DeserializeObject<List<HangSanXuatDto>>(data);
             }
-            return new List<HangSanXuatWebDtos>();
+            return new List<HangSanXuatDto>();
         }
 
-        public async Task<HangSanXuatWebDtos> GetByIdAsync(int id)
+        public async Task<HangSanXuatDto> GetByIdAsync(int id)
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiBaseUrl}/api/HangSanXuat/GetById/{id}");
@@ -36,12 +36,12 @@ namespace Ql_KhoHang.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<HangSanXuatWebDtos>(data);
+                return JsonConvert.DeserializeObject<HangSanXuatDto>(data);
             }
             return null;
         }
 
-        public async Task<List<HangSanXuatWebDtos>> SearchAsync(string keyword)
+        public async Task<List<HangSanXuatDto>> SearchAsync(string keyword)
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiBaseUrl}/api/HangSanXuat/Search/{keyword}");
@@ -49,12 +49,12 @@ namespace Ql_KhoHang.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<HangSanXuatWebDtos>>(data);
+                return JsonConvert.DeserializeObject<List<HangSanXuatDto>>(data);
             }
-            return new List<HangSanXuatWebDtos>();
+            return new List<HangSanXuatDto>();
         }
 
-        public async Task<bool> CreateAsync(HangSanXuatWebDtos newManufacturer)
+        public async Task<bool> CreateAsync(HangSanXuatDto newManufacturer)
         {
             var client = _httpClientFactory.CreateClient();
             var jsonContent = new StringContent(JsonConvert.SerializeObject(newManufacturer), Encoding.UTF8, "application/json");
@@ -62,7 +62,7 @@ namespace Ql_KhoHang.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> UpdateAsync(int id, HangSanXuatWebDtos manufacturer)
+        public async Task<bool> UpdateAsync(int id, HangSanXuatDto manufacturer)
         {
             var client = _httpClientFactory.CreateClient();
             var jsonContent = new StringContent(JsonConvert.SerializeObject(manufacturer), Encoding.UTF8, "application/json");

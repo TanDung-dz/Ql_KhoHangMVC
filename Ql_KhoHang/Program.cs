@@ -21,8 +21,9 @@ builder.Services.AddScoped<BlogService>();
 builder.Services.AddScoped<NhaCungCapService>();
 builder.Services.AddScoped<KhachHangService>();
 builder.Services.AddScoped<NhanVienKhoService>();
-
-
+builder.Services.AddScoped<ViTriService>();
+builder.Services.AddScoped<PhieuNhapHangService>();
+builder.Services.AddScoped<ChiTietPhieuNhapHangService>();
 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).
@@ -62,22 +63,22 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllerRoute(
      name: "dang-nhap",
      pattern: "dang-nhap",
-     defaults: new { controller = "NguoiDungWeb", action = "Login" });
+     defaults: new { controller = "NguoiDung", action = "Login" });
 
     endpoints.MapControllerRoute(
      name: "trang-chu-admin",
      pattern: "trang-chu-admin",
-     defaults: new { controller = "NguoiDungWeb", action = "Index" });
+     defaults: new { controller = "NguoiDung", action = "Index" });
 
     endpoints.MapControllerRoute(
      name: "loai-san-pham",
      pattern: "loai-san-pham",
-     defaults: new { controller = "LoaiSanPhamWeb", action = "Index" });
+     defaults: new { controller = "LoaiSanPham", action = "Index" });
 
     endpoints.MapControllerRoute(
      name: "san-pham",
      pattern: "san-pham",
-     defaults: new { controller = "SanPhamWeb", action = "Index" });
+     defaults: new { controller = "SanPham", action = "Index" });
 
 });
 app.Run();

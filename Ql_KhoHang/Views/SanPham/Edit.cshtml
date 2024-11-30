@@ -1,0 +1,162 @@
+﻿@model Ql_KhoHang.Dtos.SanPhamDto
+
+@{
+    ViewData["Title"] = "Chỉnh Sửa Sản Phẩm";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>Chỉnh Sửa Sản Phẩm</h1>
+
+<!-- Hiển thị thông báo thành công nếu có -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <!-- Tên Sản Phẩm -->
+    <div class="form-group">
+        <label for="TenSanPham">Tên Sản Phẩm</label>
+        <input type="text" class="form-control" asp-for="TenSanPham" placeholder="Tên sản phẩm" />
+        <span asp-validation-for="TenSanPham" class="text-danger"></span>
+    </div>
+
+    <!-- Mô Tả -->
+    <div class="form-group">
+        <label for="Mota">Mô Tả</label>
+        <textarea class="form-control" asp-for="Mota" placeholder="Mô tả sản phẩm"></textarea>
+        <span asp-validation-for="Mota" class="text-danger"></span>
+    </div>
+
+    <!-- Số Lượng -->
+    <div class="form-group">
+        <label for="SoLuong">Số Lượng</label>
+        <input type="number" class="form-control" asp-for="SoLuong" placeholder="Số lượng" />
+        <span asp-validation-for="SoLuong" class="text-danger"></span>
+    </div>
+
+    <!-- Đơn Giá -->
+    <div class="form-group">
+        <label for="DonGia">Đơn Giá</label>
+        <input type="number" class="form-control" asp-for="DonGia" placeholder="Đơn giá" step="0.01" />
+        <span asp-validation-for="DonGia" class="text-danger"></span>
+    </div>
+
+    <!-- Khối Lượng -->
+    <div class="form-group">
+        <label for="KhoiLuong">Khối Lượng (kg)</label>
+        <input type="number" class="form-control" asp-for="KhoiLuong" placeholder="Khối lượng" step="0.01" />
+        <span asp-validation-for="KhoiLuong" class="text-danger"></span>
+    </div>
+
+    <!-- Kích Thước -->
+    <div class="form-group">
+        <label for="KichThuoc">Kích Thước</label>
+        <input type="text" class="form-control" asp-for="KichThuoc" placeholder="Kích thước (Dài x Rộng x Cao)" />
+        <span asp-validation-for="KichThuoc" class="text-danger"></span>
+    </div>
+
+    <!-- Xuất Xứ -->
+    <div class="form-group">
+        <label for="XuatXu">Xuất Xứ</label>
+        <input type="text" class="form-control" asp-for="XuatXu" placeholder="Xuất xứ" />
+        <span asp-validation-for="XuatXu" class="text-danger"></span>
+    </div>
+
+    <!-- Trạng Thái -->
+    <div class="form-group">
+        <label for="TrangThai">Trạng Thái</label>
+        <select asp-for="TrangThai" class="form-control">
+            <option value="">-- Chọn Trạng Thái --</option>
+            <option value="true">Hoạt động</option>
+            <option value="false">Không hoạt động</option>
+        </select>
+        <span asp-validation-for="TrangThai" class="text-danger"></span>
+    </div>
+
+    <!-- Loại Sản Phẩm -->
+    <div class="form-group">
+        <label for="MaLoaiSanPham">Loại Sản Phẩm</label>
+        <select asp-for="MaLoaiSanPham" class="form-control" asp-items="@(new SelectList(ViewBag.LoaiSanPhams, "MaLoaiSanPham", "TenLoaiSanPham", Model.MaLoaiSanPham))">
+            <option value="">-- Chọn Loại Sản Phẩm --</option>
+        </select>
+        <span asp-validation-for="MaLoaiSanPham" class="text-danger"></span>
+    </div>
+
+    <!-- Hãng Sản Xuất -->
+    <div class="form-group">
+        <label for="MaHangSanXuat">Hãng Sản Xuất</label>
+        <select asp-for="MaHangSanXuat" class="form-control" asp-items="@(new SelectList(ViewBag.HangSanXuats, "MaHangSanXuat", "TenHangSanXuat", Model.MaHangSanXuat))">
+            <option value="">-- Chọn Hãng Sản Xuất --</option>
+        </select>
+        <span asp-validation-for="MaHangSanXuat" class="text-danger"></span>
+    </div>
+
+    <!-- Hình Ảnh -->
+    <div class="form-group">
+        <label for="Img">Hình Ảnh</label>
+        @if (!string.IsNullOrEmpty(Model.Image))
+        {
+            <div>
+                <img src="@Model.Image" alt="Hình sản phẩm" class="img-thumbnail mb-2" width="150" height="150" />
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">Không có hình ảnh hiện tại.</p>
+        }
+        <input type="file" class="form-control-file" id="Img" name="Img" />
+    </div>
+
+    <!-- Nút Lưu và Hủy -->
+    <div class="d-flex justify-content-between mt-3">
+        <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Lưu thay đổi">
+            <i class="fas fa-save"></i>
+        </button>
+        <a asp-action="Index" class="btn btn-secondary" data-bs-toggle="tooltip" title="Hủy chỉnh sửa">
+            <i class="fas fa-times"></i>
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <!-- Validation Scripts -->
+    <partial name="_ValidationScriptsPartial" />
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Kích hoạt tooltip
+        $(document).ready(function () {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        });
+
+        // Hiển thị thông báo thành công
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Thành công!',
+                    text: '@Html.Raw(TempData["SuccessMessage"])',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                            });
+            </text>
+        }
+
+            // Hiển thị thông báo lỗi
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Lỗi!',
+                    text: '@Html.Raw(TempData["ErrorMessage"])',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                            });
+            </text>
+        }
+    </script>
+}

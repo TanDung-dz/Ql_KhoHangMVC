@@ -15,7 +15,7 @@ namespace Ql_KhoHang.Services
 			_apiBaseUrl = configuration["ApiSettings:BaseUrl"];
 		}
 
-		public async Task<List<LoaiKhachHangWebDtos>> GetAllAsync()
+		public async Task<List<LoaiKhachHangDto>> GetAllAsync()
 		{
 			var client = _httpClientFactory.CreateClient();
 			var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiKhachHang/Get");
@@ -23,13 +23,13 @@ namespace Ql_KhoHang.Services
 			if (response.IsSuccessStatusCode)
 			{
 				var data = await response.Content.ReadAsStringAsync();
-				return JsonConvert.DeserializeObject<List<LoaiKhachHangWebDtos>>(data);
+				return JsonConvert.DeserializeObject<List<LoaiKhachHangDto>>(data);
 			}
 
-			return new List<LoaiKhachHangWebDtos>();
+			return new List<LoaiKhachHangDto>();
 		}
 
-		public async Task<LoaiKhachHangWebDtos> GetByIdAsync(int id)
+		public async Task<LoaiKhachHangDto> GetByIdAsync(int id)
 		{
 			var client = _httpClientFactory.CreateClient();
 			var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiKhachHang/GetById/{id}");
@@ -37,13 +37,13 @@ namespace Ql_KhoHang.Services
 			if (response.IsSuccessStatusCode)
 			{
 				var data = await response.Content.ReadAsStringAsync();
-				return JsonConvert.DeserializeObject<LoaiKhachHangWebDtos>(data);
+				return JsonConvert.DeserializeObject<LoaiKhachHangDto>(data);
 			}
 
 			return null;
 		}
 
-		public async Task<List<LoaiKhachHangWebDtos>> SearchAsync(string keyword)
+		public async Task<List<LoaiKhachHangDto>> SearchAsync(string keyword)
 		{
 			var client = _httpClientFactory.CreateClient();
 			var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiKhachHang/Search/{keyword}");
@@ -51,13 +51,13 @@ namespace Ql_KhoHang.Services
 			if (response.IsSuccessStatusCode)
 			{
 				var data = await response.Content.ReadAsStringAsync();
-				return JsonConvert.DeserializeObject<List<LoaiKhachHangWebDtos>>(data);
+				return JsonConvert.DeserializeObject<List<LoaiKhachHangDto>>(data);
 			}
 
-			return new List<LoaiKhachHangWebDtos>();
+			return new List<LoaiKhachHangDto>();
 		}
 
-		public async Task<bool> CreateAsync(LoaiKhachHangWebDtos newCustomerType)
+		public async Task<bool> CreateAsync(LoaiKhachHangDto newCustomerType)
 		{
 			var client = _httpClientFactory.CreateClient();
 			var jsonContent = new StringContent(JsonConvert.SerializeObject(newCustomerType), Encoding.UTF8, "application/json");
@@ -66,7 +66,7 @@ namespace Ql_KhoHang.Services
 			return response.IsSuccessStatusCode;
 		}
 
-		public async Task<bool> UpdateAsync(int id, LoaiKhachHangWebDtos customerType)
+		public async Task<bool> UpdateAsync(int id, LoaiKhachHangDto customerType)
 		{
 			var client = _httpClientFactory.CreateClient();
 			var jsonContent = new StringContent(JsonConvert.SerializeObject(customerType), Encoding.UTF8, "application/json");

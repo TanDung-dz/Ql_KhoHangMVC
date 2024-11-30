@@ -15,7 +15,7 @@ namespace Ql_KhoHang.Services
             _apiBaseUrl = configuration["ApiSettings:BaseUrl"];
         }
 
-        public async Task<List<BlogWebDtos>> GetAllAsync()
+        public async Task<List<BlogDto>> GetAllAsync()
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiBaseUrl}/api/Blog/Get");
@@ -23,7 +23,7 @@ namespace Ql_KhoHang.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var blogs = JsonConvert.DeserializeObject<List<BlogWebDtos>>(data);
+                var blogs = JsonConvert.DeserializeObject<List<BlogDto>>(data);
 				foreach (var blog in blogs)
 				{
 					if (!string.IsNullOrEmpty(blog.Anh))
@@ -35,10 +35,10 @@ namespace Ql_KhoHang.Services
 
             }
 
-            return new List<BlogWebDtos>();
+            return new List<BlogDto>();
         }
 
-        public async Task<BlogWebDtos> GetByIdAsync(int id)
+        public async Task<BlogDto> GetByIdAsync(int id)
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiBaseUrl}/api/Blog/GetById/{id}");
@@ -46,7 +46,7 @@ namespace Ql_KhoHang.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var blog = JsonConvert.DeserializeObject<BlogWebDtos>(data);
+                var blog = JsonConvert.DeserializeObject<BlogDto>(data);
 				if (!string.IsNullOrEmpty(blog.Anh))
 				{
 					blog.Anh = $"{_apiBaseUrl}{blog.Anh}";
@@ -57,7 +57,7 @@ namespace Ql_KhoHang.Services
             return null;
         }
 
-        public async Task<bool> CreateAsync(BlogWebDtos newBlog, IFormFile Img)
+        public async Task<bool> CreateAsync(BlogDto newBlog, IFormFile Img)
         {
             var client = _httpClientFactory.CreateClient();
             var requestContent = new MultipartFormDataContent();
@@ -81,7 +81,7 @@ namespace Ql_KhoHang.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> UpdateAsync(int id, BlogWebDtos updatedBlog, IFormFile Img)
+        public async Task<bool> UpdateAsync(int id, BlogDto updatedBlog, IFormFile Img)
         {
             var client = _httpClientFactory.CreateClient();
             var requestContent = new MultipartFormDataContent();
@@ -113,7 +113,7 @@ namespace Ql_KhoHang.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<List<BlogWebDtos>> SearchAsync(string keyword)
+        public async Task<List<BlogDto>> SearchAsync(string keyword)
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiBaseUrl}/api/Blog/Search/{keyword}");
@@ -121,7 +121,7 @@ namespace Ql_KhoHang.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var blogs = JsonConvert.DeserializeObject<List<BlogWebDtos>>(data);
+                var blogs = JsonConvert.DeserializeObject<List<BlogDto>>(data);
                 foreach (var blog in blogs)
                 {
                     if (!string.IsNullOrEmpty(blog.Anh))
@@ -132,7 +132,7 @@ namespace Ql_KhoHang.Services
                 return blogs;
             }
 
-            return new List<BlogWebDtos>();
+            return new List<BlogDto>();
         }
     }
 }

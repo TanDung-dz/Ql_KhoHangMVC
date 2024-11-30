@@ -1,12 +1,10 @@
-﻿@model Ql_KhoHang.Dtos.BlogWebDtos
+﻿@model Ql_KhoHang.Dtos.BlogDto
 @{
     ViewData["Title"] = "Chỉnh Sửa Blog";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<div class="main-wrapper">
-    <div class="page-wrapper">
-        <div class="content container-fluid px-3 my-3">
+
             <h2>Chỉnh Sửa Blog</h2>
             <form asp-action="Edit" enctype="multipart/form-data" asp-route-id="@Model.BlogId">
                 <div class="form-group">
@@ -41,9 +39,7 @@
                 <button type="submit" class="btn btn-primary">Lưu</button>
                 <a asp-action="Index" class="btn btn-secondary">Hủy</a>
             </form>
-        </div>
-    </div>
-</div>
+
 @section Scripts {
     <!-- Validation Scripts -->
     <partial name="_ValidationScriptsPartial" />

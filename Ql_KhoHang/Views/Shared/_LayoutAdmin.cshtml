@@ -8,17 +8,158 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
-    <link rel="stylesheet" href="~/plugins/fontawesome/css/fontawesome.min.css">
     <link rel="stylesheet" href="~/plugins/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="~/css/feathericon.min.css">
     <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2/dist/sweetalert2.all.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        /* Toggle Sidebar */
+        .sidebar.collapsed {
+            width: 0;
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar {
+            width: 250px;
+            transition: width 0.3s ease; /* Hiệu ứng thu gọn sidebar */
+        }
+        .sidebar:not(.collapsed) {
+            width: 250px;
+            transition: width 0.3s ease;
+        }
+
+        / /* Main content adjustment */
+        .main-wrapper {
+            margin-left: 250px; /* Khoảng cách khi sidebar đang mở */
+            transition: margin-left 0.3s ease;
+        }
+
+        .sidebar.collapsed + .main-wrapper {
+            margin-left: 0; /* Trả về toàn màn hình khi sidebar thu gọn */
+        }
+        /* Submenu Styling */
+        .submenu_class {
+            display: none;
+        }
+
+        .submenu.active > .submenu_class {
+            display: block !important;
+        }
+
+        .main-wrapper {
+            margin-left: 250px; /* Khoảng cách để nhường chỗ cho sidebar */
+            padding: 20px; /* Khoảng cách bên trong để nội dung thoáng hơn */
+            max-width: 100%; /* Đảm bảo không bị tràn */
+            box-sizing: border-box; /* Tính cả padding vào kích thước */
+        }
+
+        .square-avatar {
+            width: 31px; /* Kích thước chiều rộng */
+            height: 31px; /* Kích thước chiều cao bằng chiều rộng để tạo khung vuông */
+            object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
+            border-radius: 0; /* Đặt góc cạnh vuông */
+            border: 1px solid #ccc; /* Thêm viền (tuỳ chọn) */
+        }
+        /* Sidebar cho mobile */
+@@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; /* Đặt sidebar cố định */
+        top: 0;
+        left: -250px; /* Mặc định ẩn bên ngoài */
+        width: 250px;
+        height: 100%;
+        background-color: #fff;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .sidebar.collapsed {
+        left: 0; /* Hiện sidebar khi có class 'collapsed' */
+    }
+
+    .main-wrapper {
+        margin-left: 0;
+    }
+}
+
+        .breadcrumb {
+            margin-top:8px;
+            display: inline-flex; /* Hiển thị các mục breadcrumb trên cùng hàng */
+            background: none;
+            list-style: none;
+        }
+
+        .header {
+            display: flex;
+            
+            background-color: #f8f9fa; /* Màu nền thanh menu */
+            border-bottom: 1px solid #ddd; /* Viền dưới */
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
     <div class="header">
-        @await Html.PartialAsync("_MenuPartial")
+
+        <div class="header-left" style="max-height:65px; max-width:250px">
+            <a asp-area="" asp-controller="NguoiDung" asp-action="Index" class="logo">                <img src="~/assets/img/logo/logo.png" class="logo-scrolled" alt="thumb"> </a>
+            <a asp-area="" asp-controller="NguoiDung" asp-action="Index" class="logo logo-small">     <img src="~/assets/img/logo/logo.png" class="logo-scrolled" alt="thumb"> </a>
+        </div>
+        <a href="javascript:void(0);" id="toggle_btn"> <i class="fe fe-text-align-left"></i> </a>
+        <a class="mobile_btn" id="mobile_btn"> <i class="fas fa-bars"></i> </a>
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="NguoiDung" asp-action="Index">Trang chủ</a></li>
+                <li class="breadcrumb-item">
+                    @if (ViewData["Title"] != null)
+                    {
+                        <span>@ViewData["Title"]</span>
+                    }
+                    else
+                    {
+                        <span>Không xác định</span> <!-- Giá trị mặc định nếu không có title -->
+                    }
+                </li>
+            </ol>
+        </nav>
+
+       
+
+        <ul class="nav user-menu" style="margin-left:auto;display:flex;align-items:center">
+            @{
+                <li class="nav-item dropdown has-arrow">
+                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                        <span class="user-img">
+                            <img class="avatar square-avatar" src="@ViewBag.HinhAnh" width="31" alt="Hình ảnh">
+                        </span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <div class="user-header">
+                            <div class="avatar avatar-sm">
+                                <img src="@ViewBag.HinhAnh" alt="Hình ảnh" class="avatar-img rounded-circle">
+                            </div>
+                            <div class="user-text">
+                                <h6>@ViewBag.Username</h6>
+                                <p class="text-muted mb-0">
+                                    @(ViewBag.Role == "1" ? "Quản lý" : "Nhân viên")
+                                </p>
+                            </div>
+                        </div>
+                        <form asp-controller="NguoiDung" asp-action="Logout" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-link text-danger"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
+                        </form>
+
+                    </div>
+                </li>
+            }
+        </ul>
+
     </div>
 
     <!-- Layout with Sidebar and Content -->
@@ -28,16 +169,108 @@
             <div class="col-md-3 sidebar">
                 <div class="sidebar-inner slimscroll">
                     <div id="sidebar-menu" class="sidebar-menu">
-                        @await Html.PartialAsync("_SidebarPartial")
+                        <!-- Sidebar -->
+
+                        <ul>
+                            <li>
+                                <a asp-area="" asp-controller="NguoiDung" asp-action="Index"><i class="fas fa-tachometer-alt"></i> <span>Trang chủ</span></a>
+                            </li>
+                            <li class="list-divider"></li>
+                            <li class="menu-title mt-3"> <span>DANH MỤC</span> </li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fas fa-suitcase"></i> <span> Kho hàng </span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="submenu_class" style="display: none;">
+                                    <li><a asp-area="" asp-controller="SanPham" asp-action="Index"> Sản phẩm </a></li>
+                                    <li><a asp-area="" asp-controller="HangSanXuat" asp-action="Index"> Hãng sản xuất </a></li>
+                                    <li><a asp-controller="LoaiSanPham" asp-action="Index"> Loại sản phẩm </a></li>
+                                    <li><a asp-area="" asp-controller="Menu" asp-action="Index"> Menu </a></li>
+                                    <li><a asp-area="" asp-controller="LoaiKhachHang" asp-action="Index"> Loại khách hàng </a></li>
+                                    <li><a asp-area="" asp-controller="Blog" asp-action="Index"> Blog </a></li>
+                                    <li><a asp-area="" asp-controller="NhaCungCap" asp-action="Index"> Nhà cung cấp </a></li>
+                                    <li><a asp-area="" asp-controller="ViTri" asp-action="Index"> Vị trí trong kho </a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fas fa-user"></i> <span> Người dùng </span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="submenu_class" style="display: none;">
+                                    <li><a asp-area="" asp-controller="NguoiDung" asp-action="Index2"> Tài khoản </a></li>
+                                    <li><a asp-area="" asp-controller="NhanVienKho" asp-action="Index"> Nhân viên kho</a></li>
+                                    <li><a asp-area="" asp-controller="KhachHang" asp-action="Index"> Khách hàng </a></li>
+                                    <li><a asp-area="" asp-controller="Nhacungcaps" asp-action="Create"> Nhà cung cấp </a></li>
+                                    <li><a asp-area="" asp-controller="Donvivanchuyens" asp-action="Create"> Đơn vị vận chuyển </a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa fa-archive"></i> <span> Đóng gói </span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="submenu_class" style="display: none;">
+                                    <li><a asp-area="" asp-controller="Loaithungs" asp-action="Create"> Quy cách Sản phẩm </a></li>
+                                    <li><a asp-area="" asp-controller="Quycachdonggois" asp-action="Create"> Quy cách đóng gói </a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa fa-university"></i> <span> Thanh toán </span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="submenu_class" style="display: none;">
+                                    <li><a asp-area="" asp-controller="Nganhangs" asp-action="Create"> Ngân hàng </a></li>
+                                    <li><a asp-area="" asp-controller="Hinhthucthanhtoans" asp-action="Create"> Hình thức thanh toán </a></li>
+                                </ul>
+                            </li>
+
+                            <li class="list-divider"></li>
+                            <li class="menu-title mt-3">
+                                <span>QUẢN LÝ</span>
+                            </li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa fa-cubes"></i> <span> Nhập - Xuất </span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="submenu_class" style="display: none;">
+                                    <li><a asp-area="" asp-controller="PhieuNhapHang" asp-action="Index"> Phiếu nhập kho </a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="far fa-money-bill-alt"></i> <span> Thanh toán </span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="submenu_class" style="display: none;">
+
+                                    <li><a asp-area="" asp-controller="Phieuthanhtoans" asp-action="Index"> Phiếu thanh toán </a></li>
+                                </ul>
+                            </li>
+                            <li class="list-divider"></li>
+                            <li class="menu-title mt-3">
+                                <span>BÁO CÁO</span>
+                            </li>
+                            <li>
+                                <a asp-controller="Loaithungs" asp-action="Baocaodoanhthu">
+                                    <i class="fas fa-chart-bar"></i> <span> Báo cáo doanh thu </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-controller="Loaithungs" asp-action="Baocaotonkho">
+                                    <i class="fas fa-chart-line"></i> <span> Báo cáo hàng tồn </span>
+                                </a>
+                            </li>
+
+
+                        </ul>
+
                     </div>
                 </div>
             </div>
 
             <!-- Main Content -->
-            <div class="container">
-                <div class="col-md-9">
-                    @RenderBody()
-                </div>
+            <div class="main-wrapper" style="margin-top:60px">
+                    <div class="col-md-9">
+                        @RenderBody()
+                    </div>
             </div>
         </div>
     </div>
@@ -50,7 +283,39 @@
     <script src="~/js/script.js"></script>
     <script>
         $(document).ready(function () {
+            
+
+            // Đóng sidebar khi click bên ngoài (trong chế độ mobile)
+            $(document).on('click', function (e) {
+                if ($(window).width() <= 768) {
+                    if (!$(e.target).closest('.sidebar, #toggle_btn, #mobile_btn').length) {
+                        $('.sidebar').removeClass('collapsed');
+                    }
+                }
+            });
+        });
+
+        $(document).ready(function () {
             // Initialize slimScroll for sidebar
+            $('.sidebar-inner').slimScroll({
+                height: '100vh',
+                size: '5px',
+                color: '#000',
+                alwaysVisible: true,
+                railVisible: true,
+                railColor: '#333',
+                railOpacity: 0.2
+            });
+        });
+        $(document).ready(function () {
+            // Toggle sidebar
+            $(document).ready(function () {
+                $('#toggle_btn, #mobile_btn').on('click', function () {
+                    $('.sidebar').toggleClass('collapsed');
+                    $('.main-wrapper').toggleClass('collapsed');
+                });
+            });
+
             $('.sidebar-inner').slimScroll({
                 height: '100vh',
                 size: '5px',

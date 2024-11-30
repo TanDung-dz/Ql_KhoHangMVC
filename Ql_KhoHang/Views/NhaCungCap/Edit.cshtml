@@ -4,9 +4,7 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<div class="main-wrapper">
-    <div class="page-wrapper">
-        <div class="content container-fluid px-3 my-3">
+
             <h2>Chỉnh Sửa Nhà Cung Cấp</h2>
 
             <form asp-action="Edit" method="post" enctype="multipart/form-data">
@@ -51,9 +49,7 @@
                 <button type="submit" class="btn btn-primary mt-3">Lưu thay đổi</button>
                 <a asp-action="Index" class="btn btn-secondary mt-3">Hủy</a>
             </form>
-        </div>
-    </div>
-</div>
+
 
 @section Scripts {
     <!-- Validation Scripts -->

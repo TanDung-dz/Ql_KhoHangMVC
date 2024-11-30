@@ -15,7 +15,7 @@ namespace Ql_KhoHang.Services
             _apiBaseUrl = configuration["ApiSettings:BaseUrl"];
         }
 
-        public async Task<List<MenuWebDtos>> GetAllAsync()
+        public async Task<List<MenuDto>> GetAllAsync()
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiBaseUrl}/api/Menu/Get");
@@ -23,12 +23,12 @@ namespace Ql_KhoHang.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<MenuWebDtos>>(data);
+                return JsonConvert.DeserializeObject<List<MenuDto>>(data);
             }
-            return new List<MenuWebDtos>();
+            return new List<MenuDto>();
         }
 
-        public async Task<MenuWebDtos> GetByIdAsync(int id)
+        public async Task<MenuDto> GetByIdAsync(int id)
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiBaseUrl}/api/Menu/GetById/{id}");
@@ -36,12 +36,12 @@ namespace Ql_KhoHang.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<MenuWebDtos>(data);
+                return JsonConvert.DeserializeObject<MenuDto>(data);
             }
             return null;
         }
 
-        public async Task<bool> CreateAsync(MenuWebDtos newMenu)
+        public async Task<bool> CreateAsync(MenuDto newMenu)
         {
             var client = _httpClientFactory.CreateClient();
             var jsonContent = new StringContent(JsonConvert.SerializeObject(newMenu), Encoding.UTF8, "application/json");
@@ -49,7 +49,7 @@ namespace Ql_KhoHang.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> UpdateAsync(int id, MenuWebDtos menu)
+        public async Task<bool> UpdateAsync(int id, MenuDto menu)
         {
             var client = _httpClientFactory.CreateClient();
             var jsonContent = new StringContent(JsonConvert.SerializeObject(menu), Encoding.UTF8, "application/json");
@@ -63,7 +63,7 @@ namespace Ql_KhoHang.Services
             var response = await client.DeleteAsync($"{_apiBaseUrl}/api/Menu/DeleteMenu/{id}");
             return response.IsSuccessStatusCode;
         }
-        public async Task<List<MenuWebDtos>> SearchAsync(string keyword)
+        public async Task<List<MenuDto>> SearchAsync(string keyword)
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiBaseUrl}/api/Menu/Search/{keyword}");
@@ -71,9 +71,9 @@ namespace Ql_KhoHang.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<MenuWebDtos>>(data);
+                return JsonConvert.DeserializeObject<List<MenuDto>>(data);
             }
-            return new List<MenuWebDtos>();
+            return new List<MenuDto>();
         }
 
     }

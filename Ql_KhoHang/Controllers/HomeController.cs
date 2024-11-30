@@ -36,7 +36,7 @@ namespace Ql_KhoHang.Controllers
 
         public async Task<IActionResult> Index()
         {
-            List<MenuWebDtos> menus = new List<MenuWebDtos>();
+            List<MenuDto> menus = new List<MenuDto>();
 
             try
             {
@@ -46,7 +46,7 @@ namespace Ql_KhoHang.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     string data = await response.Content.ReadAsStringAsync();
-                    menus = JsonConvert.DeserializeObject<List<MenuWebDtos>>(data);
+                    menus = JsonConvert.DeserializeObject<List<MenuDto>>(data);
                 }
                 else
                 {

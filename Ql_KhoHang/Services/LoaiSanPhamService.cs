@@ -18,7 +18,7 @@ namespace Ql_KhoHang.Services
             _apiBaseUrl = configuration["ApiSettings:BaseUrl"];
         }
 
-        public async Task<List<LoaiSanPhamWebDtos>> GetAllAsync()
+        public async Task<List<LoaiSanPhamDto>> GetAllAsync()
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiSanPham/Get");
@@ -26,13 +26,13 @@ namespace Ql_KhoHang.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<LoaiSanPhamWebDtos>>(data);
+                return JsonConvert.DeserializeObject<List<LoaiSanPhamDto>>(data);
             }
 
-            return new List<LoaiSanPhamWebDtos>();
+            return new List<LoaiSanPhamDto>();
         }
 
-        public async Task<LoaiSanPhamWebDtos> GetByIdAsync(int id)
+        public async Task<LoaiSanPhamDto> GetByIdAsync(int id)
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiSanPham/GetById/{id}");
@@ -40,13 +40,13 @@ namespace Ql_KhoHang.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<LoaiSanPhamWebDtos>(data);
+                return JsonConvert.DeserializeObject<LoaiSanPhamDto>(data);
             }
 
             return null;
         }
 
-        public async Task<List<LoaiSanPhamWebDtos>> SearchAsync(string keyword)
+        public async Task<List<LoaiSanPhamDto>> SearchAsync(string keyword)
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"{_apiBaseUrl}/api/LoaiSanPham/Search/{keyword}");
@@ -54,13 +54,13 @@ namespace Ql_KhoHang.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<LoaiSanPhamWebDtos>>(data);
+                return JsonConvert.DeserializeObject<List<LoaiSanPhamDto>>(data);
             }
 
-            return new List<LoaiSanPhamWebDtos>();
+            return new List<LoaiSanPhamDto>();
         }
 
-        public async Task<bool> CreateAsync(LoaiSanPhamWebDtos newCategory)
+        public async Task<bool> CreateAsync(LoaiSanPhamDto newCategory)
         {
             var client = _httpClientFactory.CreateClient();
             var jsonContent = new StringContent(JsonConvert.SerializeObject(newCategory), Encoding.UTF8, "application/json");
@@ -69,7 +69,7 @@ namespace Ql_KhoHang.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> UpdateAsync(int id, LoaiSanPhamWebDtos category)
+        public async Task<bool> UpdateAsync(int id, LoaiSanPhamDto category)
         {
             var client = _httpClientFactory.CreateClient();
             var jsonContent = new StringContent(JsonConvert.SerializeObject(category), Encoding.UTF8, "application/json");

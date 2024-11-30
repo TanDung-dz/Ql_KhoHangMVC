@@ -11,17 +11,17 @@
             <form asp-action="Edit" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="TenNhanVien">Tên Nhân Viên</label>
-                    <input type="text" class="form-control" id="TenNhanVien" name="TenNhanVien" value="@Model.TenNhanVien" required />
+                    <input type="text" class="form-control" id="TenNhanVien" name="TenNhanVien" value="@Model.TenNhanVien" placeholder="Nhập tên nhân viên" required />
                 </div>
 
                 <div class="form-group">
                     <label for="Email">Email</label>
-                    <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required />
+                    <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" placeholder="Nhập email" required />
                 </div>
 
                 <div class="form-group">
                     <label for="Sdt">Số Điện Thoại</label>
-                    <input type="number" class="form-control" id="Sdt" name="Sdt" value="@Model.Sdt" required />
+                    <input type="number" class="form-control" id="Sdt" name="Sdt" value="@Model.Sdt" placeholder="Nhập số điện thoại" required />
                 </div>
 
                 <div class="form-group">
@@ -31,11 +31,61 @@
 
                 <div class="form-group">
                     <label for="Img">Hình Ảnh</label>
+                    @if (!string.IsNullOrEmpty(Model.Hinhanh))
+                    {
+                        <div class="mb-3">
+                            <img src="@Model.Hinhanh" alt="Hình ảnh nhân viên" class="img-thumbnail" style="width: 150px; height: 150px;" />
+                        </div>
+                    }
                     <input type="file" class="form-control" id="Img" name="Img" />
                 </div>
 
-                <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                <!-- Nút hành động -->
+                <div class="d-flex justify-content-start gap-2">
+                    <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Cập nhật thông tin">
+                        <i class="fas fa-save"></i>
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary" data-bs-toggle="tooltip" title="Quay lại">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                </div>
             </form>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            // Kích hoạt tooltip
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        });
+
+        // Hiển thị thông báo thành công
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Thành công!',
+                        text: '@Html.Raw(TempData["SuccessMessage"])',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+
+        // Hiển thị thông báo lỗi
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Lỗi!',
+                        text: '@Html.Raw(TempData["ErrorMessage"])',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+            </text>
+        }
+    </script>
+}

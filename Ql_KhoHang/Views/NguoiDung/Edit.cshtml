@@ -1,0 +1,72 @@
+﻿@model Ql_KhoHang.Dtos.NguoiDungDto
+
+@{
+    ViewData["Title"] = "Chỉnh Sửa Người Dùng";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+            <h2>Chỉnh Sửa Người Dùng</h2>
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="MaNguoiDung" value="@Model.MaNguoiDung" />
+
+                        <!-- Hiển thị ảnh hiện tại -->
+                        <div class="mb-3 text-center">
+                            @if (!string.IsNullOrEmpty(Model.Anh))
+                            {
+                                <img src="@Model.Anh" alt="Ảnh hiện tại" class="img-thumbnail" style="width: 150px; height: 150px;" />
+                            }
+                            else
+                            {
+                                <img src="/images/default-user.png" alt="Ảnh mặc định" class="img-thumbnail" style="width: 150px; height: 150px;" />
+                            }
+                        </div>
+
+                        <!-- Tên đăng nhập -->
+                        <div class="mb-3">
+                            <label for="TenDangNhap" class="form-label">Tên Đăng Nhập</label>
+                            <input type="text" class="form-control" id="TenDangNhap" name="TenDangNhap" value="@Model.TenDangNhap" placeholder="Nhập tên đăng nhập" required>
+                        </div>
+
+                        <!-- Tên người dùng -->
+                        <div class="mb-3">
+                            <label for="TenNguoiDung" class="form-label">Tên Người Dùng</label>
+                            <input type="text" class="form-control" id="TenNguoiDung" name="TenNguoiDung" value="@Model.TenNguoiDung" placeholder="Nhập tên người dùng" required>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="Email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" placeholder="Nhập email" required>
+                        </div>
+
+                        <!-- Số điện thoại -->
+                        <div class="mb-3">
+                            <label for="Sdt" class="form-label">Số Điện Thoại</label>
+                            <input type="number" class="form-control" id="Sdt" name="Sdt" value="@Model.Sdt" placeholder="Nhập số điện thoại">
+                        </div>
+
+                        <!-- Quyền -->
+                        <div class="mb-3">
+                            <label for="Quyen" class="form-label">Quyền</label>
+                            <select class="form-control" id="Quyen" name="Quyen">
+                                <option value="0">Người dùng</option>
+                                <option value="1">Quản trị viên</option>
+                            </select>
+                        </div>
+
+                        <!-- Thay đổi ảnh đại diện -->
+                        <div class="mb-3">
+                            <label for="Img" class="form-label">Ảnh Đại Diện Mới</label>
+                            <input type="file" class="form-control" id="Img" name="Img" accept="image/*">
+                            <small class="form-text text-muted">Để trống nếu không muốn thay đổi ảnh đại diện.</small>
+                        </div>
+
+                        <!-- Nút hành động -->
+                        <button type="submit" class="btn btn-warning">Cập Nhật</button>
+                        <a asp-action="Index2" class="btn btn-secondary">Quay lại</a>
+                    </form>
+                </div>
+            </div>
