@@ -1,0 +1,70 @@
+﻿@model Ql_KhoHang.Dtos.KiemKeDto
+@{
+    ViewData["Title"] = "Chi Tiết Phiếu Kiểm Kê";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="row">
+    <h2>Chi Tiết Phiếu Kiểm Kê</h2>
+
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+    </div>
+
+    <table class="table">
+        <tr>
+            <th>Mã Kiểm Kê</th>
+            <td>@Model.MaKiemKe</td>
+        </tr>
+        <tr>
+            <th>Ngày Kiểm Kê</th>
+            <td>@(Model.NgayKiemKe.HasValue ? Model.NgayKiemKe.Value.ToString("dd/MM/yyyy") : "Chưa có ngày")</td>
+        </tr>
+        <tr>
+            <th>Trạng Thái</th>
+            <td>@(Model.Hide.HasValue && Model.Hide.Value ? "Đã ẩn" : "Hiển thị")</td>
+        </tr>
+        <tr>
+            <th>Nhân Viên Kiểm Kê</th>
+            <td>@Model.TenNhanVienKho</td>
+        </tr>
+    </table>
+
+    <h4>Chi Tiết Kiểm Kê</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Sản Phẩm</th>
+                <th>Số Lượng Tồn</th>
+                <th>Số Lượng Thực Tế</th>
+                <th>Trạng Thái</th>
+                <th>Nguyên Nhân</th>
+                <th>Ảnh</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var detail in ViewBag.Details)
+            {
+                <tr>
+                    <td>@detail.TenSanPham</td>
+                    <td>@detail.SoLuongTon</td>
+                    <td>@detail.SoLuongThucTe</td>
+                    <td>@detail.TrangThai</td>
+                    <td>@detail.NguyenNhan</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(detail.Anh))
+                        {
+                            <img src="@detail.Anh" alt="Image" width="50" height="50" />
+                        }
+                        else
+                        {
+                            <span>Không có ảnh</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

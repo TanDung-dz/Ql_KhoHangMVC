@@ -6,31 +6,31 @@ using System.Security.Claims;
 
 namespace Ql_KhoHang.Controllers
 {
-    public class PhieuNhapHangController : Controller
+    public class PhieuXuatHangController : Controller
     {
-        private readonly PhieuNhapHangService _importOrderService;
+        private readonly PhieuXuatHangService _exportOrderService;
         private readonly SanPhamService _sanPhamService;
-        private readonly NhaCungCapService _nccService;
-        private readonly ChiTietPhieuNhapHangService _importOrderDetailService;
+        private readonly KhachHangService _khachHangService;
+        private readonly ChiTietPhieuXuatHangService _exportOrderDetailService;
 
-        public PhieuNhapHangController(PhieuNhapHangService importOrderService, ChiTietPhieuNhapHangService importOrderDetailService, 
-                                                    SanPhamService sanPhamService, NhaCungCapService nhaCungCapService)
+        public PhieuXuatHangController(PhieuXuatHangService exportOrderService, ChiTietPhieuXuatHangService exportOrderDetailService,
+                                       SanPhamService sanPhamService, KhachHangService khachHangService)
         {
-            _importOrderService = importOrderService;
+            _exportOrderService = exportOrderService;
             _sanPhamService = sanPhamService;
-            _nccService = nhaCungCapService;
-            _importOrderDetailService = importOrderDetailService;
+            _khachHangService = khachHangService;
+            _exportOrderDetailService = exportOrderDetailService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(string? keyword, int pageNumber = 1, int pageSize = 10)
         {
             SetUserClaims();
-            var importOrders = await _importOrderService.GetAllAsync(keyword);
+            var exportOrders = await _exportOrderService.GetAllAsync(keyword);
 
             // Phân trang
-            var paginatedOrders = importOrders.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-            int totalPages = (int)Math.Ceiling(importOrders.Count / (double)pageSize);
+            var paginatedOrders = exportOrders.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            int totalPages = (int)Math.Ceiling(exportOrders.Count / (double)pageSize);
 
             ViewBag.CurrentPage = pageNumber;
             ViewBag.PageSize = pageSize;
@@ -44,17 +44,17 @@ namespace Ql_KhoHang.Controllers
         public async Task<IActionResult> Details(int id)
         {
             SetUserClaims();
-            var importOrder = await _importOrderService.GetByIdAsync(id);
-            if (importOrder == null)
+            var exportOrder = await _exportOrderService.GetByIdAsync(id);
+            if (exportOrder == null)
             {
-                TempData["ErrorMessage"] = "Không tìm thấy phiếu nhập hàng.";
+                TempData["ErrorMessage"] = "Không tìm thấy phiếu xuất hàng.";
                 return RedirectToAction("Index");
             }
 
-            var details = await _importOrderDetailService.GetByImportOrderIdAsync(id);
+            var details = await _exportOrderDetailService.GetByExportOrderIdAsync(id);
 
-            ViewBag.Details = details; // Danh sách chi tiết phiếu nhập
-            return View(importOrder);
+            ViewBag.Details = details; // Danh sách chi tiết phiếu xuất
+            return View(exportOrder);
         }
 
         [HttpGet]
@@ -64,14 +64,13 @@ namespace Ql_KhoHang.Controllers
 
             // Sử dụng await để lấy dữ liệu thực tế từ các phương thức bất đồng bộ
             ViewBag.Products = await _sanPhamService.GetAllAsync();
-            ViewBag.Suppliers = await _nccService.GetAllAsync();
+            ViewBag.Customers = await _khachHangService.GetAllAsync();
 
-            return View(new PhieuNhapHangDto());
+            return View(new PhieuXuatHangDto());
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> Create(PhieuNhapHangDto newOrder)
+        public async Task<IActionResult> Create(PhieuXuatHangDto newOrder)
         {
             if (ModelState.IsValid)
             {
@@ -81,60 +80,61 @@ namespace Ql_KhoHang.Controllers
                 if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out var userId))
                 {
                     newOrder.MaNguoiDung = userId; // Gắn mã người dùng
-                    newOrder.NgayNhap = DateTime.Now; // Gắn ngày nhập hiện tại
+                    newOrder.NgayXuat = DateTime.Now; // Gắn ngày xuất hiện tại
                 }
 
-                // Gọi service để tạo mới phiếu nhập hàng và chi tiết phiếu
-                var success = await _importOrderService.CreateAsync(newOrder);
+                // Gọi service để tạo mới phiếu xuất hàng và chi tiết phiếu
+                var success = await _exportOrderService.CreateAsync(newOrder);
 
                 if (success)
                 {
-                    TempData["SuccessMessage"] = "Thêm mới phiếu nhập hàng thành công!";
+                    TempData["SuccessMessage"] = "Thêm mới phiếu xuất hàng thành công!";
                     return RedirectToAction("Index");
                 }
 
-                TempData["ErrorMessage"] = "Không thể thêm mới phiếu nhập hàng.";
+                TempData["ErrorMessage"] = "Không thể thêm mới phiếu xuất hàng.";
             }
 
-            // Nạp lại dữ liệu nhà cung cấp và sản phẩm nếu có lỗi
+            // Nạp lại dữ liệu khách hàng và sản phẩm nếu có lỗi
             ViewBag.Products = await _sanPhamService.GetAllAsync();
-            ViewBag.Suppliers = await _nccService.GetAllAsync();
+            ViewBag.Customers = await _khachHangService.GetAllAsync();
 
             return View(newOrder);
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             SetUserClaims();
             ViewBag.Products = await _sanPhamService.GetAllAsync();
-            ViewBag.Suppliers = await _nccService.GetAllAsync();
-            // Lấy thông tin phiếu nhập hàng
-            var importOrder = await _importOrderService.GetByIdAsync(id);
-            if (importOrder == null)
+            ViewBag.Customers = await _khachHangService.GetAllAsync();
+
+            // Lấy thông tin phiếu xuất hàng
+            var exportOrder = await _exportOrderService.GetByIdAsync(id);
+            if (exportOrder == null)
             {
-                TempData["ErrorMessage"] = "Không tìm thấy phiếu nhập hàng.";
+                TempData["ErrorMessage"] = "Không tìm thấy phiếu xuất hàng.";
                 return RedirectToAction("Index");
             }
 
-            // Lấy danh sách chi tiết phiếu nhập hàng
-            var details = await _importOrderDetailService.GetByImportOrderIdAsync(id);
+            // Lấy danh sách chi tiết phiếu xuất hàng
+            var details = await _exportOrderDetailService.GetByExportOrderIdAsync(id);
 
-            // Thêm danh sách chi tiết vào DTO phiếu nhập
-            importOrder.Details = details; // Đảm bảo `importOrder` có thuộc tính `Details`
+            // Thêm danh sách chi tiết vào DTO phiếu xuất
+            exportOrder.Details = details; // Đảm bảo `exportOrder` có thuộc tính `Details`
 
-            return View(importOrder);
+            return View(exportOrder);
         }
+
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, PhieuNhapHangDto updatedOrder, List<ChiTietPhieuNhapHangDto> details)
+        public async Task<IActionResult> Edit(int id, PhieuXuatHangDto updatedOrder, List<ChiTietPhieuXuatHangDto> details)
         {
+
             // Kiểm tra trạng thái ModelState
             if (!ModelState.IsValid)
             {
                 ViewBag.Products = await _sanPhamService.GetAllAsync();
-                ViewBag.Suppliers = await _nccService.GetAllAsync();
+                ViewBag.Customers = await _khachHangService.GetAllAsync();
                 return View(updatedOrder);
             }
 
@@ -145,14 +145,14 @@ namespace Ql_KhoHang.Controllers
                 updatedOrder.MaNguoiDung = userId;
             }
 
-            // Đảm bảo gán mã phiếu nhập hàng cho từng chi tiết
+            // Đảm bảo gán mã phiếu xuất hàng cho từng chi tiết
             foreach (var detail in details)
             {
-                detail.MaPhieuNhapHang = updatedOrder.MaPhieuNhapHang;
+                detail.MaPhieuXuatHang = updatedOrder.MaPhieuXuatHang;
             }
 
             // Lấy danh sách chi tiết hiện tại từ cơ sở dữ liệu
-            var existingDetails = await _importOrderDetailService.GetByImportOrderIdAsync(id);
+            var existingDetails = await _exportOrderDetailService.GetByExportOrderIdAsync(id);
 
             // Tìm các chi tiết cần thêm mới
             var newDetails = details
@@ -170,37 +170,35 @@ namespace Ql_KhoHang.Controllers
                 .ToList();
 
             // Gọi Service để cập nhật
-            var success = await _importOrderService.UpdateAsync(id, updatedOrder, newDetails, updatedDetails, deletedDetails);
+            var success = await _exportOrderService.UpdateAsync(id, updatedOrder, newDetails, updatedDetails, deletedDetails);
             if (success)
             {
-                TempData["SuccessMessage"] = "Cập nhật phiếu nhập hàng thành công!";
+                TempData["SuccessMessage"] = "Cập nhật phiếu xuất hàng thành công!";
                 return RedirectToAction("Index");
             }
 
             // Xử lý khi có lỗi
-            TempData["ErrorMessage"] = "Không thể cập nhật phiếu nhập hàng.";
+            TempData["ErrorMessage"] = "Không thể cập nhật phiếu xuất hàng.";
             ViewBag.Products = await _sanPhamService.GetAllAsync();
-            ViewBag.Suppliers = await _nccService.GetAllAsync();
+            ViewBag.Customers = await _khachHangService.GetAllAsync();
             return View(updatedOrder);
         }
-
-
-
 
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var success = await _importOrderService.DeleteAsync(id);
+            var success = await _exportOrderService.DeleteAsync(id);
             if (success)
             {
-                TempData["SuccessMessage"] = "Xóa phiếu nhập hàng thành công!";
+                TempData["SuccessMessage"] = "Xóa phiếu xuất hàng thành công!";
             }
             else
             {
-                TempData["ErrorMessage"] = "Không thể xóa phiếu nhập hàng.";
+                TempData["ErrorMessage"] = "Không thể xóa phiếu xuất hàng.";
             }
             return RedirectToAction("Index");
         }
+
         private void SetUserClaims()
         {
             ViewBag.Username = User.Identity?.Name;
