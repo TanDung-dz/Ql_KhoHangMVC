@@ -1,0 +1,152 @@
+﻿@model Ql_KhoHang.Dtos.PhieuXuatHangDto
+@{
+    ViewData["Title"] = "Thêm Phiếu Xuất Hàng";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="row">
+    <h2>Thêm Phiếu Xuất Hàng</h2>
+
+    <div class="mb-3">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+    </div>
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="NgayXuat">Ngày Xuất</label>
+            <input asp-for="NgayXuat" type="date" class="form-control" />
+            <span asp-validation-for="NgayXuat" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="PhiVanChuyen">Phí Vận Chuyển</label>
+            <input asp-for="PhiVanChuyen" type="number" class="form-control" />
+            <span asp-validation-for="PhiVanChuyen" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="TrangThai">Trạng Thái</label>
+            <input asp-for="TrangThai" type="text" class="form-control" />
+            <span asp-validation-for="TrangThai" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="MaKhachHang">Khách Hàng</label>
+            <select asp-for="MaKhachHang" class="form-control">
+                <option value="">-- Chọn Khách Hàng --</option>
+                @if (ViewBag.Customers != null)
+                {
+                    foreach (var customer in (IEnumerable<Ql_KhoHang.Dtos.KhachHangDto>)ViewBag.Customers)
+                    {
+                        <option value="@customer.MaKhachHang">@customer.TenKhachHang</option>
+                    }
+                }
+            </select>
+            <span asp-validation-for="MaKhachHang" class="text-danger"></span>
+        </div>
+
+        <h4>Chi Tiết Phiếu Xuất Hàng</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Sản Phẩm</th>
+                    <th>Số Lượng</th>
+                    <th>Đơn Giá Xuất</th>
+                    <th>Ảnh</th>
+                    <th>Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody id="detail-container">
+                <tr>
+                    <td>
+                        <select name="Details[0].MaSanPham" class="form-control">
+                            <option value="">-- Chọn Sản Phẩm --</option>
+                            @if (ViewBag.Products != null)
+                            {
+                                foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
+                                {
+                                    <option value="@product.MaSanPham">@product.TenSanPham</option>
+                                }
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <input name="Details[0].SoLuong" type="number" class="form-control" />
+                    </td>
+                    <td>
+                        <input name="Details[0].DonGiaXuat" type="number" class="form-control" />
+                    </td>
+                    <td>
+                        <input name="Details[0].Img" type="file" class="form-control" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm remove-detail">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button type="button" id="add-detail" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus-circle"></i> Thêm Chi Tiết
+        </button>
+
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Lưu
+        </button>
+    </form>
+</div>
+
+<!-- Danh sách sản phẩm ẩn dùng cho thêm chi tiết -->
+<div id="product-options" style="display:none;">
+    @foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
+    {
+        <option value="@product.MaSanPham">@product.TenSanPham</option>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        let detailIndex = 1;
+
+        // Thêm chi tiết
+        document.getElementById("add-detail").addEventListener("click", () => {
+            const container = document.getElementById("detail-container");
+            const productOptions = document.getElementById("product-options").innerHTML;
+            const newRow = `
+                        <tr>
+                            <td>
+                                <select name="Details[${detailIndex}].MaSanPham" class="form-control">
+                                    ${productOptions}
+                                </select>
+                            </td>
+                            <td>
+                                <input name="Details[${detailIndex}].SoLuong" type="number" class="form-control" />
+                            </td>
+                            <td>
+                                <input name="Details[${detailIndex}].DonGiaXuat" type="number" class="form-control" />
+                            </td>
+                            <td>
+                                <input name="Details[${detailIndex}].Img" type="file" class="form-control" />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm remove-detail">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>`;
+            container.insertAdjacentHTML("beforeend", newRow);
+            detailIndex++;
+        });
+
+        // Xóa chi tiết
+        document.addEventListener("click", (e) => {
+            if (e.target && e.target.closest(".remove-detail")) {
+                e.target.closest("tr").remove();
+            }
+        });
+    </script>
+}

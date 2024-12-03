@@ -13,5 +13,6 @@
 		public string? NguyenNhan { get; set; }
 
 		public string? Anh { get; set; }
-	}
+        public IFormFile? Img { get; set; } // Tệp ảnh
+    }
 }
