@@ -26,5 +26,7 @@
 
 		public int MaHangSanXuat { get; set; }
 		public string? TenHangSanXuat { get; set; } // Lấy từ HangSanXuat nếu cần
-	}
+		// Thêm danh sách vị trí của sản phẩm
+        public List<SanPhamViTriDto>? ViTriSanPhams { get; set; }
+    }
 }
