@@ -1,125 +1,151 @@
 ﻿@model Ql_KhoHang.Dtos.SanPhamDto
 
 @{
-    ViewData["Title"] = "Chỉnh Sửa Sản Phẩm";
+    ViewData["Title"] = "Cập nhật sản phẩm";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Chỉnh Sửa Sản Phẩm</h1>
-
-<!-- Hiển thị thông báo thành công nếu có -->
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
+<div class="row">
+    <h2>Cập nhật sản phẩm</h2>
+</div>
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+</div>
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
-    <!-- Tên Sản Phẩm -->
+    <input type="hidden" asp-for="MaSanPham" />
     <div class="form-group">
         <label for="TenSanPham">Tên Sản Phẩm</label>
         <input type="text" class="form-control" asp-for="TenSanPham" placeholder="Tên sản phẩm" />
         <span asp-validation-for="TenSanPham" class="text-danger"></span>
     </div>
 
-    <!-- Mô Tả -->
     <div class="form-group">
-        <label for="Mota">Mô Tả</label>
+        <label for="Mota">Mô tả</label>
         <textarea class="form-control" asp-for="Mota" placeholder="Mô tả sản phẩm"></textarea>
         <span asp-validation-for="Mota" class="text-danger"></span>
     </div>
 
-    <!-- Số Lượng -->
     <div class="form-group">
-        <label for="SoLuong">Số Lượng</label>
+        <label for="SoLuong">Số lượng</label>
         <input type="number" class="form-control" asp-for="SoLuong" placeholder="Số lượng" />
         <span asp-validation-for="SoLuong" class="text-danger"></span>
     </div>
 
-    <!-- Đơn Giá -->
     <div class="form-group">
-        <label for="DonGia">Đơn Giá</label>
+        <label for="DonGia">Đơn giá</label>
         <input type="number" class="form-control" asp-for="DonGia" placeholder="Đơn giá" step="0.01" />
         <span asp-validation-for="DonGia" class="text-danger"></span>
     </div>
 
-    <!-- Khối Lượng -->
     <div class="form-group">
-        <label for="KhoiLuong">Khối Lượng (kg)</label>
+        <label for="KhoiLuong">Khối lượng (kg)</label>
         <input type="number" class="form-control" asp-for="KhoiLuong" placeholder="Khối lượng" step="0.01" />
         <span asp-validation-for="KhoiLuong" class="text-danger"></span>
     </div>
 
-    <!-- Kích Thước -->
     <div class="form-group">
-        <label for="KichThuoc">Kích Thước</label>
+        <label for="KichThuoc">Kích thước</label>
         <input type="text" class="form-control" asp-for="KichThuoc" placeholder="Kích thước (Dài x Rộng x Cao)" />
         <span asp-validation-for="KichThuoc" class="text-danger"></span>
     </div>
 
-    <!-- Xuất Xứ -->
     <div class="form-group">
-        <label for="XuatXu">Xuất Xứ</label>
+        <label for="XuatXu">Xuất xứ</label>
         <input type="text" class="form-control" asp-for="XuatXu" placeholder="Xuất xứ" />
         <span asp-validation-for="XuatXu" class="text-danger"></span>
     </div>
 
-    <!-- Trạng Thái -->
     <div class="form-group">
-        <label for="TrangThai">Trạng Thái</label>
+        <label for="TrangThai">Trạng thái</label>
         <select asp-for="TrangThai" class="form-control">
-            <option value="">-- Chọn Trạng Thái --</option>
-            <option value="true">Hoạt động</option>
-            <option value="false">Không hoạt động</option>
+            <option value="">-- Chọn trạng thái --</option>
+            <option value="true" selected="@(Model.TrangThai == true ? "selected" : "")">Hoạt động</option>
+            <option value="false" selected="@(Model.TrangThai == false ? "selected" : "")">Không hoạt động</option>
         </select>
         <span asp-validation-for="TrangThai" class="text-danger"></span>
     </div>
 
-    <!-- Loại Sản Phẩm -->
+    <div class="form-group">
+        <label for="Img">Hình ảnh</label>
+        <input type="file" class="form-control-file" id="Img" name="Img" />
+        @if (!string.IsNullOrEmpty(Model.Image))
+        {
+            <img src="@Model.Image" alt="Current Image" class="img-thumbnail mt-2" style="max-width: 200px;" />
+        }
+    </div>
+
     <div class="form-group">
         <label for="MaLoaiSanPham">Loại Sản Phẩm</label>
-        <select asp-for="MaLoaiSanPham" class="form-control" asp-items="@(new SelectList(ViewBag.LoaiSanPhams, "MaLoaiSanPham", "TenLoaiSanPham", Model.MaLoaiSanPham))">
+        <select asp-for="MaLoaiSanPham" class="form-control">
             <option value="">-- Chọn Loại Sản Phẩm --</option>
+            @foreach (var loai in ViewBag.LoaiSanPhams)
+            {
+                <option value="@loai.MaLoaiSanPham" selected="@(Model.MaLoaiSanPham == loai.MaLoaiSanPham ? "selected" : "")">@loai.TenLoaiSanPham</option>
+            }
         </select>
         <span asp-validation-for="MaLoaiSanPham" class="text-danger"></span>
     </div>
 
-    <!-- Hãng Sản Xuất -->
     <div class="form-group">
         <label for="MaHangSanXuat">Hãng Sản Xuất</label>
-        <select asp-for="MaHangSanXuat" class="form-control" asp-items="@(new SelectList(ViewBag.HangSanXuats, "MaHangSanXuat", "TenHangSanXuat", Model.MaHangSanXuat))">
+        <select asp-for="MaHangSanXuat" class="form-control">
             <option value="">-- Chọn Hãng Sản Xuất --</option>
+            @foreach (var hang in ViewBag.HangSanXuats)
+            {
+                <option value="@hang.MaHangSanXuat" selected="@(Model.MaHangSanXuat == hang.MaHangSanXuat ? "selected" : "")">@hang.TenHangSanXuat</option>
+            }
         </select>
         <span asp-validation-for="MaHangSanXuat" class="text-danger"></span>
     </div>
 
-    <!-- Hình Ảnh -->
-    <div class="form-group">
-        <label for="Img">Hình Ảnh</label>
-        @if (!string.IsNullOrEmpty(Model.Image))
-        {
-            <div>
-                <img src="@Model.Image" alt="Hình sản phẩm" class="img-thumbnail mb-2" width="150" height="150" />
-            </div>
-        }
-        else
-        {
-            <p class="text-muted">Không có hình ảnh hiện tại.</p>
-        }
-        <input type="file" class="form-control-file" id="Img" name="Img" />
-    </div>
+    <h4>Vị trí sản phẩm</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Vị trí</th>
+                <th>Số Lượng</th>
+                <th>Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody id="detail-container">
+            @if (Model.ViTriSanPhams != null)
+            {
+                for (int i = 0; i < Model.ViTriSanPhams.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <select name="ViTriSanPhams[@i].MaViTri" class="form-control">
+                                <option value="">-- Chọn Vị Trí --</option>
+                                @foreach (var vitri in (IEnumerable<Ql_KhoHang.Dtos.VitriDto>)ViewBag.Vitris)
+                                {
+                                    <option value="@vitri.MaViTri" selected="@(Model.ViTriSanPhams[@i].MaViTri == vitri.MaViTri ? "selected" : "")">@vitri.KhuVuc - @vitri.Tang - @vitri.Ke</option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <input name="ViTriSanPhams[@i].SoLuong" type="number" class="form-control" value="@Model.ViTriSanPhams[@i].SoLuong" />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm remove-detail">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 
-    <!-- Nút Lưu và Hủy -->
-    <div class="d-flex justify-content-between mt-3">
-        <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Lưu thay đổi">
-            <i class="fas fa-save"></i>
+    <div class="form-group">
+        <button type="button" class="btn btn-success" id="add-detail">
+            <i class="fas fa-plus-circle"></i> Thêm Chi Tiết
         </button>
-        <a asp-action="Index" class="btn btn-secondary" data-bs-toggle="tooltip" title="Hủy chỉnh sửa">
-            <i class="fas fa-times"></i>
-        </a>
     </div>
+    <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Cập nhật">
+        <i class="fas fa-save"></i> Lưu
+    </button>
 </form>
 
 @section Scripts {
@@ -132,7 +158,6 @@
         $(document).ready(function () {
             $('[data-bs-toggle="tooltip"]').tooltip();
         });
-
         // Hiển thị thông báo thành công
         @if (TempData["SuccessMessage"] != null)
         {
@@ -142,7 +167,7 @@
                     text: '@Html.Raw(TempData["SuccessMessage"])',
                     icon: 'success',
                     confirmButtonText: 'OK'
-                            });
+                                                    });
             </text>
         }
 
@@ -155,8 +180,49 @@
                     text: '@Html.Raw(TempData["ErrorMessage"])',
                     icon: 'error',
                     confirmButtonText: 'OK'
-                            });
+                                                    });
             </text>
         }
+    </script>
+    <script>
+        $(document).ready(function () {
+            var detailIndex = @Model.ViTriSanPhams.Count;
+
+            // Thêm chi tiết mới
+            $('#add-detail').click(function () {
+                var newDetailRow = `
+                                    <tr>
+                                        <td>
+                                                        <select name="ViTriSanPhams[` + detailIndex + `].MaViTri" class="form-control">
+                                                <option value="">-- Chọn Vị Trí --</option>
+        @if (ViewBag.Vitris != null)
+        {
+            foreach (var vitri in (IEnumerable<Ql_KhoHang.Dtos.VitriDto>)ViewBag.Vitris)
+            {
+                                                        <option value="@vitri.MaViTri">@vitri.KhuVuc - @vitri.Tang - @vitri.Ke</option>
+            }
+        }
+                                            </select>
+                                        </td>
+                                        <td>
+                                                        <input name="ViTriSanPhams[` + detailIndex + `].SoLuong" type="number" class="form-control" />
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm remove-detail">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `;
+
+                $('#detail-container').append(newDetailRow);
+                detailIndex++;
+            });
+
+            // Xóa chi tiết
+            $(document).on('click', '.remove-detail', function () {
+                $(this).closest('tr').remove();
+            });
+        });
     </script>
 }

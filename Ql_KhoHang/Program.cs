@@ -28,6 +28,7 @@ builder.Services.AddScoped<PhieuXuatHangService>();
 builder.Services.AddScoped<ChiTietPhieuXuatHangService>();
 builder.Services.AddScoped<KiemKeService>();
 builder.Services.AddScoped<ChiTietKiemKeService>();
+builder.Services.AddScoped<SanPhamViTriService>();
 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).
