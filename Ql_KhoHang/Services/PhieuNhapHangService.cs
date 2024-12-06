@@ -213,6 +213,19 @@ namespace Ql_KhoHang.Services
             var response = await client.PutAsync(apiEndpoint, requestContent);
             return response.IsSuccessStatusCode;
         }
+        public async Task<Dictionary<string, int>> GetImportOrdersByMonth()
+        {
+            // Lấy danh sách tất cả phiếu nhập
+            var allOrders = await GetAllAsync(null);
+
+            // Thống kê số phiếu nhập theo tháng
+            var result = allOrders
+                .Where(o => o.NgayNhap.HasValue) // Đảm bảo NgayNhap không null
+                .GroupBy(o => o.NgayNhap.Value.ToString("yyyy-MM")) // Nhóm theo tháng (năm-tháng)
+                .ToDictionary(g => g.Key, g => g.Count()); // Đếm số lượng phiếu trong mỗi nhóm
+
+            return result;
+        }
 
     }
 }

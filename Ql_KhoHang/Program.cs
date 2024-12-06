@@ -84,6 +84,14 @@ app.UseEndpoints(endpoints =>
      name: "san-pham",
      pattern: "san-pham",
      defaults: new { controller = "SanPham", action = "Index" });
+    endpoints.MapControllerRoute(
+     name: "lien-he",
+     pattern: "lien-he",
+     defaults: new { controller = "Home", action = "Contact" });
+    endpoints.MapControllerRoute(
+     name: "bai-viet",
+     pattern: "bai-viet",
+     defaults: new { controller = "Home", action = "Blog" });
 
 });
 app.Run();

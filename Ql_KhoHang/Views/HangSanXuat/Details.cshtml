@@ -1,23 +1,24 @@
 ﻿@model Ql_KhoHang.Dtos.HangSanXuatDto
+
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết Hãng Sản Xuất";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+<h2 class="mb-4">Chi tiết Hãng Sản Xuất</h2>
 
-            <div class="row mb-3">
-                <h1>Chi tiết Hãng Sản Xuất</h1>
+<table class="table table-bordered">
+    <tr>
+        <th>Mã Hãng Sản Xuất</th>
+        <td>@Model.MaHangSanXuat</td>
+    </tr>
+    <tr>
+        <th>Tên Hãng Sản Xuất</th>
+        <td>@Model.TenHangSanXuat</td>
+    </tr>
+</table>
 
-                <div>
-                    <dl class="row">
-                        <dt class="col-sm-2">Mã:</dt>
-                        <dd class="col-sm-10">@Model.MaHangSanXuat</dd>
-
-                        <dt class="col-sm-2">Tên Hãng Sản Xuất:</dt>
-                        <dd class="col-sm-10">@Model.TenHangSanXuat</dd>
-                    </dl>
-                </div>
-
-                <a asp-action="Index" class="btn btn-secondary">Trở về</a>
-            </div>
-
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    <a asp-action="Edit" asp-route-id="@Model.MaHangSanXuat" class="btn btn-warning">Sửa</a>
+</div>

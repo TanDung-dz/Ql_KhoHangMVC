@@ -5,21 +5,19 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+<h2 class="mb-4">Thêm mới danh mục</h2>
 
-            <div class="row">
-                <h2>Thêm mới danh mục</h2>
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label for="TenLoaiSanPham" class="form-label">Tên danh mục</label>
+        <input type="text" id="TenLoaiSanPham" name="TenLoaiSanPham" class="form-control" placeholder="Nhập tên danh mục" required />
+        <span asp-validation-for="TenLoaiSanPham" class="text-danger"></span>
+    </div>
 
-                <form asp-action="Create" method="post">
-                    <div class="form-group">
-                        <label asp-for="TenLoaiSanPham">Tên danh mục</label>
-                        <input asp-for="TenLoaiSanPham" class="form-control" required />
-                        <span asp-validation-for="TenLoaiSanPham" class="text-danger"></span>
-                    </div>
+    <button type="submit" class="btn btn-primary">Thêm mới</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>
 
-                    <button type="submit" class="btn btn-primary mt-3">Thêm mới</button>
-                    <a asp-action="Index" class="btn btn-secondary mt-3">Hủy</a>
-                </form>
-            </div>
 
 @section Scripts {
     <!-- Validation Scripts -->
