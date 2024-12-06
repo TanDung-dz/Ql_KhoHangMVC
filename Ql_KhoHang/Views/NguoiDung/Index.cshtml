@@ -1,4 +1,5 @@
-﻿@using Ql_KhoHang.Dtos
+﻿@using Newtonsoft.Json
+@using Ql_KhoHang.Dtos
 @{
 	ViewData["Title"] = "Home";
 	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -8,86 +9,47 @@
 
 
 			<div class="row">
-				<div class="col-xl-3 col-sm-6 col-12">
-					<div class="card board1 fill">
-						<div class="card-body">
-							<div class="dash-widget-header">
-								<div>
-									<h3 class="card_widget_header">("{0:#,0}", hangton) thùng</h3>
-									<h6 class="text-muted">Tổng số hàng tồn</h6>
+				
+					<div class="row">
+			<div class="card board1 fill">
+				<div class="card-body">
+					<div class="dash-widget-header">
+						<div class="col-md-5">
+							<div class="card">
+								<div class="card-body">
+									<h5 class="card-title">Tổng số sản phẩm trong kho</h5>
+									<hr />
+									<p class="card-text">
+										<strong>@ViewBag.TotalProducts</strong> sản phẩm
+									</p>
 								</div>
-								<div class="ml-auto mt-md-3 mt-lg-0">
-									<span class="opacity-7 text-muted">
-										<i class="fa fa-archive fa-lg" aria-hidden="true"></i>
-									</span>
+							</div>
+						</div>
+						<hr />
+						<div style="margin-left: 30px;"></div> <!-- Tạo khoảng trắng bằng CSS -->
+						<div class="col-md-7">
+							<div class="card mt-4">
+								<div class="card-body">
+									<h5 class="card-title">Top 5 Sản Phẩm Có Số Lượng Nhiều Nhất</h5>
+									<canvas id="top5ProductsChart" width="400" height="200"></canvas>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-
-				<div class="col-xl-3 col-sm-6 col-12">
-					<div class="card board1 fill">
-						<div class="card-body">
-							<div class="dash-widget-header">
-								<div>
-									<h3 class="card_widget_header">("{0:#,0}", soluongban) thùng</h3>
-									<h6 class="text-muted">Số lượng hàng bán ra</h6>
-								</div>
-								<div class="ml-auto mt-md-3 mt-lg-0">
-									<span class="opacity-7 text-muted">
-										<i class="fas fa-receipt fa-lg" aria-hidden="true"></i>
-									</span>
-								</div>
-							</div>
-						</div>
+			</div>
 					</div>
-				</div>
-
-				<div class="col-xl-3 col-sm-6 col-12">
-					<div class="card board1 fill">
-						<div class="card-body">
-							<div class="dash-widget-header">
-								<div>
-									<h3 class="card_widget_header">("{0:#,0}", thanhtoan)đ</h3>
-									<h6 class="text-muted">Tổng tiền đã thanh toán</h6>
-								</div>
-								<div class="ml-auto mt-md-3 mt-lg-0">
-									<span class="opacity-7 text-muted">
-										<i class="fas fa-money-check fa-lg" aria-hidden="true"></i>
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-xl-3 col-sm-6 col-12">
-					<div class="card board1 fill">
-						<div class="card-body">
-							<div class="dash-widget-header">
-								<div>
-									<h3 class="card_widget_header">("{0:#,0}", thutien)đ</h3>
-									<h6 class="text-muted">Tổng tiền thu được</h6>
-								</div>
-								<div class="ml-auto mt-md-3 mt-lg-0">
-									<span class="opacity-7 text-muted">
-										<i class="fas fa-dollar-sign fa-lg" aria-hidden="true"></i>
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
+		
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-12 col-lg-6">
 					<div class="card card-chart">
 						<div class="card-header">
-							<h4 class="card-title">CÁC LOẠI SẢN PHẨM CÒN NHIỀU HÀNG</h4>
+							<h4 class="card-title">Phiếu nhập hàng trong tháng</h4>
 						</div>
 						<div class="card-body">
-							<canvas id="myChart"></canvas>
+				<!-- Biểu đồ -->
+				<canvas id="phieuNhapChart" width="400" height="200"></canvas>
 						</div>
 					</div>
 				</div>
@@ -111,6 +73,8 @@
 	<partial name="_ValidationScriptsPartial" />
 	<!-- SweetAlert -->
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 	<script>
 		// Hiển thị thông báo thành công
 		@if (TempData["SuccessMessage"] != null)
@@ -138,5 +102,56 @@
 			</text>
 		}
 	</script>
+	<script>
+								// Dữ liệu từ ViewBag
+								var topProducts = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Top5Products));
+
+		// Lấy tên sản phẩm và số lượng
+		var labels = topProducts.map(product => product.TenSanPham);
+		var data = topProducts.map(product => product.SoLuong);
+
+		// Vẽ biểu đồ
+		var ctx = document.getElementById('top5ProductsChart').getContext('2d');
+		var chart = new Chart(ctx, {
+			type: 'bar',
+			data: {
+				labels: labels,
+				datasets: [{
+					label: 'Số lượng',
+					data: data,
+					backgroundColor: [
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(153, 102, 255, 0.2)'
+					],
+					borderColor: [
+						'rgba(75, 192, 192, 1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(255, 99, 132, 1)',
+						'rgba(153, 102, 255, 1)'
+					],
+					borderWidth: 1
+				}]
+			},
+			options: {
+				responsive: true,
+				scales: {
+					y: {
+						beginAtZero: true,
+						ticks: {
+							stepSize: 1, // Chỉ số nguyên
+							callback: function (value) {
+								return Number.isInteger(value) ? value : null; // Chỉ hiển thị số nguyên
+							}
+						}
+					}
+				}
+			}
+		});
+	</script>
+
 }
 

@@ -10,10 +10,13 @@ namespace Ql_KhoHang.Controllers
     public class NguoiDungController : Controller
     {
         private readonly NguoiDungService _nguoiDungService;
-
-        public NguoiDungController(NguoiDungService nguoiDungService)
+        private readonly SanPhamService _sanPhamService;
+		private readonly PhieuNhapHangService _phieuNhapHangService;
+		public NguoiDungController(NguoiDungService nguoiDungService, SanPhamService sanPhamService, PhieuNhapHangService phieuNhapHangService)
         {
             _nguoiDungService = nguoiDungService;
+            _sanPhamService = sanPhamService;
+            _phieuNhapHangService = phieuNhapHangService;
         }
 
         [HttpGet]
@@ -62,10 +65,18 @@ namespace Ql_KhoHang.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             SetUserClaims();
-
+            // Lấy tổng số sản phẩm
+            var products = await _sanPhamService.GetAllAsync();
+			// Lấy top 5 sản phẩm
+			var top5Products = products.OrderByDescending(p=>p.SoLuong).Take(5).
+                                        Select(p=> new {p.TenSanPham,p.SoLuong}).ToList();
+			// Truyền dữ liệu cho View
+			ViewBag.Top5Products = top5Products;
+			// Gửi dữ liệu đến View
+			ViewBag.TotalProducts = products.Count;
             return View();
         }
 
