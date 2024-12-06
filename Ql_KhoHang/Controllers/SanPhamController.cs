@@ -149,6 +149,7 @@ namespace Ql_KhoHang.Controllers
             {
                 ViewBag.LoaiSanPhams = await _loaiSanPhamService.GetAllAsync();
                 ViewBag.HangSanXuats = await _hangSanXuatService.GetAllAsync();
+                ViewBag.Vitris = await _ViTriService.GetAllAsync();
                 return View(product);
             }
             //Gán mã sp cho từng chi tiết
@@ -190,6 +191,7 @@ namespace Ql_KhoHang.Controllers
             TempData["ErrorMessage"] = "Không thể cập nhật sản phẩm.";
             ViewBag.LoaiSanPhams = await _loaiSanPhamService.GetAllAsync();
             ViewBag.HangSanXuats = await _hangSanXuatService.GetAllAsync();
+            ViewBag.Vitris = await _ViTriService.GetAllAsync();
             return View(product);
         }
 

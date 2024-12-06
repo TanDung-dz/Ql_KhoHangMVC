@@ -1,27 +1,24 @@
 ﻿@model Ql_KhoHang.Dtos.HangSanXuatDto
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Sửa Hãng Sản Xuất";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+<h2 class="mb-4">Sửa Hãng Sản Xuất</h2>
 
-            <div class="row mb-3">
-                <h1>Sửa Hãng Sản Xuất</h1>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="MaHangSanXuat" />
 
-                <form asp-action="Edit" method="post">
-                    <input type="hidden" asp-for="MaHangSanXuat" />
+    <div class="mb-3">
+        <label for="TenHangSanXuat" class="form-label">Tên Hãng Sản Xuất</label>
+        <input type="text" id="TenHangSanXuat" name="TenHangSanXuat" asp-for="TenHangSanXuat" class="form-control" placeholder="Nhập tên hãng sản xuất" />
+        <span asp-validation-for="TenHangSanXuat" class="text-danger"></span>
+    </div>
 
-                    <div class="form-group">
-                        <label for="TenHangSanXuat">Tên Hãng Sản Xuất</label>
-                        <input type="text" asp-for="TenHangSanXuat" class="form-control" />
-                        <span asp-validation-for="TenHangSanXuat" class="text-danger"></span>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Lưu</button>
-                    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-                </form>
-            </div>
+    <button type="submit" class="btn btn-primary">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>
 
 @section Scripts {
     <!-- Validation Scripts -->
