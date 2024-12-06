@@ -5,7 +5,7 @@
         public int MaPhieuXuatHang { get; set; }
         public DateTime? NgayXuat { get; set; }
         public string? HinhThucThanhToan { get; set; }
-        public string? PhiVanChuyen { get; set; }
+        public decimal? PhiVanChuyen { get; set; }
         public int? TrangThai { get; set; }
         public bool? Hide { get; set; }
         // Thông tin cơ bản về người dùng và khách hàng
