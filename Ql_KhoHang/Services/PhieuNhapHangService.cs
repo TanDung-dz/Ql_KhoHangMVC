@@ -213,5 +213,6 @@ namespace Ql_KhoHang.Services
             var response = await client.PutAsync(apiEndpoint, requestContent);
             return response.IsSuccessStatusCode;
         }
+
     }
 }
