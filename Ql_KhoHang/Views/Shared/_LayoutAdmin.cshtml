@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <title>Ware House Clother</title>
+    <title>DLK Ware House</title>
     <link rel="shortcut icon" type="image/x-icon" href="~/img/hotel_logo.png">
 
     <!-- CSS -->
@@ -179,19 +179,28 @@
                             <li class="menu-title mt-3"> <span>DANH MỤC</span> </li>
                             <li class="submenu">
                                 <a href="#">
-                                    <i class="fas fa-suitcase"></i> <span> Kho hàng </span> <span class="menu-arrow"></span>
+                                    <i class="fas fa-box"></i>
+                                    <span> Sản phẩm </span> <span class="menu-arrow"></span>
                                 </a>
                                 <ul class="submenu_class" style="display: none;">
                                     <li><a asp-area="" asp-controller="SanPham" asp-action="Index"> Sản phẩm </a></li>
-                                    <li><a asp-area="" asp-controller="HangSanXuat" asp-action="Index"> Hãng sản xuất </a></li>
                                     <li><a asp-controller="LoaiSanPham" asp-action="Index"> Loại sản phẩm </a></li>
-                                    <li><a asp-area="" asp-controller="Menu" asp-action="Index"> Menu </a></li>
-                                    <li><a asp-area="" asp-controller="LoaiKhachHang" asp-action="Index"> Loại khách hàng </a></li>
-                                    <li><a asp-area="" asp-controller="Blog" asp-action="Index"> Blog </a></li>
+                                </ul>
+                                <a href="#">
+                                    <i class="fas fa-user-tie"></i>
+                                    <span> Quản lý </span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="submenu_class" style="display: none;">
+                                    <li><a asp-area="" asp-controller="HangSanXuat" asp-action="Index"> Hãng sản xuất </a></li>
                                     <li><a asp-area="" asp-controller="NhaCungCap" asp-action="Index"> Nhà cung cấp </a></li>
                                     <li><a asp-area="" asp-controller="ViTri" asp-action="Index"> Vị trí trong kho </a></li>
+                                    <li><a asp-area="" asp-controller="LoaiKhachHang" asp-action="Index"> Loại khách hàng </a></li>
+                                    <li><a asp-area="" asp-controller="Blog" asp-action="Index"> Blog </a></li>
+                                    <li><a asp-area="" asp-controller="Menu" asp-action="Index"> Menu </a></li>
+                                    
                                 </ul>
                             </li>
+
                             <li class="submenu">
                                 <a href="#">
                                     <i class="fas fa-user"></i> <span> Người dùng </span> <span class="menu-arrow"></span>
