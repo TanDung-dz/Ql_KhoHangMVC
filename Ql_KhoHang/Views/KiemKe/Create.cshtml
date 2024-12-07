@@ -14,7 +14,7 @@
     </div>
 
     <form asp-action="Create" method="post" enctype="multipart/form-data">
-        <div class="form-group">
+        <div class="form-group" hidden>
             <label for="NgayKiemKe">Ngày Kiểm Kê</label>
             <input asp-for="NgayKiemKe" type="date" class="form-control" />
             <span asp-validation-for="NgayKiemKe" class="text-danger"></span>

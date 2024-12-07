@@ -81,6 +81,7 @@ namespace Ql_KhoHang.Controllers
                 {
                     newOrder.MaNguoiDung = userId; // Gắn mã người dùng
                     newOrder.NgayXuat = DateTime.Now; // Gắn ngày xuất hiện tại
+                    newOrder.TrangThai = 1;
                 }
 
                 // Gọi service để tạo mới phiếu xuất hàng và chi tiết phiếu
@@ -137,7 +138,8 @@ namespace Ql_KhoHang.Controllers
                 ViewBag.Customers = await _khachHangService.GetAllAsync();
                 return View(updatedOrder);
             }
-
+            var oldOrder = await _exportOrderService.GetByIdAsync(updatedOrder.MaPhieuXuatHang);
+            updatedOrder.NgayXuat = oldOrder.NgayXuat;
             // Lấy mã người dùng từ Claim
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "MaNguoiDung")?.Value;
             if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out var userId))

@@ -130,6 +130,8 @@ namespace Ql_KhoHang.Controllers
                 ViewBag.Employees = await _nhanVienKhoService.GetAllAsync("");
                 return View(updatedInventoryCheck);
             }
+            var oldKiemke = await _kiemKeService.GetByIdAsync(updatedInventoryCheck.MaKiemKe);
+            updatedInventoryCheck.NgayKiemKe = oldKiemke.NgayKiemKe;
             //Gán mã phiếu cho từng chi tiết
             foreach (var kvp in details)
             {

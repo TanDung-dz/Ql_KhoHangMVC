@@ -73,6 +73,7 @@ namespace Ql_KhoHang.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(PhieuNhapHangDto newOrder)
         {
+            
             if (ModelState.IsValid)
             {
                 // Lấy mã người dùng từ claim
@@ -82,6 +83,7 @@ namespace Ql_KhoHang.Controllers
                 {
                     newOrder.MaNguoiDung = userId; // Gắn mã người dùng
                     newOrder.NgayNhap = DateTime.Now; // Gắn ngày nhập hiện tại
+                    newOrder.TrangThai = 1;
                 }
 
                 // Gọi service để tạo mới phiếu nhập hàng và chi tiết phiếu
@@ -137,7 +139,8 @@ namespace Ql_KhoHang.Controllers
                 ViewBag.Suppliers = await _nccService.GetAllAsync();
                 return View(updatedOrder);
             }
-
+            var oldOrder = await _importOrderService.GetByIdAsync(updatedOrder.MaPhieuNhapHang);
+            updatedOrder.NgayNhap = oldOrder.NgayNhap;
             // Lấy mã người dùng từ Claim
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "MaNguoiDung")?.Value;
             if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out var userId))

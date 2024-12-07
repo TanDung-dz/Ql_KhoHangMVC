@@ -26,7 +26,7 @@
                 <div class="form-group">
                     <label for="Hide" class="form-label">Ẩn</label>
                     <select class="form-control" id="Hide" name="Hide">
-                        <option value="false" selected="@(Model.Hide == false || Model.Hide == null ? "selected" : "")">Không</option>
+                        <option value="false" selected="@(Model.Hide == false ? "selected" : "")">Không</option>
                         <option value="true" selected="@(Model.Hide == true ? "selected" : "")">Có</option>
                     </select>
                 </div>
