@@ -6,32 +6,7 @@
 
 <div class="row">
     <h2>Thêm Phiếu Xuất Hàng</h2>
-
-    <div class="mb-3">
-        <a asp-action="Index" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Quay lại
-        </a>
-    </div>
-
     <form asp-action="Create" method="post" enctype="multipart/form-data">
-        <div class="form-group" hidden>
-            <label for="NgayXuat">Ngày Xuất</label>
-            <input asp-for="NgayXuat" type="date" class="form-control" />
-            <span asp-validation-for="NgayXuat" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label for="PhiVanChuyen">Phí Vận Chuyển</label>
-            <input asp-for="PhiVanChuyen" type="number" class="form-control" />
-            <span asp-validation-for="PhiVanChuyen" class="text-danger"></span>
-        </div>
-
-        <div class="form-group" hidden>
-            <label for="TrangThai">Trạng Thái</label>
-            <input asp-for="TrangThai" type="text" class="form-control" />
-            <span asp-validation-for="TrangThai" class="text-danger"></span>
-        </div>
-
         <div class="form-group">
             <label for="MaKhachHang">Khách Hàng</label>
             <select asp-for="MaKhachHang" class="form-control">
@@ -53,7 +28,6 @@
                 <tr>
                     <th>Sản Phẩm</th>
                     <th>Số Lượng</th>
-                    <th>Đơn Giá Xuất</th>
                     <th>Ảnh</th>
                     <th>Thao Tác</th>
                 </tr>
@@ -67,7 +41,7 @@
                             {
                                 foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
                                 {
-                                    <option value="@product.MaSanPham">@product.TenSanPham</option>
+                                    <option value="@product.MaSanPham">@product.TenSanPham (@product.TenNhaCungCap)</option>
                                 }
                             }
                         </select>
@@ -76,10 +50,8 @@
                         <input name="Details[0].SoLuong" type="number" class="form-control" />
                     </td>
                     <td>
-                        <input name="Details[0].DonGiaXuat" type="number" class="form-control" />
-                    </td>
-                    <td>
-                        <input name="Details[0].Img" type="file" class="form-control" />
+                        <input name="Details[0].Images" type="file" class="form-control" multiple/>
+                        <small class="form-text text-muted">Tối đa 6 ảnh.</small>
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm remove-detail">
@@ -89,14 +61,22 @@
                 </tr>
             </tbody>
         </table>
+        <!-- Nút Thêm Chi Tiết -->
+        <div class="mb-3">
+            <button type="button" id="add-detail" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus-circle"></i> Thêm Chi Tiết
+            </button>
+        </div>
 
-        <button type="button" id="add-detail" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus-circle"></i> Thêm Chi Tiết
-        </button>
-
-        <button type="submit" class="btn btn-success">
-            <i class="fas fa-save"></i> Lưu
-        </button>
+        <!-- Nút Lưu và Quay Lại trên cùng một dòng -->
+        <div class="d-flex justify-content-between align-items-center">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Lưu
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
     </form>
 </div>
 
@@ -127,10 +107,7 @@
                                 <input name="Details[${detailIndex}].SoLuong" type="number" class="form-control" />
                             </td>
                             <td>
-                                <input name="Details[${detailIndex}].DonGiaXuat" type="number" class="form-control" />
-                            </td>
-                            <td>
-                                <input name="Details[${detailIndex}].Img" type="file" class="form-control" />
+                                <input name="Details[${detailIndex}].Images" type="file" class="form-control" multiple/>
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm remove-detail">

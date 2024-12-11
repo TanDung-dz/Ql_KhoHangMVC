@@ -31,71 +31,24 @@ namespace Ql_KhoHang.Services
                     if (!string.IsNullOrEmpty(item.Image))
                     {
                         item.Image = $"{_apiBaseUrl}{item.Image}";
+                        for (int i = 2; i <= 6; i++)
+                        {
+                            var imageProperty = typeof(ChiTietPhieuNhapHangDto).GetProperty($"Image{i}");
+                            if (imageProperty != null)
+                            {
+                                var imageValue = imageProperty.GetValue(item) as string;
+                                if (!string.IsNullOrEmpty(imageValue))
+                                {
+                                    imageProperty.SetValue(item, $"{_apiBaseUrl}{imageValue}");
+                                }
+                            }
+                        }
                     }
                 }
-
-                return details;
+                return details.OrderByDescending(p=>p.SoLuong).ToList();
             }
 
             return new List<ChiTietPhieuNhapHangDto>();
-        }
-
-        public async Task<bool> CreateDetailAsync(ChiTietPhieuNhapHangDto detail, IFormFile Img)
-        {
-            var client = _httpClientFactory.CreateClient();
-            var requestContent = new MultipartFormDataContent();
-
-            // Thêm các trường dữ liệu
-            requestContent.Add(new StringContent(detail.MaPhieuNhapHang.ToString()), "MaPhieuNhapHang");
-            requestContent.Add(new StringContent(detail.MaSanPham.ToString()), "MaSanPham");
-            requestContent.Add(new StringContent(detail.SoLuong.ToString()), "SoLuong");
-            requestContent.Add(new StringContent(detail.DonGiaNhap.ToString()), "DonGiaNhap");
-            requestContent.Add(new StringContent(detail.TrangThai.ToString() ?? ""), "TrangThai");
-
-            // Thêm file ảnh
-            if (Img != null && Img.Length > 0)
-            {
-                var imageContent = new StreamContent(Img.OpenReadStream());
-                imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(Img.ContentType);
-                requestContent.Add(imageContent, "Img", Img.FileName);
-            }
-
-            var response = await client.PostAsync($"{_apiBaseUrl}/api/ChiTietPhieuNhapHang/CreateDetailWithImage/uploadfile", requestContent);
-
-            return response.IsSuccessStatusCode;
-        }
-
-        public async Task<bool> UpdateDetailAsync(ChiTietPhieuNhapHangDto detail, IFormFile Img)
-        {
-            var client = _httpClientFactory.CreateClient();
-            var requestContent = new MultipartFormDataContent();
-
-            // Thêm các trường dữ liệu
-            requestContent.Add(new StringContent(detail.MaPhieuNhapHang.ToString()), "MaPhieuNhapHang");
-            requestContent.Add(new StringContent(detail.MaSanPham.ToString()), "MaSanPham");
-            requestContent.Add(new StringContent(detail.SoLuong.ToString()), "SoLuong");
-            requestContent.Add(new StringContent(detail.DonGiaNhap.ToString()), "DonGiaNhap");
-            requestContent.Add(new StringContent(detail.TrangThai.ToString() ?? ""), "TrangThai");
-
-            // Thêm file ảnh
-            if (Img != null && Img.Length > 0)
-            {
-                var imageContent = new StreamContent(Img.OpenReadStream());
-                imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(Img.ContentType);
-                requestContent.Add(imageContent, "Img", Img.FileName);
-            }
-
-            var response = await client.PutAsync($"{_apiBaseUrl}/api/ChiTietPhieuNhapHang/UpdateDetail/{detail.MaPhieuNhapHang}/{detail.MaSanPham}", requestContent);
-
-            return response.IsSuccessStatusCode;
-        }
-
-        public async Task<bool> DeleteDetailAsync(int maPhieuNhapHang, int maSanPham)
-        {
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.DeleteAsync($"{_apiBaseUrl}/api/ChiTietPhieuNhapHang/DeleteDetail/{maPhieuNhapHang}/{maSanPham}");
-
-            return response.IsSuccessStatusCode;
         }
     }
 }

@@ -12,22 +12,19 @@
         <a asp-action="Create" class="btn btn-primary">
             <i class="fas fa-plus-circle"></i> <!-- Biểu tượng thêm mới -->
         </a>
-
         <!-- Form tìm kiếm phiếu nhập -->
         <form asp-action="Index" method="get" class="form-inline d-flex">
-            <input type="text" name="keyword" class="form-control" placeholder="Search by keyword" value="@ViewBag.Keyword" />
+            <input type="text" name="keyword" class="form-control" placeholder="Search by ID" value="@ViewBag.Keyword" />
             <button type="submit" class="btn btn-secondary ml-2">
                 <i class="fas fa-search"></i> <!-- Biểu tượng tìm kiếm -->
             </button>
         </form>
     </div>
-
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>Mã Phiếu</th>
                 <th>Ngày Nhập</th>
-                <th>Phí Vận Chuyển</th>
                 <th>Trạng Thái</th>
                 <th>Nhà Cung Cấp</th>
                 <th>Người Dùng</th>
@@ -42,8 +39,6 @@
                     <tr>
                         <td>@order.MaPhieuNhapHang</td>
                         <td>@(order.NgayNhap.HasValue ? order.NgayNhap.Value.ToString("dd/MM/yyyy") : "Chưa có ngày")</td>
-
-                        <td>@order.PhiVanChuyen</td>
                         <td>@order.TrangThai</td>
                         <td>@order.TenNhaCungCap</td>
                         <td>@order.TenNguoiDung</td>

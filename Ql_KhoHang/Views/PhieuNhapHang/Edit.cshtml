@@ -3,6 +3,24 @@
     ViewData["Title"] = "Cập Nhật Phiếu Nhập Hàng";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
+<head>
+    <style>
+        .custom-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+    </style>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+</head>
 <div class="row">
     <h2>Cập Nhật Phiếu Nhập Hàng</h2>
 
@@ -16,19 +34,7 @@
         <input type="hidden" asp-for="MaPhieuNhapHang" />
 
         <!-- Thông tin Phiếu Nhập -->
-        <div class="form-group" hidden>
-            <label for="NgayNhap">Ngày Nhập</label>
-            <input asp-for="NgayNhap" type="date" class="form-control" />
-            <span asp-validation-for="NgayNhap" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label for="PhiVanChuyen">Phí Vận Chuyển</label>
-            <input asp-for="PhiVanChuyen" type="number" class="form-control" />
-            <span asp-validation-for="PhiVanChuyen" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label for="TrangThai">Trạng Thái</label>
             <select asp-for="TrangThai" class="form-control">
                 <option value="0">Chưa hoàn thành</option>
@@ -37,8 +43,7 @@
             <span asp-validation-for="TrangThai" class="text-danger"></span>
         </div>
 
-
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label for="MaNhaCungCap">Nhà Cung Cấp</label>
             <select asp-for="MaNhaCungCap" class="form-control">
                 <option value="">-- Chọn Nhà Cung Cấp --</option>
@@ -49,7 +54,6 @@
                         <option value="@supplier.MaNhaCungCap" selected="@(supplier.MaNhaCungCap == Model.MaNhaCungCap ? "selected" : null)">
                             @supplier.TenNhaCungCap
                         </option>
-
                     }
                 }
             </select>
@@ -63,7 +67,7 @@
                 <tr>
                     <th>Sản Phẩm</th>
                     <th>Số Lượng</th>
-                    <th>Đơn Giá Nhập</th>
+                    <th>Trạng Thái</th>
                     <th>Ảnh</th>
                     <th>Thao Tác</th>
                 </tr>
@@ -82,9 +86,8 @@
                                         foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
                                         {
                                             <option value="@product.MaSanPham" selected="@(product.MaSanPham == Model.Details[i].MaSanPham ? "selected" : null)">
-                                                @product.TenSanPham
+                                                @product.TenSanPham (@product.TenNhaCungCap)
                                             </option>
-
                                         }
                                     }
                                 </select>
@@ -93,17 +96,43 @@
                                 <input name="Details[@i].SoLuong" type="number" class="form-control" value="@Model.Details[i].SoLuong" />
                             </td>
                             <td>
-                                <input name="Details[@i].DonGiaNhap" type="number" class="form-control" value="@Model.Details[i].DonGiaNhap" />
+                                <select name="Details[@i].TrangThai" class="form-control">
+                                    <option value="0" selected="@(Model.Details[i].TrangThai == 0 ? "selected" : null)">Chưa xử lý</option>
+                                    <option value="1" selected="@(Model.Details[i].TrangThai == 1 ? "selected" : null)">Đã xử lý</option>
+                                </select>
                             </td>
                             <td>
-                                @if (!string.IsNullOrEmpty(Model.Details[i].Image))
-                                {
-                                    <img src="@Model.Details[i].Image" alt="Ảnh sản phẩm" width="50" height="50" />
-                                }
-                                <input name="Details[@i].Img" type="file" class="form-control" />
-                                <input type="hidden" name="Details[@i].Image" value="@Model.Details[i].Image" />
-                            </td>
+                                <!-- Hiển thị ảnh nhỏ trên cùng một dòng -->
+                                <div class="d-flex overflow-auto gap-2" style="max-width: 300px;">
+                                    @{
+                                        var images = new List<string>
+                            {
+                            Model.Details[i].Image,
+                            Model.Details[i].Image2,
+                            Model.Details[i].Image3,
+                            Model.Details[i].Image4,
+                            Model.Details[i].Image5,
+                            Model.Details[i].Image6
+                            }.Where(img => !string.IsNullOrEmpty(img)).ToList();
 
+                                        if (images.Any())
+                                        {
+                                            foreach (var image in images)
+                                            {
+                                                <img src="@image" alt="Ảnh nhập hàng" class="img-thumbnail custom-img"
+                                                     data-bs-toggle="modal" data-bs-target="#imageModal"
+                                                     data-image-src="@image" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <p class="text-muted">Không có hình ảnh nào</p>
+                                        }
+                                    }
+                                </div>
+                                <!-- Upload ảnh mới -->
+                                <input name="Details[@i].Images" type="file" class="form-control mt-2" multiple />
+                            </td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm remove-detail">
                                     <i class="fas fa-trash"></i>
@@ -119,17 +148,30 @@
             <i class="fas fa-plus-circle"></i> Thêm Chi Tiết
         </button>
 
-        <button type="submit" class="btn btn-success">
+        <button type="submit" class="btn btn-success mt-3">
             <i class="fas fa-save"></i> Lưu Thay Đổi
         </button>
     </form>
 </div>
-
+<!-- Modal hiển thị ảnh -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Ảnh</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Ảnh kiểm kê" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
     <script>
         let detailIndex = @Model.Details?.Count ?? 0;
 
-        // Thêm chi tiết
+        // Thêm chi tiết mới
         document.getElementById("add-detail").addEventListener("click", () => {
             const container = document.getElementById("detail-container");
             const newRow = `
@@ -139,7 +181,7 @@
                             <option value="">-- Chọn Sản Phẩm --</option>
                             @foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
                             {
-                                <option value="@product.MaSanPham">@product.TenSanPham</option>
+                                            <option value="@product.MaSanPham">@product.TenSanPham (@product.TenNhaCungCap)</option>
                             }
                         </select>
                     </td>
@@ -147,10 +189,13 @@
                         <input name="Details[${detailIndex}].SoLuong" type="number" class="form-control" />
                     </td>
                     <td>
-                        <input name="Details[${detailIndex}].DonGiaNhap" type="number" class="form-control" />
+                        <select name="Details[${detailIndex}].TrangThai" class="form-control">
+                            <option value="0">Chưa xử lý</option>
+                            <option value="1">Đã xử lý</option>
+                        </select>
                     </td>
                     <td>
-                        <input name="Details[${detailIndex}].Img" type="file" class="form-control" />
+                        <input name="Details[${detailIndex}].Images" type="file" class="form-control" multiple />
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm remove-detail">
@@ -164,9 +209,24 @@
 
         // Xóa chi tiết
         document.addEventListener("click", (e) => {
-            if (e.target && e.target.closest(".remove-detail")) {
+            if (e.target.closest(".remove-detail")) {
                 e.target.closest("tr").remove();
             }
         });
+        // Hiển thị ảnh trong modal
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+
+        modal.addEventListener('show.bs.modal', function (event) {
+            const imageElement = event.relatedTarget;
+            const imageSrc = imageElement.getAttribute('data-image-src');
+            modalImage.src = imageSrc;
+        });
+
+        modal.addEventListener('hidden.bs.modal', function () {
+            modalImage.src = '';
+        });
     </script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 }

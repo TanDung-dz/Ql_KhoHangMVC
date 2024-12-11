@@ -82,6 +82,7 @@ namespace Ql_KhoHang.Controllers
                     newOrder.MaNguoiDung = userId; // Gắn mã người dùng
                     newOrder.NgayXuat = DateTime.Now; // Gắn ngày xuất hiện tại
                     newOrder.TrangThai = 1;
+                    newOrder.PhiVanChuyen= 0;
                 }
 
                 // Gọi service để tạo mới phiếu xuất hàng và chi tiết phiếu

@@ -3,7 +3,58 @@
     ViewData["Title"] = "Chi Tiết Phiếu Kiểm Kê";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .custom-img {
+            width: 100px; /* Kích thước nhỏ cho hình thu nhỏ */
+            height: 100px; /* Chiều cao cố định */
+            object-fit: cover; /* Cắt ảnh nếu cần */
+            cursor: pointer; /* Con trỏ chuột thay đổi thành dạng click */
+            border: 1px solid #ddd; /* Viền nhẹ */
+            border-radius: 4px; /* Bo góc */
+        }
 
+        .hinh-anh .row {
+            gap: 10px; /* Tạo khoảng cách giữa các ảnh */
+        }
+        /* Căn chỉnh thông tin phiếu kiểm kê */
+        .table-bordered th.text-end {
+            padding-right: 15px; /* Đảm bảo label gần hơn với nội dung */
+            vertical-align: middle;
+            white-space: nowrap; /* Không xuống dòng */
+        }
+
+        .table-bordered td {
+            vertical-align: middle; /* Nội dung giữa hàng */
+        }
+
+        /* Bảng chi tiết kiểm kê */
+        .table-striped th,
+        .table-striped td {
+            text-align: center; /* Căn giữa nội dung trong bảng */
+        }
+
+        /* Tăng chiều dài bảng */
+        .table-striped {
+            width: 100%; /* Sử dụng toàn bộ chiều ngang */
+        }
+        .row.g-2 {
+            gap: 10px; /* Tạo khoảng cách giữa các ảnh */
+        }
+
+        .d-flex {
+            display: flex;
+            flex-wrap: nowrap; /* Hiển thị tất cả ảnh trên một dòng */
+            overflow-x: auto; /* Cuộn ngang nếu quá dài */
+            gap: 10px; /* Khoảng cách giữa các ảnh */
+        }
+
+            .d-flex img {
+                flex-shrink: 0; /* Không co lại khi nội dung dài */
+            }
+    </style>
+</head>
 <div class="row">
     <h2>Chi Tiết Phiếu Kiểm Kê</h2>
 
@@ -13,58 +64,113 @@
         </a>
     </div>
 
-    <table class="table">
+    <table class="table table-bordered align-middle">
         <tr>
-            <th>Mã Kiểm Kê</th>
+            <th class="text-end" style="width: 30%;">Mã Kiểm Kê</th>
             <td>@Model.MaKiemKe</td>
         </tr>
         <tr>
-            <th>Ngày Kiểm Kê</th>
+            <th class="text-end">Ngày Kiểm Kê</th>
             <td>@(Model.NgayKiemKe.HasValue ? Model.NgayKiemKe.Value.ToString("dd/MM/yyyy") : "Chưa có ngày")</td>
         </tr>
         <tr>
-            <th>Trạng Thái</th>
+            <th class="text-end">Trạng Thái</th>
             <td>@(Model.Hide.HasValue && Model.Hide.Value ? "Đã ẩn" : "Hiển thị")</td>
         </tr>
         <tr>
-            <th>Nhân Viên Kiểm Kê</th>
+            <th class="text-end">Nhân Viên Kiểm Kê</th>
             <td>@Model.TenNhanVienKho</td>
         </tr>
     </table>
 
     <h4>Chi Tiết Kiểm Kê</h4>
-    <table class="table table-striped">
-        <thead>
+    <table class="table table-striped table-bordered align-middle">
+        <thead class="table-light">
             <tr>
-                <th>Sản Phẩm</th>
-                <th>Số Lượng Tồn</th>
-                <th>Số Lượng Thực Tế</th>
-                <th>Trạng Thái</th>
-                <th>Nguyên Nhân</th>
-                <th>Ảnh</th>
+                <th class="text-center">Sản Phẩm</th>
+                <th class="text-center">Số Lượng Tồn</th>
+                <th class="text-center">Số Lượng Thực Tế</th>
+                <th class="text-center">Trạng Thái</th>
+                <th class="text-center">Nguyên Nhân</th>
+                <th class="text-center">Ảnh</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var detail in ViewBag.Details)
             {
                 <tr>
-                    <td>@detail.TenSanPham</td>
-                    <td>@detail.SoLuongTon</td>
-                    <td>@detail.SoLuongThucTe</td>
-                    <td>@detail.TrangThai</td>
-                    <td>@detail.NguyenNhan</td>
+                    <td class="text-center">@detail.TenSanPham (@detail.TenNhaCungCap)</td>
+                    <td class="text-center">@detail.SoLuongTon</td>
+                    <td class="text-center">@detail.SoLuongThucTe</td>
+                    <td class="text-center">@detail.TrangThai</td>
+                    <td class="text-center">@detail.NguyenNhan</td>
                     <td>
-                        @if (!string.IsNullOrEmpty(detail.Anh))
-                        {
-                            <img src="@detail.Anh" alt="Image" width="50" height="50" />
-                        }
-                        else
-                        {
-                            <span>Không có ảnh</span>
-                        }
+                        <div class="d-flex flex-wrap gap-2">
+                            @{
+                                var images = new List<string> { detail.Anh, detail.Anh2, detail.Anh3, detail.Anh4, detail.Anh5, detail.Anh6 }
+                                .Where(img => !string.IsNullOrEmpty(img)).ToList();
+
+                                if (images.Any())
+                                {
+                                    foreach (var image in images)
+                                    {
+                                        <!-- Ảnh thu nhỏ có thể click -->
+                                        <img src="@image" alt="Ảnh kiểm kê" class="img-thumbnail custom-img"
+                                             data-bs-toggle="modal" data-bs-target="#imageModal"
+                                             data-image-src="@image" />
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="text-muted">Không có hình ảnh nào</p>
+                                }
+                            }
+                        </div>
                     </td>
+
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Ảnh Phóng To</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Ảnh kiểm kê" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Modal và phần tử hình ảnh
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+
+            // Khi modal được kích hoạt
+            modal.addEventListener('show.bs.modal', function (event) {
+                const imageElement = event.relatedTarget; // Phần tử hình ảnh được nhấn
+                const imageSrc = imageElement.getAttribute('data-image-src');
+                modalImage.src = imageSrc; // Hiển thị ảnh trong modal
+            });
+
+            // Khi modal bị đóng
+            modal.addEventListener('hidden.bs.modal', function () {
+                modalImage.src = ''; // Xóa ảnh để tối ưu
+            });
+        });
+    </script>
+
+
+}

@@ -12,33 +12,40 @@ namespace Ql_KhoHang.Controllers
         private readonly HangSanXuatService _hangSanXuatService;
         private readonly SanPhamViTriService _sanPhamViTriService;
         private readonly ViTriService _ViTriService;
+        private readonly NhaCungCapService _nhaCungCapService;
 
         public SanPhamController(
             SanPhamService sanPhamService,
             LoaiSanPhamService loaiSanPhamService,
             HangSanXuatService hangSanXuatService,
             SanPhamViTriService sanPhamViTriService,
-            ViTriService viTriService) // Thêm dịch vụ
+            ViTriService viTriService,
+            NhaCungCapService nhaCungCapService) // Thêm dịch vụ
         {
             _sanPhamService = sanPhamService;
             _loaiSanPhamService = loaiSanPhamService;
             _hangSanXuatService = hangSanXuatService;
             _sanPhamViTriService = sanPhamViTriService; // Khởi tạo dịch vụ
             _ViTriService = viTriService;
-
+            _nhaCungCapService = nhaCungCapService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 4, string keyword = "")
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 9, string keyword = "", string loaiSanpham = "tatca")
         {
             SetUserClaims();
 
             List<SanPhamDto> allProducts;
-
+            ViewBag.CurrentLoaiSanPham = loaiSanpham; // Truyền ID loại hiện tại tới View
             if (!string.IsNullOrEmpty(keyword))
             {
                 // Nếu có keyword, thực hiện tìm kiếm
                 allProducts = await _sanPhamService.SearchAsync(keyword);
+            }
+            else if (loaiSanpham != "tatca")
+            {
+                // Lọc sản phẩm theo loại sản phẩm
+                allProducts = await _sanPhamService.GetByLoaiSanPhamAsync(loaiSanpham);
             }
             else
             {
@@ -56,6 +63,8 @@ namespace Ql_KhoHang.Controllers
             int totalPages = (int)Math.Ceiling(allProducts.Count / (double)pageSize);
 
             // Gửi thông tin phân trang tới View
+            ViewBag.LoaiSanPhams = await _loaiSanPhamService.GetAllAsync();
+            
             ViewBag.CurrentPage = pageNumber;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalPages = totalPages;
@@ -84,22 +93,25 @@ namespace Ql_KhoHang.Controllers
             // Lấy danh sách loại sản phẩm và hãng sản xuất
             var loaiSanPhams = await _loaiSanPhamService.GetAllAsync();
             var hangSanXuats = await _hangSanXuatService.GetAllAsync();
+            var nhacc = await _nhaCungCapService.GetAllAsync();
             var vitris = await _ViTriService.GetAllAsync();
 
             // Gửi dữ liệu đến View thông qua ViewBag
             ViewBag.LoaiSanPhams = loaiSanPhams;
             ViewBag.HangSanXuats = hangSanXuats;
+            ViewBag.NhaCungCaps = nhacc;
             ViewBag.Vitris = vitris;
             return View(new SanPhamDto());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(SanPhamDto newProduct, IFormFile Img)
+        public async Task<IActionResult> Create(SanPhamDto newProduct, IFormFileCollection Images)
         {
+            newProduct.TrangThai = true;
             if (ModelState.IsValid)
             {
                 // Gọi service để lưu sản phẩm mới
-                var success = await _sanPhamService.CreateAsync(newProduct, Img);
+                var success = await _sanPhamService.CreateAsync(newProduct, Images);
                 if (success)
                 {
                     TempData["SuccessMessage"] = "Thêm sản phẩm thành công!";
@@ -118,7 +130,7 @@ namespace Ql_KhoHang.Controllers
             // Nếu có lỗi, tải lại danh sách Loại Sản Phẩm và Hãng Sản Xuất
             ViewBag.LoaiSanPhams = await _loaiSanPhamService.GetAllAsync();
             ViewBag.HangSanXuats = await _hangSanXuatService.GetAllAsync();
-
+            ViewBag.NhaCungCaps = await _nhaCungCapService.GetAllAsync();
             return View(newProduct);
         }
 
@@ -130,6 +142,7 @@ namespace Ql_KhoHang.Controllers
             // Lấy danh sách loại sản phẩm và hãng sản xuất
             var loaiSanPhams = await _loaiSanPhamService.GetAllAsync();
             var hangSanXuats = await _hangSanXuatService.GetAllAsync();
+            var nhacc = await _nhaCungCapService.GetAllAsync();
             var vitris = await _ViTriService.GetAllAsync();
             // lấy danh sách chi tiết
             var details = await _sanPhamViTriService.GetBySanPhamAsync(id);
@@ -138,17 +151,20 @@ namespace Ql_KhoHang.Controllers
             // Gửi dữ liệu đến View thông qua ViewBag
             ViewBag.LoaiSanPhams = loaiSanPhams;
             ViewBag.HangSanXuats = hangSanXuats;
+            ViewBag.NhaCungCaps = nhacc;
             ViewBag.Vitris = vitris;
             return View(product);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, SanPhamDto product, IFormFile Img, List<SanPhamViTriDto> vitrisanphams)
+        public async Task<IActionResult> Edit(int id, SanPhamDto product, IFormFileCollection Images, List<SanPhamViTriDto> vitrisanphams)
         {
+            product.TrangThai = true;
             if (!ModelState.IsValid)
             {
                 ViewBag.LoaiSanPhams = await _loaiSanPhamService.GetAllAsync();
                 ViewBag.HangSanXuats = await _hangSanXuatService.GetAllAsync();
+                ViewBag.NhaCungCaps = await _nhaCungCapService.GetAllAsync();
                 ViewBag.Vitris = await _ViTriService.GetAllAsync();
                 return View(product);
             }
@@ -176,7 +192,7 @@ namespace Ql_KhoHang.Controllers
                 .ToList();
 
 
-            var success = await _sanPhamService.UpdateAsync(id, product, Img, newDetails, updatedDetails, deletedDetails);
+            var success = await _sanPhamService.UpdateAsync(id, product, Images, newDetails, updatedDetails, deletedDetails);
 
             if (success)
             {
@@ -191,6 +207,7 @@ namespace Ql_KhoHang.Controllers
             TempData["ErrorMessage"] = "Không thể cập nhật sản phẩm.";
             ViewBag.LoaiSanPhams = await _loaiSanPhamService.GetAllAsync();
             ViewBag.HangSanXuats = await _hangSanXuatService.GetAllAsync();
+            ViewBag.NhaCungCaps = await _nhaCungCapService.GetAllAsync();
             ViewBag.Vitris = await _ViTriService.GetAllAsync();
             return View(product);
         }

@@ -23,7 +23,8 @@ namespace Ql_KhoHang.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<PhieuXuatHangDto>>(data);
+                var phieu = JsonConvert.DeserializeObject<List<PhieuXuatHangDto>>(data);
+                return phieu.OrderByDescending(p => p.NgayXuat).ToList();
             }
 
             return new List<PhieuXuatHangDto>();
@@ -71,18 +72,8 @@ namespace Ql_KhoHang.Services
 
                     // Tạo nội dung multipart cho từng chi tiết
                     var detailContent = new MultipartFormDataContent();
-                    detailContent.Add(new StringContent(detail.MaPhieuXuatHang.ToString()), "MaPhieuXuatHang");
-                    detailContent.Add(new StringContent(detail.MaSanPham.ToString()), "MaSanPham");
-                    detailContent.Add(new StringContent(detail.SoLuong.ToString()), "SoLuong");
-                    detailContent.Add(new StringContent(detail.DonGiaXuat.ToString()), "DonGiaXuat");
-
-                    // Xử lý ảnh nếu có
-                    if (detail.Img != null && detail.Img.Length > 0)
-                    {
-                        var imageContent = new StreamContent(detail.Img.OpenReadStream());
-                        imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(detail.Img.ContentType);
-                        detailContent.Add(imageContent, "Img", detail.Img.FileName);
-                    }
+                    AddDataToRequest(detail, detailContent);
+                    AddImagesToRequest(detail.Images, detailContent);
 
                     // Gửi chi tiết phiếu xuất hàng đến API
                     var detailResponse = await client.PostAsync($"{_apiBaseUrl}/api/ChiTietPhieuXuatHang/CreateDetailWithImage/uploadfile", detailContent);
@@ -167,19 +158,8 @@ namespace Ql_KhoHang.Services
             }
 
             // Thêm các trường dữ liệu chi tiết phiếu xuất
-            requestContent.Add(new StringContent(detail.MaPhieuXuatHang.ToString()), "MaPhieuXuatHang");
-            requestContent.Add(new StringContent(detail.MaSanPham.ToString()), "MaSanPham");
-            requestContent.Add(new StringContent(detail.SoLuong.ToString()), "SoLuong");
-            requestContent.Add(new StringContent(detail.DonGiaXuat.ToString()), "DonGiaXuat");
-            requestContent.Add(new StringContent(detail.TrangThai.ToString() ?? ""), "TrangThai");
-
-            // Thêm file ảnh (nếu có)
-            if (detail.Img != null && detail.Img.Length > 0)
-            {
-                var imageContent = new StreamContent(detail.Img.OpenReadStream());
-                imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(detail.Img.ContentType);
-                requestContent.Add(imageContent, "Img", detail.Img.FileName);
-            }
+            AddDataToRequest(detail, requestContent);
+            AddImagesToRequest(detail.Images, requestContent);
 
             var response = await client.PostAsync(apiEndpoint, requestContent);
             return response.IsSuccessStatusCode;
@@ -197,21 +177,43 @@ namespace Ql_KhoHang.Services
             }
 
             // Thêm các trường dữ liệu chi tiết phiếu xuất
-            requestContent.Add(new StringContent(detail.MaSanPham.ToString()), "MaSanPham");
-            requestContent.Add(new StringContent(detail.SoLuong.ToString()), "SoLuong");
-            requestContent.Add(new StringContent(detail.DonGiaXuat.ToString()), "DonGiaXuat");
-            requestContent.Add(new StringContent(detail.TrangThai.ToString() ?? ""), "TrangThai");
-
-            // Thêm file ảnh (nếu có)
-            if (detail.Img != null && detail.Img.Length > 0)
-            {
-                var imageContent = new StreamContent(detail.Img.OpenReadStream());
-                imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(detail.Img.ContentType);
-                requestContent.Add(imageContent, "Img", detail.Img.FileName);
-            }
+            AddDataToRequest(detail, requestContent);
+            AddImagesToRequest(detail.Images, requestContent);
 
             var response = await client.PutAsync(apiEndpoint, requestContent);
             return response.IsSuccessStatusCode;
+        }
+        private void AddImagesToRequest(List<IFormFile>? images, MultipartFormDataContent requestContent)
+        {
+            if (images != null && images.Any())
+            {
+                // Xử lý ảnh đầu tiên
+                var firstImage = images.FirstOrDefault();
+                if (firstImage != null)
+                {
+                    var imageContent = new StreamContent(firstImage.OpenReadStream());
+                    imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(firstImage.ContentType);
+                    requestContent.Add(imageContent, "Images", firstImage.FileName);
+                }
+                // Xử lý các ảnh tiếp theo cho `Image2`, `Image3`, ...
+                for (int i = 1; i < Math.Min(images.Count, 6); i++) // Đảm bảo chỉ xử lý đến `Image6`
+                {
+                    var image = images[i];
+                    var imageContent = new StreamContent(image.OpenReadStream());
+                    imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(image.ContentType);
+                    requestContent.Add(imageContent, "Images", image.FileName); // Key là "Image2", "Image3", ...
+                }
+            }
+        }
+        private void AddDataToRequest(ChiTietPhieuXuatHangDto detail, MultipartFormDataContent requestContent)
+        {
+            requestContent.Add(new StringContent(detail.MaPhieuXuatHang.ToString()), "MaPhieuXuatHang");
+            requestContent.Add(new StringContent(detail.MaSanPham.ToString()), "MaSanPham");
+            requestContent.Add(new StringContent(detail.SoLuong.ToString()), "SoLuong");
+            requestContent.Add(new StringContent("0"), "DonGiaXuat");
+            requestContent.Add(new StringContent("0"), "TienMat");
+            requestContent.Add(new StringContent("0"), "NganHang");
+            requestContent.Add(new StringContent("1"), "TrangThai");
         }
     }
 }

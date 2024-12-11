@@ -6,20 +6,7 @@
 
 <div class="row">
     <h2>Thêm Phiếu Kiểm Kê</h2>
-
-    <div class="mb-3">
-        <a asp-action="Index" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Quay lại
-        </a>
-    </div>
-
     <form asp-action="Create" method="post" enctype="multipart/form-data">
-        <div class="form-group" hidden>
-            <label for="NgayKiemKe">Ngày Kiểm Kê</label>
-            <input asp-for="NgayKiemKe" type="date" class="form-control" />
-            <span asp-validation-for="NgayKiemKe" class="text-danger"></span>
-        </div>
-
         <div class="form-group">
             <label for="MaNhanVienKho">Nhân Viên Kho</label>
             <select asp-for="MaNhanVienKho" class="form-control">
@@ -57,7 +44,7 @@
                             {
                                 foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
                                 {
-                                    <option value="@product.MaSanPham">@product.TenSanPham</option>
+                                    <option value="@product.MaSanPham">@product.TenSanPham (@product.TenNhaCungCap)</option>
                                 }
                             }
                         </select>
@@ -75,7 +62,8 @@
                         <input name="Details[0].NguyenNhan" type="text" class="form-control" />
                     </td>
                     <td>
-                        <input name="Details[0].Img" type="file" class="form-control" />
+                        <input name="Details[0].Images" type="file" class="form-control" multiple />
+                        <small class="form-text text-muted">Tối đa 6 ảnh.</small>
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm remove-detail">
@@ -85,17 +73,22 @@
                 </tr>
             </tbody>
         </table>
-
         <!-- Nút Thêm Chi Tiết -->
-        <div class="form-group">
-            <button type="button" class="btn btn-success" id="add-detail">
+        <div class="form-group mb-3">
+            <button type="button" class="btn btn-success btn-sm" id="add-detail">
                 <i class="fas fa-plus-circle"></i> Thêm Chi Tiết
             </button>
         </div>
 
-        <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save"></i> Lưu Phiếu Kiểm Kê
-        </button>
+        <!-- Nút Lưu Phiếu Kiểm Kê và Quay Lại -->
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Lưu Phiếu Kiểm Kê
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
     </form>
 </div>
 
@@ -115,7 +108,7 @@
         {
             foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
             {
-                                                        <option value="@product.MaSanPham">@product.TenSanPham</option>
+                                                        <option value="@product.MaSanPham">@product.TenSanPham (@product.TenNhaCungCap)</option>
             }
         }
                                     </select>
@@ -133,7 +126,7 @@
                                     <input name="Details[` + detailIndex + `].NguyenNhan" type="text" class="form-control" />
                                 </td>
                                 <td>
-                                    <input name="Details[` + detailIndex + `].Img" type="file" class="form-control" />
+                                            <input name="Details[` + detailIndex + `].Images" type="file" class="form-control" multiple />
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm remove-detail">
