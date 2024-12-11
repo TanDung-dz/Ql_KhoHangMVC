@@ -152,50 +152,5 @@
 			}
 		});
 	</script>
-	<script>
-		// Lấy dữ liệu từ ViewBag
-		const labels = @Html.Raw(ViewBag.ChartLabels);
-		const data = @Html.Raw(ViewBag.ChartData);
-
-		// Cấu hình biểu đồ
-		const ctx = document.getElementById('importOrdersChart').getContext('2d');
-		const importOrdersChart = new Chart(ctx, {
-			type: 'bar',
-			data: {
-				labels: labels, // Gán nhãn là các tháng
-				datasets: [{
-					label: 'Số lượng phiếu nhập',
-					data: data, // Gán dữ liệu là số lượng phiếu nhập
-					backgroundColor: 'rgba(54, 162, 235, 0.6)',
-					borderColor: 'rgba(54, 162, 235, 1)',
-					borderWidth: 1
-				}]
-			},
-			options: {
-				responsive: true,
-				plugins: {
-					legend: {
-						display: true,
-						position: 'top',
-					},
-					title: {
-						display: true,
-						text: 'Thống kê số phiếu nhập theo tháng'
-					}
-				},
-				scales: {
-					x: {
-						beginAtZero: true
-					},
-					y: {
-						beginAtZero: true,
-						ticks: {
-							stepSize: 1 // Mỗi bước tăng là 1
-						}
-					}
-				}
-			}
-		});
-	</script>
 }
 

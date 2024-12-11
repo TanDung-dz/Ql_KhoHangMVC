@@ -74,14 +74,7 @@ namespace Ql_KhoHang.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Lấy mã người dùng từ claim
-                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "MaNguoiDung")?.Value;
-
-                if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out var userId))
-                {
-                     newInventoryCheck.NgayKiemKe = DateTime.Now; // Gắn ngày kiểm kê hiện tại
-                }
-
+                newInventoryCheck.NgayKiemKe = DateTime.Now; // Gắn ngày kiểm kê hiện tại
                 // Gọi service để tạo mới phiếu kiểm kê và chi tiết phiếu
                 var success = await _kiemKeService.CreateAsync(newInventoryCheck);
 

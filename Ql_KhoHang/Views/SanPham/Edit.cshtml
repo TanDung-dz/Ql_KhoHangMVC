@@ -33,15 +33,15 @@
         <span asp-validation-for="SoLuong" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" hidden>
         <label for="DonGia">Đơn giá</label>
-        <input type="number" class="form-control" asp-for="DonGia" placeholder="Đơn giá" step="0.01" />
+        <input type="number" class="form-control" asp-for="DonGia" placeholder="Đơn giá" step="0.01" value="0" />
         <span asp-validation-for="DonGia" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" hidden>
         <label for="KhoiLuong">Khối lượng (kg)</label>
-        <input type="number" class="form-control" asp-for="KhoiLuong" placeholder="Khối lượng" step="0.01" />
+        <input type="number" class="form-control" asp-for="KhoiLuong" placeholder="Khối lượng" step="0.01" value="0" />
         <span asp-validation-for="KhoiLuong" class="text-danger"></span>
     </div>
 
@@ -56,24 +56,37 @@
         <input type="text" class="form-control" asp-for="XuatXu" placeholder="Xuất xứ" />
         <span asp-validation-for="XuatXu" class="text-danger"></span>
     </div>
-
     <div class="form-group">
-        <label for="TrangThai">Trạng thái</label>
-        <select asp-for="TrangThai" class="form-control">
-            <option value="">-- Chọn trạng thái --</option>
-            <option value="true" selected="@(Model.TrangThai == true ? "selected" : "")">Hoạt động</option>
-            <option value="false" selected="@(Model.TrangThai == false ? "selected" : "")">Không hoạt động</option>
-        </select>
-        <span asp-validation-for="TrangThai" class="text-danger"></span>
+        <label for="CurrentImages">Hình ảnh hiện tại:</label>
+        <div class="row" id="current-images-container">
+            @{
+                var images = new List<string> { Model.Image, Model.Image2, Model.Image3, Model.Image4, Model.Image5 }
+                .Where(img => !string.IsNullOrEmpty(img)).ToList();
+
+                if (images.Any())
+                {
+                    foreach (var image in images)
+                    {
+                        <div class="col-md-3 mb-3">
+                            <img src="@image" alt="Current Image" class="img-thumbnail" style="max-width: 100%; height: auto;" />
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">Không có hình ảnh nào hiện tại.</p>
+                }
+            }
+        </div>
     </div>
 
     <div class="form-group">
-        <label for="Img">Hình ảnh</label>
-        <input type="file" class="form-control-file" id="Img" name="Img" />
-        @if (!string.IsNullOrEmpty(Model.Image))
-        {
-            <img src="@Model.Image" alt="Current Image" class="img-thumbnail mt-2" style="max-width: 200px;" />
-        }
+        <label for="NewImages">Thêm hình ảnh mới:</label>
+        <input type="file" class="form-control-file" id="NewImages" name="Images" multiple />
+        <small class="form-text text-muted">Chọn nhiều ảnh nếu cần.</small>
+        <div id="preview-new-images" class="row mt-3">
+            <!-- Preview ảnh mới -->
+        </div>
     </div>
 
     <div class="form-group">
@@ -99,7 +112,17 @@
         </select>
         <span asp-validation-for="MaHangSanXuat" class="text-danger"></span>
     </div>
-
+    <div class="form-group">
+        <label for="MaNhaCungCap">Nhà Cung Cấp</label>
+        <select asp-for="MaNhaCungCap" class="form-control">
+            <option value="">-- Chọn Nhà Cung Cấp --</option>
+            @foreach (var hang in ViewBag.NhaCungCaps)
+            {
+                <option value="@hang.MaNhaCungCap" selected="@(Model.MaNhaCungCap == hang.MaNhaCungCap ? "selected" : "")">@hang.TenNhaCungCap</option>
+            }
+        </select>
+        <span asp-validation-for="MaHangSanXuat" class="text-danger"></span>
+    </div>
     <h4>Vị trí sản phẩm</h4>
     <table class="table table-bordered">
         <thead>
@@ -222,6 +245,54 @@
             // Xóa chi tiết
             $(document).on('click', '.remove-detail', function () {
                 $(this).closest('tr').remove();
+            });
+        });
+    </script>
+    <script>
+        document.getElementById('NewImages').addEventListener('change', function (event) {
+            const files = event.target.files;
+            const previewContainer = document.getElementById('preview-new-images');
+
+            // Xóa preview cũ
+            previewContainer.innerHTML = '';
+
+            // Duyệt qua danh sách file và tạo thẻ <img> preview
+            Array.from(files).forEach(file => {
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = file.name;
+                        img.className = 'img-thumbnail col-md-3 mb-3';
+                        img.style.maxWidth = '100%';
+                        img.style.height = 'auto';
+                        previewContainer.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Xóa ảnh hiện tại
+            document.querySelectorAll('.remove-image').forEach(button => {
+                button.addEventListener('click', function () {
+                    const imageUrl = this.dataset.image;
+                    const container = this.closest('.col-md-3');
+
+                    // Thêm input hidden để báo server xóa ảnh
+                    const deleteInput = document.createElement('input');
+                    deleteInput.type = 'hidden';
+                    deleteInput.name = 'DeletedImages';
+                    deleteInput.value = imageUrl;
+
+                    // Thêm input vào form
+                    document.querySelector('form').appendChild(deleteInput);
+
+                    // Loại bỏ ảnh khỏi giao diện
+                    container.remove();
+                });
             });
         });
     </script>

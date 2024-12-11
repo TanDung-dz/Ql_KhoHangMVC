@@ -3,7 +3,24 @@
     ViewData["Title"] = "Chỉnh Sửa Phiếu Kiểm Kê";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
+<head>
+    <style>
+        .custom-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
 
+    </style>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    
+
+</head>
 <div class="row">
     <h2>Chỉnh Sửa Phiếu Kiểm Kê</h2>
 
@@ -15,14 +32,9 @@
 
     <form asp-action="Edit" method="post" enctype="multipart/form-data">
         <input type="hidden" asp-for="MaKiemKe" />
-        
-        <div class="form-group">
-            <label for="NgayKiemKe" hidden>Ngày Kiểm Kê</label>
-            <input asp-for="NgayKiemKe" type="date" class="form-control" />
-            <span asp-validation-for="NgayKiemKe" class="text-danger"></span>
-        </div>
 
-        <div class="form-group">
+        <!-- Chọn nhân viên kho -->
+        <div class="form-group mb-3">
             <label for="MaNhanVienKho">Nhân Viên Kho</label>
             <select asp-for="MaNhanVienKho" class="form-control">
                 <option value="">-- Chọn Nhân Viên Kho --</option>
@@ -39,6 +51,7 @@
             <span asp-validation-for="MaNhanVienKho" class="text-danger"></span>
         </div>
 
+        <!-- Chi tiết phiếu kiểm kê -->
         <h4>Chi Tiết Phiếu Kiểm Kê</h4>
         <table class="table table-bordered">
             <thead>
@@ -66,7 +79,7 @@
                                         foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
                                         {
                                             <option value="@product.MaSanPham" selected="@(Model.Details[i].MaSanPham == product.MaSanPham ? "selected" : null)">
-                                                @product.TenSanPham
+                                                @product.TenSanPham (@product.TenNhaCungCap)
                                             </option>
                                         }
                                     }
@@ -85,11 +98,36 @@
                                 <input name="Details[@i].NguyenNhan" type="text" class="form-control" value="@Model.Details[i].NguyenNhan" />
                             </td>
                             <td>
-                                <input name="Details[@i].Img" type="file" class="form-control" />
-                                @if (!string.IsNullOrEmpty(Model.Details[i].Anh))
-                                {
-                                    <img src="@Model.Details[i].Anh" alt="Ảnh sản phẩm" style="max-height: 50px;" />
-                                }
+                                <!-- Hiển thị ảnh nhỏ trên cùng một dòng -->
+                                <div class="d-flex overflow-auto gap-2" style="max-width: 300px;">
+                                    @{
+                                        var images = new List<string>
+                            {
+                            Model.Details[i].Anh,
+                            Model.Details[i].Anh2,
+                            Model.Details[i].Anh3,
+                            Model.Details[i].Anh4,
+                            Model.Details[i].Anh5,
+                            Model.Details[i].Anh6
+                            }.Where(img => !string.IsNullOrEmpty(img)).ToList();
+
+                                        if (images.Any())
+                                        {
+                                            foreach (var image in images)
+                                            {
+                                                <img src="@image" alt="Ảnh kiểm kê" class="img-thumbnail custom-img"
+                                                     data-bs-toggle="modal" data-bs-target="#imageModal"
+                                                     data-image-src="@image" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <p class="text-muted">Không có hình ảnh nào</p>
+                                        }
+                                    }
+                                </div>
+                                <!-- Upload ảnh mới -->
+                                <input name="Details[@i].Images" type="file" class="form-control mt-2" multiple />
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm remove-detail">
@@ -109,16 +147,32 @@
             </button>
         </div>
 
+        <!-- Nút Lưu -->
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-save"></i> Lưu Phiếu Kiểm Kê
         </button>
     </form>
 </div>
 
+<!-- Modal hiển thị ảnh -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Ảnh Phóng To</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Ảnh kiểm kê" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         $(document).ready(function () {
-            var detailIndex = @Model.Details.Count;
+            var detailIndex = @Model.Details?.Count ?? 0;
 
             // Thêm chi tiết mới
             $('#add-detail').click(function () {
@@ -127,13 +181,10 @@
                                 <td>
                                     <select name="Details[` + detailIndex + `].MaSanPham" class="form-control">
                                         <option value="">-- Chọn Sản Phẩm --</option>
-                                        @if (ViewBag.Products != null)
-                                        {
-                                            foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
-                                            {
-                                                <option value="@product.MaSanPham">@product.TenSanPham</option>
-                                            }
-                                        }
+        @foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
+        {
+                                                            <option value="@product.MaSanPham">@product.TenSanPham (@product.TenNhaCungCap)</option>
+        }
                                     </select>
                                 </td>
                                 <td>
@@ -149,16 +200,14 @@
                                     <input name="Details[` + detailIndex + `].NguyenNhan" type="text" class="form-control" />
                                 </td>
                                 <td>
-                                    <input name="Details[` + detailIndex + `].Img" type="file" class="form-control" />
+                                    <input name="Details[` + detailIndex + `].Images" type="file" class="form-control" multiple />
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm remove-detail">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
-                            </tr>
-                        `;
-
+                            </tr>`;
                 $('#detail-container').append(newDetailRow);
                 detailIndex++;
             });
@@ -167,6 +216,22 @@
             $(document).on('click', '.remove-detail', function () {
                 $(this).closest('tr').remove();
             });
+
+            // Hiển thị ảnh trong modal
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+
+            modal.addEventListener('show.bs.modal', function (event) {
+                const imageElement = event.relatedTarget;
+                const imageSrc = imageElement.getAttribute('data-image-src');
+                modalImage.src = imageSrc;
+            });
+
+            modal.addEventListener('hidden.bs.modal', function () {
+                modalImage.src = '';
+            });
         });
     </script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 }

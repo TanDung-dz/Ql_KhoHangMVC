@@ -24,21 +24,9 @@
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var products = JsonConvert.DeserializeObject<List<SanPhamDto>>(data);
-
-                // Gắn URL đầy đủ cho ảnh
-                foreach (var product in products)
-                {
-                    if (!string.IsNullOrEmpty(product.Image))
-                    {
-                        product.Image = $"{_apiBaseUrl}{product.Image}";
-                    }
-                    if (!string.IsNullOrEmpty(product.MaVach))
-                    {
-                        product.MaVach = $"{_apiBaseUrl}{product.MaVach}";
-                    }
-                }
-
-                return products;
+                products?.ForEach(AppendBaseUrlToImages);
+                var result = products?.OrderByDescending(p=>p.NgayTao).ToList();
+                return result ?? new List<SanPhamDto>();
             }
 
             return new List<SanPhamDto>();
@@ -53,13 +41,18 @@
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var product = JsonConvert.DeserializeObject<SanPhamDto>(data);
-				if (!string.IsNullOrEmpty(product.Image))
-				{
-					product.Image = $"{_apiBaseUrl}{product.Image}";
-				}
-                if (!string.IsNullOrEmpty(product.MaVach))
+                AppendBaseUrlToImages(product);
+                for (int i = 2; i <= 6; i++)
                 {
-                    product.MaVach = $"{_apiBaseUrl}{product.MaVach}";
+                    var imageProperty = typeof(SanPhamDto).GetProperty($"Image{i}");
+                    if (imageProperty != null)
+                    {
+                        var imageValue = imageProperty.GetValue(product) as string;
+                        if (!string.IsNullOrEmpty(imageValue))
+                        {
+                            imageProperty.SetValue(product, $"{_apiBaseUrl}{imageValue}");
+                        }
+                    }
                 }
                 return product;
 
@@ -68,30 +61,15 @@
             return null;
         }
 
-        public async Task<bool> CreateAsync(SanPhamDto newProduct, IFormFile Img)
+        public async Task<bool> CreateAsync(SanPhamDto newProduct, IFormFileCollection images)
         {
             var client = _httpClientFactory.CreateClient();
             var requestContent = new MultipartFormDataContent();
 
-            // Thêm thông tin sản phẩm
-            requestContent.Add(new StringContent(newProduct.TenSanPham ?? ""), "TenSanPham");
-            requestContent.Add(new StringContent(newProduct.Mota ?? ""), "Mota");
-            requestContent.Add(new StringContent(newProduct.SoLuong?.ToString() ?? "0"), "SoLuong");
-            requestContent.Add(new StringContent(newProduct.DonGia?.ToString() ?? "0"), "DonGia");
-            requestContent.Add(new StringContent(newProduct.KhoiLuong?.ToString() ?? "0"), "KhoiLuong");
-            requestContent.Add(new StringContent(newProduct.KichThuoc ?? ""), "KichThuoc");
-            requestContent.Add(new StringContent(newProduct.XuatXu ?? ""), "XuatXu");
-            requestContent.Add(new StringContent(newProduct.MaLoaiSanPham.ToString()), "MaLoaiSanPham");
-            requestContent.Add(new StringContent(newProduct.MaHangSanXuat.ToString()), "MaHangSanXuat");
+            AddProductDataToRequest(newProduct, requestContent);
+            AddImagesToRequest(images, requestContent);
 
-            // Thêm file ảnh nếu có
-            if (Img != null && Img.Length > 0)
-            {
-                var imageContent = new StreamContent(Img.OpenReadStream());
-                imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(Img.ContentType);
-                requestContent.Add(imageContent, "Img", Img.FileName);
-            }
-
+            // Gửi sản phẩm mới đến API
             var response = await client.PostAsync($"{_apiBaseUrl}/api/SanPham/CreateProduct/uploadfile", requestContent);
 
             if (!response.IsSuccessStatusCode)
@@ -126,7 +104,7 @@
             return true;
         }
 
-        public async Task<bool> UpdateAsync(int id, SanPhamDto product, IFormFile Img,
+        public async Task<bool> UpdateAsync(int id, SanPhamDto product, IFormFileCollection images,
             List<SanPhamViTriDto> newDetails,
             List<SanPhamViTriDto> updatedDetails,
             List<SanPhamViTriDto> deletedDetails)
@@ -134,32 +112,14 @@
             var client = _httpClientFactory.CreateClient();
             var requestContent = new MultipartFormDataContent();
 
-			// Thêm thông tin sản phẩm
-			requestContent.Add(new StringContent(product.TenSanPham ?? ""), "TenSanPham");
-			requestContent.Add(new StringContent(product.Mota ?? ""), "Mota");
-			requestContent.Add(new StringContent(product.SoLuong?.ToString() ?? "0"), "SoLuong");
-			requestContent.Add(new StringContent(product.DonGia?.ToString() ?? "0"), "DonGia");
-			requestContent.Add(new StringContent(product.KhoiLuong?.ToString() ?? "0"), "KhoiLuong");
-			requestContent.Add(new StringContent(product.KichThuoc ?? ""), "KichThuoc");
-			requestContent.Add(new StringContent(product.XuatXu ?? ""), "XuatXu");
-			requestContent.Add(new StringContent(product.MaLoaiSanPham.ToString()), "MaLoaiSanPham");
-			requestContent.Add(new StringContent(product.MaHangSanXuat.ToString()), "MaHangSanXuat");
+            AddProductDataToRequest(product, requestContent);
+            AddImagesToRequest(images, requestContent);
 
-			// Thêm file ảnh nếu có
-			if (Img != null && Img.Length > 0)
-            {
-                var imageContent = new StreamContent(Img.OpenReadStream());
-                imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(Img.ContentType);
-                requestContent.Add(imageContent, "Img", Img.FileName);
-            }
-
-            // Gửi yêu cầu PUT đến API
+            // Gửi sản phẩm cập nhật đến API
             var response = await client.PutAsync($"{_apiBaseUrl}/api/SanPham/UpdateProduct/{id}", requestContent);
 
             if (!response.IsSuccessStatusCode)
-            {
-                return false; // Dừng lại nếu cập nhật  thất bại
-            }
+                return false;
             // Thêm mới các vị trí
             foreach (var detail in newDetails)
             {
@@ -210,21 +170,8 @@
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var products = JsonConvert.DeserializeObject<List<SanPhamDto>>(data);
-
-				// Gắn URL đầy đủ cho ảnh
-				foreach (var product in products)
-				{
-					if (!string.IsNullOrEmpty(product.Image))
-					{
-						product.Image = $"{_apiBaseUrl}{product.Image}";
-					}
-					if (!string.IsNullOrEmpty(product.MaVach))
-					{
-						product.MaVach = $"{_apiBaseUrl}{product.MaVach}";
-					}
-				}
-
-				return products;
+                products?.ForEach(AppendBaseUrlToImages);
+                return products ?? new List<SanPhamDto>();
             }
 
             return new List<SanPhamDto>();
@@ -252,6 +199,73 @@
             var response = await client.PutAsync(apiEndpoint, detailContent);
             return response.IsSuccessStatusCode;
         }
-    }
+        private void AddProductDataToRequest(SanPhamDto product, MultipartFormDataContent requestContent)
+        {
+            requestContent.Add(new StringContent(product.TenSanPham ?? ""), "TenSanPham");
+            requestContent.Add(new StringContent(product.Mota ?? ""), "Mota");
+            requestContent.Add(new StringContent(product.SoLuong?.ToString() ?? "0"), "SoLuong");
+            requestContent.Add(new StringContent(product.DonGia?.ToString() ?? "0"), "DonGia");
+            requestContent.Add(new StringContent(product.KhoiLuong?.ToString() ?? "0"), "KhoiLuong");
+            requestContent.Add(new StringContent(product.KichThuoc ?? ""), "KichThuoc");
+            requestContent.Add(new StringContent(product.XuatXu ?? ""), "XuatXu");
+            requestContent.Add(new StringContent(product.MaLoaiSanPham.ToString()), "MaLoaiSanPham");
+            requestContent.Add(new StringContent(product.MaHangSanXuat.ToString()), "MaHangSanXuat");
+            requestContent.Add(new StringContent(product.MaNhaCungCap.ToString()), "MaNhaCungCap");
+        }
 
+        private void AddImagesToRequest(IFormFileCollection images, MultipartFormDataContent requestContent)
+        {
+            if (images != null && images.Any())
+            {
+                // Xử lý ảnh đầu tiên cho `Image`
+                var firstImage = images.FirstOrDefault();
+                if (firstImage != null)
+                {
+                    var imageContent = new StreamContent(firstImage.OpenReadStream());
+                    imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(firstImage.ContentType);
+                    requestContent.Add(imageContent, "Images", firstImage.FileName);
+                }
+                // Xử lý các ảnh tiếp theo cho `Image2`, `Image3`, ...
+                for (int i = 1; i < Math.Min(images.Count, 6); i++) // Đảm bảo chỉ xử lý đến `Image6`
+                {
+                    var image = images[i];
+                    var imageContent = new StreamContent(image.OpenReadStream());
+                    imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(image.ContentType);
+                    requestContent.Add(imageContent, "Images", image.FileName); // Key là "Image2", "Image3", ...
+                }
+            }
+        }
+
+        private void AppendBaseUrlToImages(SanPhamDto product)
+        {
+            if (product == null) return;
+
+            if (!string.IsNullOrEmpty(product.Image))
+            {
+                product.Image = $"{_apiBaseUrl}{product.Image}";
+            }
+
+            if (!string.IsNullOrEmpty(product.MaVach))
+            {
+                product.MaVach = $"{_apiBaseUrl}{product.MaVach}";
+            }
+        }
+        public async Task<List<SanPhamDto>> GetByLoaiSanPhamAsync(string loaiSanPham)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_apiBaseUrl}/api/SanPham/Get");
+           
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var products = JsonConvert.DeserializeObject<List<SanPhamDto>>(data);
+                products?.ForEach(AppendBaseUrlToImages);
+                var result = products.Where(p=>p.TenLoaiSanPham==loaiSanPham).OrderByDescending(p=>p.NgayTao).ToList();
+                return result ?? new List<SanPhamDto>();
+            }
+
+            return new List<SanPhamDto>();
+        }
+
+    }
 }

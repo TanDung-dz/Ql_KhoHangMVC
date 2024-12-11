@@ -8,10 +8,10 @@
 <div class="row">
     <h2>Danh Sách Sản Phẩm</h2>
 
-    <div class="mb-3 d-flex justify-content-between">
+    <div class="form-inline d-flex">
         <!-- Nút thêm mới sản phẩm -->
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="fas fa-plus-circle"></i> <!-- Biểu tượng thêm mới -->
+        <a asp-action="Create" class="btn btn-primary ml-2">
+            <i class="fas fa-plus"></i> <!-- Biểu tượng thêm mới -->
         </a>
 
         <!-- Form tìm kiếm sản phẩm -->
@@ -21,24 +21,78 @@
                 <i class="fas fa-search"></i> <!-- Biểu tượng tìm kiếm -->
             </button>
         </form>
+        
+        <form method="get" action="@Url.Action("Index", "SanPham")" class="form-inline d-flex" >
+    <div class="form-group" style="padding:20px">
+                <label for="loaiSanpham" class="mr-2"><h5>Lọc theo loại</h5></label>
+        <select id="loaiSanpham" name="loaiSanpham" class="form-control" onchange="this.form.submit()">
+                    @{ int kt = 0;
+                        @if (ViewBag.CurrentLoaiSanPham == "tatca")
+                        {
+                            <option value="tatca" selected>Tất cả</option>
+                            kt = 0;
+                            @foreach (var loaiSanPham in ViewBag.LoaiSanPhams)
+                            {
+                                <option value="@loaiSanPham.TenLoaiSanPham">
+                                    @loaiSanPham.TenLoaiSanPham
+                                </option>
+                            }
+                        }
+                        else
+                        {   
+
+                            foreach (var loaiSanPham in ViewBag.LoaiSanPhams)
+                            {
+                                if (loaiSanPham.TenLoaiSanPham == ViewBag.CurrentLoaiSanPham)
+                                {
+                                    <option value="@loaiSanPham.TenLoaiSanPham" selected>
+                                        @loaiSanPham.TenLoaiSanPham
+                                    </option>
+                                    kt = 1;
+                                }
+
+                            }
+                        }
+                        if(kt!=0)
+                        {
+                            <option value="tatca">Tất cả</option>
+                            
+                        }
+                        @foreach (var loaiSanPham in ViewBag.LoaiSanPhams)
+                        {
+                            if(kt==1)
+                            {
+                                if (loaiSanPham.TenLoaiSanPham != ViewBag.CurrentLoaiSanPham)
+                                {
+                                    <option value="@loaiSanPham.TenLoaiSanPham">
+                                        @loaiSanPham.TenLoaiSanPham
+                                    </option>
+                                }
+                            }
+                        }
+                    }
+        </select>
+    </div>
+</form>
+
+
+
     </div>
 
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Tên</th>
-                <th>Hình Ảnh</th>
-                <th>Mã vạch</th>
+                <th >Id</th>
+                <th class="w-25">Tên</th>
+                <th class="w-25">Hình Ảnh</th>
+                <th class="w-25">Mã vạch</th>
                 <th>Số Lượng</th>
-                <th>Đơn Giá</th>
                 <th>Khối Lượng</th>
                 <th>Kích Thước</th>
                 <th>Xuất Xứ</th>
-                <th>Trạng Thái</th>
                 <th>Loại</th>
-                <th>Hãng SX</th>
-                <th>Thao Tác</th>
+                <th class="w-25">Hãng SX</th>
+                <th class="w-25">Thao Tác</th>
             </tr>
         </thead>
         <tbody>
@@ -48,7 +102,7 @@
                 {
                     <tr>
                         <td>@sanpham.MaSanPham</td>
-                        <td>@sanpham.TenSanPham</td>
+                        <td>@sanpham.TenSanPham (@sanpham.TenNhaCungCap)</td>
                         <td>
                             @if (!string.IsNullOrEmpty(sanpham.Image))
                             {
@@ -62,28 +116,27 @@
                             }
                         </td>
                         <td>@sanpham.SoLuong</td>
-                        <td>@sanpham.DonGia?.ToString("C")</td>
                         <td>@sanpham.KhoiLuong</td>
                         <td>@sanpham.KichThuoc</td>
                         <td>@sanpham.XuatXu</td>
-                        <td>@sanpham.TrangThai</td>
                         <td>@sanpham.TenLoaiSanPham</td>
                         <td>@sanpham.TenHangSanXuat</td>
                         <td>
                             <div class="btn-group">
-                                <a asp-action="Details" asp-route-id="@sanpham.MaSanPham" class="btn btn-info btn-sm" title="Chi tiết">
-                                    <i class="fas fa-eye"></i> <!-- Biểu tượng chi tiết -->
+                                <a asp-action="Details" asp-route-id="@sanpham.MaSanPham" class="btn btn-info btn-sm me-2" title="Chi tiết">
+                                    <i class="fas fa-eye"></i>
                                 </a>
-                                <a asp-action="Edit" asp-route-id="@sanpham.MaSanPham" class="btn btn-warning btn-sm" title="Sửa">
-                                    <i class="fas fa-edit"></i> <!-- Biểu tượng sửa -->
+                                <a asp-action="Edit" asp-route-id="@sanpham.MaSanPham" class="btn btn-warning btn-sm me-2" title="Sửa">
+                                    <i class="fas fa-edit"></i>
                                 </a>
                                 <form asp-action="Delete" asp-route-id="@sanpham.MaSanPham" method="post" style="display:inline;">
                                     <button type="submit" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
-                                        <i class="fas fa-trash"></i> <!-- Biểu tượng xóa -->
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
                             </div>
                         </td>
+
                     </tr>
                 }
             }

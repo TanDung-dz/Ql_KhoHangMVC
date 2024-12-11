@@ -27,7 +27,6 @@
             <tr>
                 <th>Mã Phiếu</th>
                 <th>Ngày Xuất</th>
-                <th>Phí Vận Chuyển</th>
                 <th>Trạng Thái</th>
                 <th>Khách Hàng</th>
                 <th>Người Dùng</th>
@@ -42,7 +41,6 @@
                     <tr>
                         <td>@order.MaPhieuXuatHang</td>
                         <td>@(order.NgayXuat.HasValue ? order.NgayXuat.Value.ToString("dd/MM/yyyy") : "Chưa có ngày")</td>
-                        <td>@order.PhiVanChuyen</td>
                         <td>@order.TrangThai</td>
                         <td>@order.TenKhachHang</td>
                         <td>@order.TenNguoiDung</td>

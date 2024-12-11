@@ -74,15 +74,7 @@ namespace Ql_KhoHang.Controllers
 			// Lấy top 5 sản phẩm
 			var top5Products = products.OrderByDescending(p=>p.SoLuong).Take(5).
                                         Select(p=> new {p.TenSanPham,p.SoLuong}).ToList();
-            //Thống kê phiếu nhập
-            var statistics = await _phieuNhapHangService.GetImportOrdersByMonth();
 
-            // Chuẩn bị dữ liệu cho biểu đồ
-            var labels = statistics.Keys.ToList(); // Danh sách các tháng
-            var data = statistics.Values.ToList(); // Số lượng phiếu nhập tương ứng
-
-            ViewBag.ChartLabels = JsonConvert.SerializeObject(labels);
-            ViewBag.ChartData = JsonConvert.SerializeObject(data);
             // Truyền dữ liệu cho View
             ViewBag.Top5Products = top5Products;
 			// Gửi dữ liệu đến View
