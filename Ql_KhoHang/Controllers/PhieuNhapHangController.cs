@@ -23,22 +23,39 @@ namespace Ql_KhoHang.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? keyword, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string? keyword, DateTime? startDate, DateTime? endDate, int pageNumber = 1, int pageSize = 10)
         {
             SetUserClaims();
+
+            // Lấy toàn bộ danh sách phiếu từ API
             var importOrders = await _importOrderService.GetAllAsync(keyword);
+
+            // Lọc theo ngày nếu có cung cấp `startDate` và `endDate`
+            if (startDate.HasValue)
+            {
+                importOrders = importOrders.Where(p => p.NgayNhap >= startDate.Value).ToList();
+            }
+            if (endDate.HasValue)
+            {
+                var adjustedEndDate = endDate.Value.Date.AddDays(1).AddTicks(-1);
+                importOrders = importOrders.Where(p => p.NgayNhap <= adjustedEndDate).ToList();
+            }
 
             // Phân trang
             var paginatedOrders = importOrders.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             int totalPages = (int)Math.Ceiling(importOrders.Count / (double)pageSize);
 
+            // Truyền dữ liệu vào ViewBag để hiển thị
             ViewBag.CurrentPage = pageNumber;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalPages = totalPages;
             ViewBag.Keyword = keyword;
+            ViewBag.StartDate = startDate;
+            ViewBag.EndDate = endDate;
 
             return View(paginatedOrders);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)
