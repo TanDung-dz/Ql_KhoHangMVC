@@ -215,5 +215,26 @@ namespace Ql_KhoHang.Services
             requestContent.Add(new StringContent("0"), "NganHang");
             requestContent.Add(new StringContent("1"), "TrangThai");
         }
-    }
+		public async Task<Dictionary<string, int>> GetStatisticsByMonthAsync()
+		{
+			var client = _httpClientFactory.CreateClient();
+			var response = await client.GetAsync($"{_apiBaseUrl}/api/PhieuXuatHang/Get");
+
+			if (response.IsSuccessStatusCode)
+			{
+				var data = await response.Content.ReadAsStringAsync();
+				var phieuXuatList = JsonConvert.DeserializeObject<List<PhieuXuatHangDto>>(data);
+
+				// Tổng hợp số lượng phiếu xuất theo tháng
+				var statistics = phieuXuatList
+					.GroupBy(p => p.NgayXuat.HasValue ? p.NgayXuat.Value.ToString("yyyy-MM") : "Unknown")
+					.ToDictionary(g => g.Key, g => g.Count());
+
+				return statistics;
+			}
+
+			return new Dictionary<string, int>();
+		}
+
+	}
 }

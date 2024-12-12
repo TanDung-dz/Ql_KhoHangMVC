@@ -213,6 +213,26 @@ namespace Ql_KhoHang.Services
             requestContent.Add(new StringContent("0"), "DonGiaNhap");
             requestContent.Add(new StringContent("1"), "TrangThai");
         }
+        public async Task<Dictionary<string, int>> GetStatisticsByMonthAsync()
+        {
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_apiBaseUrl}/api/PhieuNhapHang/Get");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var phieuNhapList = JsonConvert.DeserializeObject<List<PhieuNhapHangDto>>(data);
+
+                // Tổng hợp số lượng phiếu nhập theo tháng
+                var statistics = phieuNhapList
+                    .GroupBy(p => p.NgayNhap.HasValue ? p.NgayNhap.Value.ToString("yyyy-MM") : "Unknown")
+                    .ToDictionary(g => g.Key, g => g.Count());
+
+                return statistics;
+            }
+
+            return new Dictionary<string, int>();
+        }
 
     }
 }
