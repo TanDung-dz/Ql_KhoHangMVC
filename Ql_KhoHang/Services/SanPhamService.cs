@@ -24,7 +24,6 @@
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var products = JsonConvert.DeserializeObject<List<SanPhamDto>>(data);
-                products?.ForEach(AppendBaseUrlToImages);
                 var result = products?.OrderByDescending(p=>p.NgayTao).ToList();
                 return result ?? new List<SanPhamDto>();
             }
@@ -41,19 +40,6 @@
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var product = JsonConvert.DeserializeObject<SanPhamDto>(data);
-                AppendBaseUrlToImages(product);
-                for (int i = 2; i <= 6; i++)
-                {
-                    var imageProperty = typeof(SanPhamDto).GetProperty($"Image{i}");
-                    if (imageProperty != null)
-                    {
-                        var imageValue = imageProperty.GetValue(product) as string;
-                        if (!string.IsNullOrEmpty(imageValue))
-                        {
-                            imageProperty.SetValue(product, $"{_apiBaseUrl}{imageValue}");
-                        }
-                    }
-                }
                 return product;
 
             }
@@ -170,7 +156,6 @@
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var products = JsonConvert.DeserializeObject<List<SanPhamDto>>(data);
-                products?.ForEach(AppendBaseUrlToImages);
                 return products ?? new List<SanPhamDto>();
             }
 
@@ -235,21 +220,6 @@
                 }
             }
         }
-
-        private void AppendBaseUrlToImages(SanPhamDto product)
-        {
-            if (product == null) return;
-
-            if (!string.IsNullOrEmpty(product.Image))
-            {
-                product.Image = $"{_apiBaseUrl}{product.Image}";
-            }
-
-            if (!string.IsNullOrEmpty(product.MaVach))
-            {
-                product.MaVach = $"{_apiBaseUrl}{product.MaVach}";
-            }
-        }
         public async Task<List<SanPhamDto>> GetByLoaiSanPhamAsync(string loaiSanPham)
         {
             var client = _httpClientFactory.CreateClient();
@@ -259,7 +229,6 @@
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var products = JsonConvert.DeserializeObject<List<SanPhamDto>>(data);
-                products?.ForEach(AppendBaseUrlToImages);
                 var result = products.Where(p=>p.TenLoaiSanPham==loaiSanPham).OrderByDescending(p=>p.NgayTao).ToList();
                 return result ?? new List<SanPhamDto>();
             }

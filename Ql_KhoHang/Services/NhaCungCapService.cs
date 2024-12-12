@@ -24,13 +24,6 @@ namespace Ql_KhoHang.Services
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var nhacc = JsonConvert.DeserializeObject<List<NhacungcapDto>>(data);
-				foreach (var item in nhacc)
-				{
-					if (!string.IsNullOrEmpty(item.Image))
-					{
-						item.Image = $"{_apiBaseUrl}{item.Image}";
-					}
-				}
 				return nhacc;
 
             }
@@ -47,10 +40,6 @@ namespace Ql_KhoHang.Services
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var ncc = JsonConvert.DeserializeObject<NhacungcapDto>(data);
-				if (!string.IsNullOrEmpty(ncc.Image))
-				{
-					ncc.Image = $"{_apiBaseUrl}{ncc.Image}";
-				}
 				return ncc;
             }
 
@@ -122,13 +111,6 @@ namespace Ql_KhoHang.Services
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var nhacc = JsonConvert.DeserializeObject<List<NhacungcapDto>>(data);
-                foreach (var item in nhacc)
-                {
-                    if (!string.IsNullOrEmpty(item.Image))
-                    {
-                        item.Image = $"{_apiBaseUrl}{item.Image}";
-                    }
-                }
                 return nhacc;
             }
 

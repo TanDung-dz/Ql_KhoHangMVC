@@ -30,15 +30,6 @@ namespace Ql_KhoHang.Services
 			{
 				var data = await response.Content.ReadAsStringAsync();
 				var employees = JsonConvert.DeserializeObject<List<NhanVienKhoDto>>(data);
-
-				foreach (var item in employees)
-				{
-					if (!string.IsNullOrEmpty(item.Hinhanh))
-					{
-						item.Hinhanh = $"{_apiBaseUrl}{item.Hinhanh}";  // Gắn URL đầy đủ cho ảnh
-					}
-				}
-
 				return employees;
 			}
 
@@ -55,12 +46,6 @@ namespace Ql_KhoHang.Services
 			{
 				var data = await response.Content.ReadAsStringAsync();
 				var employee = JsonConvert.DeserializeObject<NhanVienKhoDto>(data);
-
-				if (!string.IsNullOrEmpty(employee.Hinhanh))
-				{
-					employee.Hinhanh = $"{_apiBaseUrl}{employee.Hinhanh}";  // Gắn URL đầy đủ cho ảnh
-				}
-
 				return employee;
 			}
 
