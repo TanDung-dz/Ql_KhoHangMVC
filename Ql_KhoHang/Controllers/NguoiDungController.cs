@@ -13,11 +13,13 @@ namespace Ql_KhoHang.Controllers
         private readonly NguoiDungService _nguoiDungService;
         private readonly SanPhamService _sanPhamService;
 		private readonly PhieuNhapHangService _phieuNhapHangService;
-		public NguoiDungController(NguoiDungService nguoiDungService, SanPhamService sanPhamService, PhieuNhapHangService phieuNhapHangService)
+		private readonly PhieuXuatHangService _phieuXuatHangService;
+		public NguoiDungController(NguoiDungService nguoiDungService, SanPhamService sanPhamService, PhieuNhapHangService phieuNhapHangService, PhieuXuatHangService phieuXuatHangService)
         {
             _nguoiDungService = nguoiDungService;
             _sanPhamService = sanPhamService;
             _phieuNhapHangService = phieuNhapHangService;
+            _phieuXuatHangService = phieuXuatHangService;
         }
 
         [HttpGet]
@@ -74,9 +76,22 @@ namespace Ql_KhoHang.Controllers
 			// Lấy top 5 sản phẩm
 			var top5Products = products.OrderByDescending(p=>p.SoLuong).Take(5).
                                         Select(p=> new {p.TenSanPham,p.SoLuong}).ToList();
+			// Lấy thống kê phiếu nhập theo tháng
+			var statistics = await _phieuNhapHangService.GetStatisticsByMonthAsync();
 
-            // Truyền dữ liệu cho View
-            ViewBag.Top5Products = top5Products;
+			// Sắp xếp thống kê theo thời gian (tháng tăng dần)
+			var sortedStatistics = statistics
+				.OrderBy(kv => DateTime.ParseExact(kv.Key, "yyyy-MM", null))
+				.ToDictionary(kv => kv.Key, kv => kv.Value);
+			// Lấy thống kê phiếu xuất theo tháng
+			var exportStatistics = await _phieuXuatHangService.GetStatisticsByMonthAsync();
+			var sortedExportStatistics = exportStatistics
+				.OrderBy(kv => DateTime.ParseExact(kv.Key, "yyyy-MM", null))
+				.ToDictionary(kv => kv.Key, kv => kv.Value);
+			ViewBag.ExportMonthlyStatistics = sortedExportStatistics;
+			ViewBag.MonthlyStatistics = sortedStatistics;
+			// Truyền dữ liệu cho View
+			ViewBag.Top5Products = top5Products;
 			// Gửi dữ liệu đến View
 			ViewBag.TotalProducts = products.Count;
             return View();

@@ -219,7 +219,7 @@ namespace Ql_KhoHang.Controllers
             var success = await _sanPhamService.DeleteAsync(id);
             if (success)
             {
-                TempData["SuccessMessage"] = "Sửa sản phẩm thành công!";
+                TempData["SuccessMessage"] = "Xóa sản phẩm thành công!";
                 return RedirectToAction("Index");
             }
             else
