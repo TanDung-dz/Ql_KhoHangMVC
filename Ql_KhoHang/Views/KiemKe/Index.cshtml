@@ -15,11 +15,28 @@
 
         <!-- Form tìm kiếm phiếu kiểm kê -->
         <form asp-action="Index" method="get" class="form-inline d-flex">
+            <!-- Tìm kiếm theo từ khóa -->
             <input type="text" name="keyword" class="form-control" placeholder="Search by keyword" value="@ViewBag.Keyword" />
+
+            <!-- Lọc theo ngày bắt đầu -->
+            <input type="date" name="startDate" class="form-control ml-2"
+                   value="@(ViewBag.StartDate?.ToString("yyyy-MM-dd"))" />
+
+            <!-- Lọc theo ngày kết thúc -->
+            <input type="date" name="endDate" class="form-control ml-2"
+                   value="@(ViewBag.EndDate?.ToString("yyyy-MM-dd"))" />
+
+            <!-- Nút tìm kiếm -->
             <button type="submit" class="btn btn-secondary ml-2">
-                <i class="fas fa-search"></i> <!-- Biểu tượng tìm kiếm -->
+                <i class="fas fa-search"></i>
             </button>
+
+            <!-- Nút xóa bộ lọc -->
+            <a href="@Url.Action("Index")" class="btn btn-light ml-2">
+                <i class="fas fa-times"></i> Xóa bộ lọc
+            </a>
         </form>
+
     </div>
 
     <table class="table table-striped">
@@ -73,8 +90,8 @@
             @if (ViewBag.CurrentPage > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage - 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">
-                        <i class="fas fa-chevron-left"></i> <!-- Biểu tượng mũi tên trái -->
+                    <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage - 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword&startDate=@ViewBag.StartDate&endDate=@ViewBag.EndDate">
+                        <i class="fas fa-chevron-left"></i>
                     </a>
                 </li>
             }
@@ -82,20 +99,21 @@
             @for (var i = 1; i <= ViewBag.TotalPages; i++)
             {
                 <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                    <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">@i</a>
+                    <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword&startDate=@ViewBag.StartDate&endDate=@ViewBag.EndDate">@i</a>
                 </li>
             }
 
             @if (ViewBag.CurrentPage < ViewBag.TotalPages)
             {
                 <li class="page-item">
-                    <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage + 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">
-                        <i class="fas fa-chevron-right"></i> <!-- Biểu tượng mũi tên phải -->
+                    <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage + 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword&startDate=@ViewBag.StartDate&endDate=@ViewBag.EndDate">
+                        <i class="fas fa-chevron-right"></i>
                     </a>
                 </li>
             }
         </ul>
     </nav>
+
 </div>
 
 

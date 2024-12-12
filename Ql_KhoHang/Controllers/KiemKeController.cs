@@ -22,24 +22,41 @@ namespace Ql_KhoHang.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? keyword, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string? keyword, DateTime? startDate, DateTime? endDate, int pageNumber = 1, int pageSize = 10)
         {
             SetUserClaims();
+
+            // Lấy danh sách phiếu kiểm kê
             var kiemKes = await _kiemKeService.GetAllAsync(keyword);
+
+            // Lọc theo ngày nếu có
+            if (startDate.HasValue)
+            {
+                kiemKes = kiemKes.Where(k => k.NgayKiemKe >= startDate.Value).ToList();
+            }
+            if (endDate.HasValue)
+            {
+                var adjustedEndDate = endDate.Value.Date.AddDays(1).AddTicks(-1);
+                kiemKes = kiemKes.Where(k => k.NgayKiemKe <= adjustedEndDate).ToList();
+            }
 
             // Phân trang
             var paginatedKiemKes = kiemKes.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             int totalPages = (int)Math.Ceiling(kiemKes.Count / (double)pageSize);
 
+            // Truyền dữ liệu vào ViewBag
             ViewBag.CurrentPage = pageNumber;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalPages = totalPages;
             ViewBag.Keyword = keyword;
+            ViewBag.StartDate = startDate;
+            ViewBag.EndDate = endDate;
 
             return View(paginatedKiemKes);
         }
+
         //
-        
+
         //
         [HttpGet]
         public async Task<IActionResult> Details(int id)
