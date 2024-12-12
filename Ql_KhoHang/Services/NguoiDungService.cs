@@ -34,10 +34,6 @@ namespace Ql_KhoHang.Services
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var nguoidung = JsonConvert.DeserializeObject<NguoiDungDto>(data);
-				if (!string.IsNullOrEmpty(nguoidung.Anh))
-				{
-					nguoidung.Anh = $"{_apiBaseUrl}{nguoidung.Anh}";
-				}
 				return nguoidung;
             }
 
@@ -54,14 +50,6 @@ namespace Ql_KhoHang.Services
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var nguoidungs = JsonConvert.DeserializeObject<List<NguoiDungDto>>(data);
-				foreach (var item in nguoidungs)
-				{
-					if (!string.IsNullOrEmpty(item.Anh))
-					{
-						item.Anh = $"{_apiBaseUrl}{item.Anh}";
-					}
-					
-				}
 				return nguoidungs;
             }
 
@@ -78,10 +66,6 @@ namespace Ql_KhoHang.Services
             {
                 var data = await response.Content.ReadAsStringAsync();
 				var nguoidung = JsonConvert.DeserializeObject<NguoiDungDto>(data);
-				if (!string.IsNullOrEmpty(nguoidung.Anh))
-				{
-					nguoidung.Anh = $"{_apiBaseUrl}{nguoidung.Anh}";
-				}
 				return nguoidung;
             }
 

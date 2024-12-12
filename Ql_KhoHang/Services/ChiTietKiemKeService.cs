@@ -24,24 +24,6 @@ namespace Ql_KhoHang.Services
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var details = JsonConvert.DeserializeObject<List<ChiTietKiemKeDto>>(data);
-                foreach (var item in details) {
-                    if (!string.IsNullOrEmpty(item.Anh))
-                    {
-                        item.Anh = $"{_apiBaseUrl}{item.Anh}";
-                        for (int i = 2; i <= 6; i++)
-                        {
-                            var imageProperty = typeof(ChiTietKiemKeDto).GetProperty($"Anh{i}");
-                            if (imageProperty != null)
-                            {
-                                var imageValue = imageProperty.GetValue(item) as string;
-                                if (!string.IsNullOrEmpty(imageValue))
-                                {
-                                    imageProperty.SetValue(item, $"{_apiBaseUrl}{imageValue}");
-                                }
-                            }
-                        }
-                    }
-                }
                 return details;
             }
             return new List<ChiTietKiemKeDto>();
