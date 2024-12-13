@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Ql_KhoHang.Dtos;
 using Ql_KhoHang.Services;
 using System.Security.Claims;
@@ -13,14 +14,18 @@ namespace Ql_KhoHang.Controllers
         private readonly SanPhamViTriService _sanPhamViTriService;
         private readonly ViTriService _ViTriService;
         private readonly NhaCungCapService _nhaCungCapService;
-
+        private readonly ChiTietPhieuNhapHangService _chiTietPhieuNhapHangService;
+        private readonly PhieuNhapHangService _phieuNhapHangService;
         public SanPhamController(
             SanPhamService sanPhamService,
             LoaiSanPhamService loaiSanPhamService,
             HangSanXuatService hangSanXuatService,
             SanPhamViTriService sanPhamViTriService,
             ViTriService viTriService,
-            NhaCungCapService nhaCungCapService) // Thêm dịch vụ
+            NhaCungCapService nhaCungCapService,
+            ChiTietPhieuNhapHangService chiTietPhieuNhapHangService,
+            PhieuNhapHangService phieuNhapHangService
+            ) // Thêm dịch vụ
         {
             _sanPhamService = sanPhamService;
             _loaiSanPhamService = loaiSanPhamService;
@@ -28,6 +33,8 @@ namespace Ql_KhoHang.Controllers
             _sanPhamViTriService = sanPhamViTriService; // Khởi tạo dịch vụ
             _ViTriService = viTriService;
             _nhaCungCapService = nhaCungCapService;
+            _chiTietPhieuNhapHangService = chiTietPhieuNhapHangService;
+            _phieuNhapHangService = phieuNhapHangService;
         }
 
         [HttpGet]
@@ -72,10 +79,21 @@ namespace Ql_KhoHang.Controllers
 
             return View(paginatedProducts);
         }
+        public async Task<IActionResult> GetImportBatchesByProductId(int productId)
+        {
+            // Lấy danh sách phiếu nhập liên quan
+            var phieuNhapLienQuan = await _chiTietPhieuNhapHangService.GetByImportOrderProductIdAsync(productId);
 
+            // Truyền dữ liệu qua ViewBag
+            ViewBag.PhieuNhapLienQuan = phieuNhapLienQuan;
 
-
-
+            // Trả về PartialView
+            return PartialView("_ImportBatches");
+        }
+        public async Task<IActionResult> _ImportBatches()
+        {
+            return PartialView();
+        }
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {

@@ -26,9 +26,16 @@ namespace Ql_KhoHang.Controllers
         {
             SetUserClaims();
 
-            // Lấy danh sách phiếu kiểm kê
-            var kiemKes = await _kiemKeService.GetAllAsync(keyword);
-
+            // Gọi service để tìm kiếm nếu có từ khóa
+            List<KiemKeDto> kiemKes;
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                kiemKes = await _kiemKeService.Search(keyword);
+            }
+            else
+            {
+                kiemKes = await _kiemKeService.GetAllAsync("");
+            }
             // Lọc theo ngày nếu có
             if (startDate.HasValue)
             {

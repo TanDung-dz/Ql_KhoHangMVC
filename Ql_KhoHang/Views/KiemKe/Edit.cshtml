@@ -92,8 +92,12 @@
                                 <input name="Details[@i].SoLuongThucTe" type="number" class="form-control" value="@Model.Details[i].SoLuongThucTe" />
                             </td>
                             <td>
-                                <input name="Details[@i].TrangThai" type="number" class="form-control" value="@Model.Details[i].TrangThai" />
+                                <select name="Details[@i].TrangThai" class="form-control">
+                                    <option value="0" selected="@(Model.Details[i].TrangThai == 0 ? "selected" : "")">Không đạt</option>
+                                    <option value="1" selected="@(Model.Details[i].TrangThai == 1 ? "selected" : "")">Đạt</option>
+                                </select>
                             </td>
+
                             <td>
                                 <input name="Details[@i].NguyenNhan" type="text" class="form-control" value="@Model.Details[i].NguyenNhan" />
                             </td>
@@ -194,8 +198,12 @@
                                     <input name="Details[` + detailIndex + `].SoLuongThucTe" type="number" class="form-control" />
                                 </td>
                                 <td>
-                                    <input name="Details[` + detailIndex + `].TrangThai" type="number" class="form-control" />
+                                    <select name="Details[` + detailIndex + `].TrangThai" class="form-control">
+                                        <option value="0">Chưa hoàn thành</option>
+                                        <option value="1">Hoàn thành</option>
+                                    </select>
                                 </td>
+
                                 <td>
                                     <input name="Details[` + detailIndex + `].NguyenNhan" type="text" class="form-control" />
                                 </td>

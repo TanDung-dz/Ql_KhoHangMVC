@@ -21,16 +21,23 @@ namespace Ql_KhoHang.Controllers
             _nccService = nhaCungCapService;
             _importOrderDetailService = importOrderDetailService;
         }
-
         [HttpGet]
         public async Task<IActionResult> Index(string? keyword, DateTime? startDate, DateTime? endDate, int pageNumber = 1, int pageSize = 10)
         {
             SetUserClaims();
 
-            // Lấy toàn bộ danh sách phiếu từ API
-            var importOrders = await _importOrderService.GetAllAsync(keyword);
+            // Gọi service để tìm kiếm nếu có từ khóa
+            List<PhieuNhapHangDto> importOrders;
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                importOrders = await _importOrderService.Search(keyword);
+            }
+            else
+            {
+                importOrders = await _importOrderService.GetAllAsync();
+            }
 
-            // Lọc theo ngày nếu có cung cấp `startDate` và `endDate`
+            // Lọc theo ngày nếu cung cấp
             if (startDate.HasValue)
             {
                 importOrders = importOrders.Where(p => p.NgayNhap >= startDate.Value).ToList();
@@ -42,10 +49,14 @@ namespace Ql_KhoHang.Controllers
             }
 
             // Phân trang
-            var paginatedOrders = importOrders.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            var paginatedOrders = importOrders
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
             int totalPages = (int)Math.Ceiling(importOrders.Count / (double)pageSize);
 
-            // Truyền dữ liệu vào ViewBag để hiển thị
+            // Gửi dữ liệu sang ViewBag
             ViewBag.CurrentPage = pageNumber;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalPages = totalPages;
@@ -53,8 +64,9 @@ namespace Ql_KhoHang.Controllers
             ViewBag.StartDate = startDate;
             ViewBag.EndDate = endDate;
 
-            return View(paginatedOrders);
+            return View(paginatedOrders); // Truyền danh sách phiếu nhập đã lọc tới view
         }
+
 
 
         [HttpGet]

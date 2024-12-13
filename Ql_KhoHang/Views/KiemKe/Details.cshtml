@@ -66,19 +66,15 @@
 
     <table class="table table-bordered align-middle">
         <tr>
-            <th class="text-end" style="width: 30%;">Mã Kiểm Kê</th>
+            <th class="text-start" style="width: 30%;">Mã Kiểm Kê</th>
             <td>@Model.MaKiemKe</td>
         </tr>
         <tr>
-            <th class="text-end">Ngày Kiểm Kê</th>
+            <th class="text-start">Ngày Kiểm Kê</th>
             <td>@(Model.NgayKiemKe.HasValue ? Model.NgayKiemKe.Value.ToString("dd/MM/yyyy") : "Chưa có ngày")</td>
         </tr>
         <tr>
-            <th class="text-end">Trạng Thái</th>
-            <td>@(Model.Hide.HasValue && Model.Hide.Value ? "Đã ẩn" : "Hiển thị")</td>
-        </tr>
-        <tr>
-            <th class="text-end">Nhân Viên Kiểm Kê</th>
+            <th class="text-start">Nhân Viên Kiểm Kê</th>
             <td>@Model.TenNhanVienKho</td>
         </tr>
     </table>
@@ -102,7 +98,9 @@
                     <td class="text-center">@detail.TenSanPham</td>
                     <td class="text-center">@detail.SoLuongTon</td>
                     <td class="text-center">@detail.SoLuongThucTe</td>
-                    <td class="text-center">@detail.TrangThai</td>
+                    <td class="text-center">
+                        @(detail.TrangThai == 1 ? "Đạt" : "Không đạt")
+                    </td>
                     <td class="text-center">@detail.NguyenNhan</td>
                     <td>
                         <div class="d-flex flex-wrap gap-2">

@@ -56,7 +56,10 @@
                         <input name="Details[0].SoLuongThucTe" type="number" class="form-control" />
                     </td>
                     <td>
-                        <input name="Details[0].TrangThai" type="number" class="form-control" />
+                        <select name="Details[0].TrangThai" class="form-control">
+                            <option value="0">Chưa hoàn thành</option>
+                            <option value="1">Hoàn thành</option>
+                        </select>
                     </td>
                     <td>
                         <input name="Details[0].NguyenNhan" type="text" class="form-control" />
@@ -120,8 +123,12 @@
                                     <input name="Details[` + detailIndex + `].SoLuongThucTe" type="number" class="form-control" />
                                 </td>
                                 <td>
-                                    <input name="Details[` + detailIndex + `].TrangThai" type="number" class="form-control" />
+                                            <select name="Details[` + detailIndex + `].TrangThai" class="form-control">
+                                        <option value="0">Chưa hoàn thành</option>
+                                        <option value="1">Hoàn thành</option>
+                                    </select>
                                 </td>
+
                                 <td>
                                     <input name="Details[` + detailIndex + `].NguyenNhan" type="text" class="form-control" />
                                 </td>

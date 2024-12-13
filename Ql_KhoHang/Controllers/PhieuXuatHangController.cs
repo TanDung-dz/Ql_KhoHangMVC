@@ -26,9 +26,16 @@ namespace Ql_KhoHang.Controllers
         public async Task<IActionResult> Index(string? keyword, DateTime? startDate, DateTime? endDate, int pageNumber = 1, int pageSize = 10)
         {
             SetUserClaims();
-
-            // Lấy danh sách phiếu xuất hàng
-            var exportOrders = await _exportOrderService.GetAllAsync(keyword);
+            // Gọi service để tìm kiếm nếu có từ khóa
+            List<PhieuXuatHangDto> exportOrders;
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                exportOrders = await _exportOrderService.Search(keyword);
+            }
+            else
+            {
+                exportOrders = await _exportOrderService.GetAllAsync("");
+            }
 
             // Lọc theo ngày nếu có startDate và endDate
             if (startDate.HasValue)

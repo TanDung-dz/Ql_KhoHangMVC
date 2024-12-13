@@ -68,27 +68,26 @@
     <!-- Bảng thông tin phiếu nhập -->
     <table class="table table-bordered align-middle">
         <tr>
-            <th class="text-end" style="width: 30%;">Mã Phiếu</th>
+            <th class="text-start" style="width: 30%;">Mã Phiếu</th>
             <td>@Model.MaPhieuNhapHang</td>
         </tr>
         <tr>
-            <th class="text-end">Ngày Nhập</th>
+            <th class="text-start">Ngày Nhập</th>
             <td>@(Model.NgayNhap.HasValue ? Model.NgayNhap.Value.ToString("dd/MM/yyyy") : "Chưa có ngày")</td>
         </tr>
         <tr>
-            <th class="text-end">Phí Vận Chuyển</th>
-            <td>@Model.PhiVanChuyen</td>
+            <th class="text-start">Trạng Thái</th>
+            <td>
+                @(Model.TrangThai == 1 ? "Hoàn thành" : "Chưa hoàn thành")
+            </td>
+
         </tr>
         <tr>
-            <th class="text-end">Trạng Thái</th>
-            <td>@Model.TrangThai</td>
-        </tr>
-        <tr>
-            <th class="text-end">Nhà Cung Cấp</th>
+            <th class="text-start">Nhà Cung Cấp</th>
             <td>@Model.TenNhaCungCap</td>
         </tr>
         <tr>
-            <th class="text-end">Người Dùng</th>
+            <th class="text-start">Nhân viên</th>
             <td>@Model.TenNguoiDung</td>
         </tr>
     </table>
