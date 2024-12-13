@@ -73,14 +73,27 @@
 			<div class="card card-chart shadow-sm border-0">
 				<div class="card-header bg-light">
 					<h4 class="card-title text-primary mb-0">
+						<i class="fas fa-chart-pie me-2"></i>Các Sản Phẩm Được Nhập Nhiều Nhất
+					</h4>
+				</div>
+				<div class="card-body">
+					<canvas id="importedProductsChart" class="w-100"></canvas>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="card card-chart shadow-sm border-0">
+				<div class="card-header bg-light">
+					<h4 class="card-title text-primary mb-0">
 						<i class="fas fa-chart-pie me-2"></i>Các Sản Phẩm Được Xuất Nhiều Nhất
 					</h4>
 				</div>
 				<div class="card-body">
-					<canvas id="pieChart" class="w-100"></canvas>
+					<canvas id="exportedProductsChart" class="w-100"></canvas>
 				</div>
 			</div>
 		</div>
+
 	</div>
 </div>
 
@@ -235,6 +248,58 @@
 						}
 					}
 				}
+			}
+		});
+		// Dữ liệu cho "Các Sản Phẩm Được Xuất Nhiều Nhất" từ ViewBag.TopExportedProducts
+		var exportedProducts = @Html.Raw(JsonConvert.SerializeObject(ViewBag.TopExportedProducts));
+		var labelsExported = exportedProducts.map(product => product.TenSanPham);
+		var dataExported = exportedProducts.map(product => product.TongSoLuong);
+
+		// Biểu đồ Các Sản Phẩm Được Xuất Nhiều Nhất
+		var ctxExported = document.getElementById('exportedProductsChart').getContext('2d');
+		new Chart(ctxExported, {
+			type: 'pie',
+			data: {
+				labels: labelsExported,
+				datasets: [{
+					data: dataExported,
+					backgroundColor: [
+						'rgba(75, 192, 192, 0.6)',
+						'rgba(54, 162, 235, 0.6)',
+						'rgba(255, 206, 86, 0.6)',
+						'rgba(255, 99, 132, 0.6)',
+						'rgba(153, 102, 255, 0.6)'
+					]
+				}]
+			},
+			options: {
+				responsive: true
+			}
+		});
+		// Dữ liệu cho "Các Sản Phẩm Được Nhập Nhiều Nhất" từ ViewBag.TopImportedProducts
+		var importedProducts = @Html.Raw(JsonConvert.SerializeObject(ViewBag.TopImportedProducts));
+		var labelsImported = importedProducts.map(product => product.TenSanPham);
+		var dataImported = importedProducts.map(product => product.TongSoLuong);
+
+		// Biểu đồ Các Sản Phẩm Được Nhập Nhiều Nhất
+		var ctxImported = document.getElementById('importedProductsChart').getContext('2d');
+		new Chart(ctxImported, {
+			type: 'pie',
+			data: {
+				labels: labelsImported,
+				datasets: [{
+					data: dataImported,
+					backgroundColor: [
+						'rgba(75, 192, 192, 0.6)',
+						'rgba(54, 162, 235, 0.6)',
+						'rgba(255, 206, 86, 0.6)',
+						'rgba(255, 99, 132, 0.6)',
+						'rgba(153, 102, 255, 0.6)'
+					]
+				}]
+			},
+			options: {
+				responsive: true
 			}
 		});
 	</script>

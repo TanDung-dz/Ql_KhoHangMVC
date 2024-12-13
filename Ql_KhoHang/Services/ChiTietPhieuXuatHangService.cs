@@ -29,5 +29,19 @@ namespace Ql_KhoHang.Services
 
             return new List<ChiTietPhieuXuatHangDto>();
         }
-    }
+		public async Task<List<ChiTietPhieuXuatHangDto>> GetAllAsync()
+		{
+			var client = _httpClientFactory.CreateClient();
+			var response = await client.GetAsync($"{_apiBaseUrl}/api/ChiTietPhieuXuatHang/Get");
+
+			if (response.IsSuccessStatusCode)
+			{
+				var data = await response.Content.ReadAsStringAsync();
+				return JsonConvert.DeserializeObject<List<ChiTietPhieuXuatHangDto>>(data);
+			}
+
+			return new List<ChiTietPhieuXuatHangDto>();
+		}
+
+	}
 }
