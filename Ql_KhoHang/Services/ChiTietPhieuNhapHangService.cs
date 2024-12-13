@@ -28,5 +28,31 @@ namespace Ql_KhoHang.Services
             }
             return new List<ChiTietPhieuNhapHangDto>();
         }
-    }
+        public async Task<List<ChiTietPhieuNhapHangDto>> GetByImportOrderProductIdAsync(int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_apiBaseUrl}/api/ChiTietPhieuNhapHang/GetByProductId/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var details = JsonConvert.DeserializeObject<List<ChiTietPhieuNhapHangDto>>(data);
+                return details.OrderByDescending(p => p.SoLuong).ToList();
+            }
+            return new List<ChiTietPhieuNhapHangDto>();
+        }
+        public async Task<List<ChiTietPhieuNhapHangDto>> GetAllAsync()
+		{
+			var client = _httpClientFactory.CreateClient();
+			var response = await client.GetAsync($"{_apiBaseUrl}/api/ChiTietPhieuNhapHang/Get");
+
+			if (response.IsSuccessStatusCode)
+			{
+				var data = await response.Content.ReadAsStringAsync();
+				return JsonConvert.DeserializeObject<List<ChiTietPhieuNhapHangDto>>(data);
+			}
+
+			return new List<ChiTietPhieuNhapHangDto>();
+		}
+	}
 }

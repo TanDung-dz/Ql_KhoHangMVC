@@ -14,12 +14,20 @@ namespace Ql_KhoHang.Controllers
         private readonly SanPhamService _sanPhamService;
 		private readonly PhieuNhapHangService _phieuNhapHangService;
 		private readonly PhieuXuatHangService _phieuXuatHangService;
-		public NguoiDungController(NguoiDungService nguoiDungService, SanPhamService sanPhamService, PhieuNhapHangService phieuNhapHangService, PhieuXuatHangService phieuXuatHangService)
+		private readonly ChiTietPhieuXuatHangService _chiTietPhieuXuatHangService;
+		private readonly ChiTietPhieuNhapHangService _chiTietPhieuNhapHangService;
+		public NguoiDungController(NguoiDungService nguoiDungService, SanPhamService sanPhamService, 
+            PhieuNhapHangService phieuNhapHangService, PhieuXuatHangService phieuXuatHangService,
+            ChiTietPhieuXuatHangService chiTietPhieuXuatHangService,
+            ChiTietPhieuNhapHangService chiTietPhieuNhapHangService
+            )
         {
             _nguoiDungService = nguoiDungService;
             _sanPhamService = sanPhamService;
             _phieuNhapHangService = phieuNhapHangService;
             _phieuXuatHangService = phieuXuatHangService;
+            _chiTietPhieuXuatHangService = chiTietPhieuXuatHangService;
+            _chiTietPhieuNhapHangService = chiTietPhieuNhapHangService;
         }
 
         [HttpGet]
@@ -71,8 +79,42 @@ namespace Ql_KhoHang.Controllers
         public async Task<IActionResult> Index()
         {
             SetUserClaims();
-            // Lấy tổng số sản phẩm
-            var products = await _sanPhamService.GetAllAsync();
+			// xử lý cho thống kê sản phẩm xuất
+			// Lấy toàn bộ chi tiết phiếu xuất
+			var exportDetails = await _chiTietPhieuXuatHangService.GetAllAsync();
+
+			// Tính tổng số lượng sản phẩm được xuất, nhóm theo mã sản phẩm
+			var topExportedProducts = exportDetails
+		    .GroupBy(e => new { e.MaSanPham, e.TenSanPham })
+		    .Select(g => new
+		    {
+			    MaSanPham = g.Key.MaSanPham,
+			    TenSanPham = g.Key.TenSanPham,
+			    TongSoLuong = g.Sum(e => e.SoLuong)
+		    })
+		    .OrderByDescending(p => p.TongSoLuong)
+		    .Take(5)
+		    .ToList();
+			ViewBag.TopExportedProducts = topExportedProducts;
+			//
+			// xử lý cho biểu đồ top sản phẩm nhập vào
+			// Top sản phẩm được nhập nhiều nhất
+			var importDetails = await _chiTietPhieuNhapHangService.GetAllAsync();
+			var topImportedProducts = importDetails
+				.GroupBy(i => new { i.MaSanPham, i.TenSanPham })
+				.Select(g => new
+				{
+					MaSanPham = g.Key.MaSanPham,
+					TenSanPham = g.Key.TenSanPham,
+					TongSoLuong = g.Sum(i => i.SoLuong)
+				})
+				.OrderByDescending(p => p.TongSoLuong)
+				.Take(5)
+				.ToList();
+			ViewBag.TopImportedProducts = topImportedProducts;
+			//
+			// Lấy tổng số sản phẩm
+			var products = await _sanPhamService.GetAllAsync();
 			// Lấy top 5 sản phẩm
 			var top5Products = products.OrderByDescending(p=>p.SoLuong).Take(5).
                                         Select(p=> new {p.TenSanPham,p.SoLuong}).ToList();
