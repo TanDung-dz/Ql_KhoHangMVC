@@ -15,10 +15,10 @@ namespace Ql_KhoHang.Services
             _apiBaseUrl = configuration["ApiSettings:BaseUrl"];
         }
 
-        public async Task<List<PhieuNhapHangDto>> GetAllAsync(string? keyword)
+        public async Task<List<PhieuNhapHangDto>> GetAllAsync()
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_apiBaseUrl}/api/PhieuNhapHang/Get?keyword={keyword}");
+            var response = await client.GetAsync($"{_apiBaseUrl}/api/PhieuNhapHang/Get");
 
             if (response.IsSuccessStatusCode)
             {
@@ -30,7 +30,21 @@ namespace Ql_KhoHang.Services
 
             return new List<PhieuNhapHangDto>();
         }
+        public async Task<List<PhieuNhapHangDto>> Search(string keyword)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_apiBaseUrl}/api/PhieuNhapHang/Search/{keyword}");
 
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var phieu = JsonConvert.DeserializeObject<List<PhieuNhapHangDto>>(data);
+
+                return phieu.OrderByDescending(p => p.NgayNhap).ToList();
+            }
+
+            return new List<PhieuNhapHangDto>();
+        }
         public async Task<PhieuNhapHangDto> GetByIdAsync(int id)
         {
             var client = _httpClientFactory.CreateClient();

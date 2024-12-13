@@ -29,7 +29,20 @@ namespace Ql_KhoHang.Services
 
             return new List<KiemKeDto>();
         }
+        public async Task<List<KiemKeDto>> Search(string keyword)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_apiBaseUrl}/api/KiemKe/Search/{keyword}");
 
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var kiemke = JsonConvert.DeserializeObject<List<KiemKeDto>>(data);
+                return kiemke.OrderByDescending(p => p.NgayKiemKe).ToList();
+            }
+
+            return new List<KiemKeDto>();
+        }
         public async Task<KiemKeDto> GetByIdAsync(int id)
         {
             var client = _httpClientFactory.CreateClient();

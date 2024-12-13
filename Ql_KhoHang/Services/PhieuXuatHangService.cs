@@ -29,7 +29,20 @@ namespace Ql_KhoHang.Services
 
             return new List<PhieuXuatHangDto>();
         }
+        public async Task<List<PhieuXuatHangDto>> Search(string? keyword)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_apiBaseUrl}/api/PhieuXuatHang/Search/{keyword}");
 
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var phieu = JsonConvert.DeserializeObject<List<PhieuXuatHangDto>>(data);
+                return phieu.OrderByDescending(p => p.NgayXuat).ToList();
+            }
+
+            return new List<PhieuXuatHangDto>();
+        }
         public async Task<PhieuXuatHangDto> GetByIdAsync(int id)
         {
             var client = _httpClientFactory.CreateClient();

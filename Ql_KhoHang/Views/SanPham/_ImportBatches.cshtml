@@ -1,0 +1,39 @@
+﻿<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Mã Phiếu Nhập</th>
+            <th>Ngày Nhập</th>
+            <th>Nhân Viên</th>
+            <th>Trạng Thái</th>
+            <th>Hành Động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewBag.PhieuNhapLienQuan != null && ((List<Ql_KhoHang.Dtos.PhieuNhapHangDto>)ViewBag.PhieuNhapLienQuan).Any())
+        {
+            foreach (var batch in (List<Ql_KhoHang.Dtos.PhieuNhapHangDto>)ViewBag.PhieuNhapLienQuan)
+            {
+                <tr>
+                    <td>@batch.MaPhieuNhapHang</td>
+                    <td>@(batch.NgayNhap.HasValue ? batch.NgayNhap.Value.ToString("dd/MM/yyyy") : "Không có ngày nhập")</td>
+                    <td>@batch.TenNguoiDung</td>
+                    <td class="text-center" style="color:@(batch.TrangThai == 1 ? "green" : "red")">
+                        @(batch.TrangThai == 1 ? "Hoàn thành" : "Chưa xử lý")
+                    </td>
+                    <td>
+                        <!-- Nút chuyển đến View Details -->
+                        <a asp-action="Details" asp-controller="PhieuNhapHang" asp-route-id="@batch.MaPhieuNhapHang" class="btn btn-info btn-sm">
+                            Xem chi tiết
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">Không có dữ liệu lô nhập.</td>
+            </tr>
+        }
+    </tbody>
+</table>

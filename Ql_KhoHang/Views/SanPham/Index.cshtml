@@ -82,17 +82,17 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th >Id</th>
-                <th class="w-25">Tên</th>
-                <th class="w-25">Hình Ảnh</th>
-                <th class="w-25">Mã vạch</th>
-                <th>Số Lượng</th>
-                <th>Khối Lượng</th>
-                <th>Kích Thước</th>
-                <th>Xuất Xứ</th>
-                <th>Loại</th>
-                <th class="w-25">Hãng SX</th>
-                <th class="w-25">Thao Tác</th>
+                <th style="width:5%;">Id</th>
+                <th style="width:15%;">Tên</th>
+                <th style="width:15%;">Hình Ảnh</th>
+                <th style="width:15%;">Mã vạch</th>
+                <th style="width:10%;">Số Lượng</th>
+                <th style="width:10%;">Khối Lượng</th>
+                <th style="width:10%;">Kích Thước</th>
+                <th style="width:10%;">Xuất Xứ</th>
+                <th style="width:10%;">Loại</th>
+                <th style="width:15%;">Hãng SX</th>
+                <th style="width:20%;">Thao Tác</th>
             </tr>
         </thead>
         <tbody>
@@ -123,6 +123,9 @@
                         <td>@sanpham.TenHangSanXuat</td>
                         <td>
                             <div class="btn-group">
+                                <a href="javascript:void(0);" onclick="loadImportBatches(@sanpham.MaSanPham)" class="btn btn-danger btn-sm me-2" title="Lô Nhập">
+                                    <i class="fas fa-box"></i>
+                                </a>
                                 <a asp-action="Details" asp-route-id="@sanpham.MaSanPham" class="btn btn-info btn-sm me-2" title="Chi tiết">
                                     <i class="fas fa-eye"></i>
                                 </a>
@@ -136,7 +139,6 @@
                                 </form>
                             </div>
                         </td>
-
                     </tr>
                 }
             }
@@ -148,6 +150,7 @@
             }
         </tbody>
     </table>
+
 
     <!-- Phân trang -->
     <nav>
@@ -182,11 +185,28 @@
         </ul>
     </nav>
 </div>
-
-
+<!-- Modal -->
+<div class="modal fade" id="importBatchesModal" tabindex="-1" aria-labelledby="importBatchesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importBatchesModalLabel">Danh Sách Phiếu Nhập</h5>
+                <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-times me-1"></i> Đóng
+                </button>
+            </div>
+            <div class="modal-body" id="importBatchesContent">
+                <!-- Nội dung sẽ được tải từ PartialView -->
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         // Kích hoạt tooltip
         $(document).ready(function () {
@@ -219,4 +239,23 @@
             </text>
         }
     </script>
+    <script>
+        function loadImportBatches(productId) {
+            fetch(`/SanPham/GetImportBatchesByProductId?productId=${productId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch PartialView');
+                    return response.text(); // Lấy HTML từ PartialView
+                })
+                .then(html => {
+                    document.getElementById('importBatchesContent').innerHTML = html;
+                    const modal = new bootstrap.Modal(document.getElementById('importBatchesModal'));
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error('Lỗi khi tải dữ liệu lô nhập:', error);
+                    alert('Không thể tải dữ liệu lô nhập!');
+                });
+        }
+    </script>
+
 }
