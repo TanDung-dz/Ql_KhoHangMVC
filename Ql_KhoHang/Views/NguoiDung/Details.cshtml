@@ -5,55 +5,73 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+<h2 class="mb-4">Chi Tiết Người Dùng</h2>
 
-            <h2>Chi Tiết Người Dùng</h2>
-            <div class="card">
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        @if (!string.IsNullOrEmpty(Model.Anh))
-                        {
-                            <img src="@Model.Anh" alt="Ảnh người dùng" class="img-thumbnail" style="width: 150px; height: 150px;" />
-                        }
-                        else
-                        {
-                            <img src="/images/default-user.png" alt="Mặc định" class="img-thumbnail" style="width: 150px; height: 150px;" />
-                        }
-                    </div>
-                    <dl class="row">
-                        <dt class="col-sm-3">Mã Người Dùng:</dt>
-                        <dd class="col-sm-9">@Model.MaNguoiDung</dd>
+<div class="card">
+    <div class="card-body">
+        <!-- Ảnh người dùng -->
+        <div class="text-center mb-4">
+            @if (!string.IsNullOrEmpty(Model.Anh))
+            {
+                <img src="@Model.Anh" alt="Ảnh người dùng" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px;" />
+            }
+            else
+            {
+                <img src="/images/default-user.png" alt="Mặc định" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px;" />
+            }
+        </div>
 
-                        <dt class="col-sm-3">Tên Đăng Nhập:</dt>
-                        <dd class="col-sm-9">@Model.TenDangNhap </dd>
-
-                        <dt class="col-sm-3">Tên Người Dùng:</dt>
-                        <dd class="col-sm-9">@Model.TenNguoiDung </dd>
-
-                        <dt class="col-sm-3">Email:</dt>
-                        <dd class="col-sm-9">@Model.Email </dd>
-
-                        <dt class="col-sm-3">Số Điện Thoại:</dt>
-                        <dd class="col-sm-9">@Model.Sdt </dd>
-
-                        <dt class="col-sm-3">Ngày Đăng Ký:</dt>
-                        <dd class="col-sm-9">@Model.NgayDk?.ToString("dd/MM/yyyy") </dd>
-
-                        <dt class="col-sm-3">Quyền:</dt>
-                        <dd class="col-sm-9">
-                            @switch (Model.Quyen)
-                            {
-                                case 1:
-                                    @("Quản trị viên")
-                                    ; break;
-                                case 2:
-                                    @("Người dùng thường")
-                                    ; break;
-                                default:
-                                    @("Không xác định")
-                                    ; break;
-                            }
-                        </dd>
-                    </dl>
-                </div>
-            </div>
-            <a asp-action="Index2" class="btn btn-secondary">Quay lại</a>
+        <!-- Thông tin người dùng -->
+        <table class="table table-bordered align-middle">
+            <tr>
+                <th class="text-start" style="width: 30%;">Mã Người Dùng</th>
+                <td>@Model.MaNguoiDung</td>
+            </tr>
+            <tr>
+                <th class="text-start">Tên Đăng Nhập</th>
+                <td>@Model.TenDangNhap</td>
+            </tr>
+            <tr>
+                <th class="text-start">Tên Người Dùng</th>
+                <td>@Model.TenNguoiDung</td>
+            </tr>
+            <tr>
+                <th class="text-start">Email</th>
+                <td>@Model.Email</td>
+            </tr>
+            <tr>
+                <th class="text-start">Số Điện Thoại</th>
+                <td>@Model.Sdt</td>
+            </tr>
+            <tr>
+                <th class="text-start">Ngày Đăng Ký</th>
+                <td>@(Model.NgayDk?.ToString("dd/MM/yyyy") ?? "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th class="text-start">Quyền</th>
+                <td>
+                    @switch (Model.Quyen)
+                    {
+                        case 1:
+                            @("Quản trị viên")
+                            ; break;
+                        case 2:
+                            @("Người dùng thường")
+                            ; break;
+                        default:
+                            @("Không xác định")
+                            ; break;
+                    }
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="card-footer text-end">
+        <a asp-action="Index2" class="btn btn-secondary me-2">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+        <a asp-action="Edit" asp-route-id="@Model.MaNguoiDung" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Chỉnh sửa
+        </a>
+    </div>
+</div>

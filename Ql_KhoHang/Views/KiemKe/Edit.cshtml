@@ -21,141 +21,148 @@
     
 
 </head>
-<div class="row">
-    <h2>Chỉnh Sửa Phiếu Kiểm Kê</h2>
-
-    <div class="mb-3">
-        <a asp-action="Index" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Quay lại
-        </a>
+<div class="card shadow-sm mb-4">
+    <div class="card-header">
+        <h2 class="card-title">Chỉnh Sửa Phiếu Kiểm Kê</h2>
     </div>
-
-    <form asp-action="Edit" method="post" enctype="multipart/form-data">
-        <input type="hidden" asp-for="MaKiemKe" />
-
-        <!-- Chọn nhân viên kho -->
-        <div class="form-group mb-3">
-            <label for="MaNhanVienKho">Nhân Viên Kho</label>
-            <select asp-for="MaNhanVienKho" class="form-control">
-                <option value="">-- Chọn Nhân Viên Kho --</option>
-                @if (ViewBag.Employees != null)
-                {
-                    foreach (var employee in (IEnumerable<Ql_KhoHang.Dtos.NhanVienKhoDto>)ViewBag.Employees)
-                    {
-                        <option value="@employee.MaNhanVienKho" selected="@(Model.MaNhanVienKho == employee.MaNhanVienKho ? "selected" : null)">
-                            @employee.TenNhanVien
-                        </option>
-                    }
-                }
-            </select>
-            <span asp-validation-for="MaNhanVienKho" class="text-danger"></span>
+    <div class="card-body">
+        <div class="mb-3">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
         </div>
-
-        <!-- Chi tiết phiếu kiểm kê -->
-        <h4>Chi Tiết Phiếu Kiểm Kê</h4>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Sản Phẩm</th>
-                    <th>Số Lượng Tồn</th>
-                    <th>Số Lượng Thực Tế</th>
-                    <th>Trạng Thái</th>
-                    <th>Nguyên Nhân</th>
-                    <th>Ảnh</th>
-                    <th>Thao Tác</th>
-                </tr>
-            </thead>
-            <tbody id="detail-container">
-                @if (Model.Details != null)
-                {
-                    for (var i = 0; i < Model.Details.Count; i++)
-                    {
-                        <tr>
-                            <td>
-                                <select name="Details[@i].MaSanPham" class="form-control">
-                                    <option value="">-- Chọn Sản Phẩm --</option>
-                                    @if (ViewBag.Products != null)
-                                    {
-                                        foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
-                                        {
-                                            <option value="@product.MaSanPham" selected="@(Model.Details[i].MaSanPham == product.MaSanPham ? "selected" : null)">
-                                                @product.TenSanPham (@product.TenNhaCungCap)
-                                            </option>
-                                        }
-                                    }
-                                </select>
-                            </td>
-                            <td>
-                                <input name="Details[@i].SoLuongTon" type="number" class="form-control" value="@Model.Details[i].SoLuongTon" />
-                            </td>
-                            <td>
-                                <input name="Details[@i].SoLuongThucTe" type="number" class="form-control" value="@Model.Details[i].SoLuongThucTe" />
-                            </td>
-                            <td>
-                                <select name="Details[@i].TrangThai" class="form-control">
-                                    <option value="0" selected="@(Model.Details[i].TrangThai == 0 ? "selected" : "")">Không đạt</option>
-                                    <option value="1" selected="@(Model.Details[i].TrangThai == 1 ? "selected" : "")">Đạt</option>
-                                </select>
-                            </td>
-
-                            <td>
-                                <input name="Details[@i].NguyenNhan" type="text" class="form-control" value="@Model.Details[i].NguyenNhan" />
-                            </td>
-                            <td>
-                                <!-- Hiển thị ảnh nhỏ trên cùng một dòng -->
-                                <div class="d-flex overflow-auto gap-2" style="max-width: 300px;">
-                                    @{
-                                        var images = new List<string>
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="MaKiemKe" />
+            <!-- Card chọn nhân viên kho -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h4>Thông Tin Nhân Viên Kho</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="MaNhanVienKho">Nhân Viên Kho</label>
+                        <select asp-for="MaNhanVienKho" class="form-control">
+                            <option value="">-- Chọn Nhân Viên Kho --</option>
+                            @if (ViewBag.Employees != null)
                             {
-                            Model.Details[i].Anh,
-                            Model.Details[i].Anh2,
-                            Model.Details[i].Anh3,
-                            Model.Details[i].Anh4,
-                            Model.Details[i].Anh5,
-                            Model.Details[i].Anh6
-                            }.Where(img => !string.IsNullOrEmpty(img)).ToList();
+                                foreach (var employee in (IEnumerable<Ql_KhoHang.Dtos.NhanVienKhoDto>)ViewBag.Employees)
+                                {
+                                    <option value="@employee.MaNhanVienKho" selected="@(Model.MaNhanVienKho == employee.MaNhanVienKho ? "selected" : null)">
+                                        @employee.TenNhanVien
+                                    </option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="MaNhanVienKho" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
 
-                                        if (images.Any())
+            <!-- Card chi tiết phiếu kiểm kê -->
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4>Chi Tiết Phiếu Kiểm Kê</h4>
+                    <button type="button" class="btn btn-success btn-sm" id="add-detail">
+                        <i class="fas fa-plus-circle"></i> Thêm Chi Tiết
+                    </button>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Sản Phẩm</th>
+                                <th>Số Lượng Tồn</th>
+                                <th>Số Lượng Thực Tế</th>
+                                <th>Trạng Thái</th>
+                                <th>Nguyên Nhân</th>
+                                <th>Ảnh</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detail-container">
+                            @if (Model.Details != null)
+                            {
+                                for (var i = 0; i < Model.Details.Count; i++)
+                                {
+                                    <tr>
+                                        <td>
+                                            <select name="Details[@i].MaSanPham" class="form-control">
+                                                <option value="">-- Chọn Sản Phẩm --</option>
+                                                @if (ViewBag.Products != null)
+                                                {
+                                                    foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
+                                                    {
+                                                        <option value="@product.MaSanPham" selected="@(Model.Details[i].MaSanPham == product.MaSanPham ? "selected" : null)">
+                                                            @product.TenSanPham (@product.TenNhaCungCap)
+                                                        </option>
+                                                    }
+                                                }
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input name="Details[@i].SoLuongTon" type="number" class="form-control" value="@Model.Details[i].SoLuongTon" />
+                                        </td>
+                                        <td>
+                                            <input name="Details[@i].SoLuongThucTe" type="number" class="form-control" value="@Model.Details[i].SoLuongThucTe" />
+                                        </td>
+                                        <td>
+                                            <select name="Details[@i].TrangThai" class="form-control">
+                                                <option value="0" selected="@(Model.Details[i].TrangThai == 0 ? "selected" : "")">Không đạt</option>
+                                                <option value="1" selected="@(Model.Details[i].TrangThai == 1 ? "selected" : "")">Đạt</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input name="Details[@i].NguyenNhan" type="text" class="form-control" value="@Model.Details[i].NguyenNhan" />
+                                        </td>
+                                        <td>
+                                            <div class="d-flex overflow-auto gap-2" style="max-width: 300px;">
+                                                @{
+                                                    var images = new List<string>
                                         {
-                                            foreach (var image in images)
-                                            {
-                                                <img src="@image" alt="Ảnh kiểm kê" class="img-thumbnail custom-img"
-                                                     data-bs-toggle="modal" data-bs-target="#imageModal"
-                                                     data-image-src="@image" />
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <p class="text-muted">Không có hình ảnh nào</p>
-                                        }
-                                    }
-                                </div>
-                                <!-- Upload ảnh mới -->
-                                <input name="Details[@i].Images" type="file" class="form-control mt-2" multiple />
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-danger btn-sm remove-detail">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
+                                        Model.Details[i].Anh,
+                                        Model.Details[i].Anh2,
+                                        Model.Details[i].Anh3,
+                                        Model.Details[i].Anh4,
+                                        Model.Details[i].Anh5,
+                                        Model.Details[i].Anh6
+                                        }.Where(img => !string.IsNullOrEmpty(img)).ToList();
 
-        <!-- Nút Thêm Chi Tiết -->
-        <div class="form-group">
-            <button type="button" class="btn btn-success" id="add-detail">
-                <i class="fas fa-plus-circle"></i> Thêm Chi Tiết
+                                                    if (images.Any())
+                                                    {
+                                                        foreach (var image in images)
+                                                        {
+                                                            <img src="@image" alt="Ảnh kiểm kê" class="img-thumbnail custom-img"
+                                                                 data-bs-toggle="modal" data-bs-target="#imageModal"
+                                                                 data-image-src="@image" />
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <p class="text-muted">Không có hình ảnh nào</p>
+                                                    }
+                                                }
+                                            </div>
+                                            <input name="Details[@i].Images" type="file" class="form-control mt-2" multiple />
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm remove-detail">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Nút Lưu -->
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Lưu Phiếu Kiểm Kê
             </button>
-        </div>
-
-        <!-- Nút Lưu -->
-        <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save"></i> Lưu Phiếu Kiểm Kê
-        </button>
-    </form>
+        </form>
+    </div>
 </div>
 
 <!-- Modal hiển thị ảnh -->
@@ -172,7 +179,6 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
     <script>
         $(document).ready(function () {

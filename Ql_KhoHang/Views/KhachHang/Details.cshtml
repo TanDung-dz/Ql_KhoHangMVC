@@ -1,36 +1,51 @@
 ﻿@model Ql_KhoHang.Dtos.KhachHangDto
+
 @{
     ViewData["Title"] = "Chi Tiết Khách Hàng";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+<h2 class="mb-4">Chi Tiết Khách Hàng</h2>
 
-            <h2>Chi Tiết Khách Hàng</h2>
-            <div class="form-group">
-                <label for="MaKhachHang">Mã Khách Hàng</label>
-                <input type="text" class="form-control" id="MaKhachHang" value="@Model.MaKhachHang" readonly />
-            </div>
+<div class="card">
+    <div class="card-header">
+        Thông Tin Khách Hàng
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <tr>
+                <th>Mã Khách Hàng</th>
+                <td>@(!string.IsNullOrEmpty(Model.MaKhachHang.ToString()) ? Model.MaKhachHang : "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th>Tên Khách Hàng</th>
+                <td>@(!string.IsNullOrEmpty(Model.TenKhachHang) ? Model.TenKhachHang : "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th>Số Điện Thoại</th>
+                <td>@(!string.IsNullOrEmpty(Model.SoDt) ? Model.SoDt : "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th>Địa Chỉ</th>
+                <td>@(!string.IsNullOrEmpty(Model.Diachi) ? Model.Diachi : "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>@(!string.IsNullOrEmpty(Model.Email) ? Model.Email : "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th>Loại Khách Hàng</th>
+                <td>@(!string.IsNullOrEmpty(Model.TenLoaiKhachHang) ? Model.TenLoaiKhachHang : "Không có thông tin")</td>
+            </tr>
+        </table>
+    </div>
+</div>
 
-            <div class="form-group">
-                <label for="TenKhachHang">Tên Khách Hàng</label>
-                <input type="text" class="form-control" id="TenKhachHang" value="@Model.TenKhachHang" readonly />
-            </div>
-            <div class="form-group">
-                <label for="SoDt">Số điện thoại</label>
-                <input type="text" class="form-control" id="SoDt" value="@Model.SoDt" readonly />
-            </div>
-            <div class="form-group">
-                <label for="Diachi">Địa chỉ</label>
-                <input type="text" class="form-control" id="Diachi" value="@Model.Diachi" readonly />
-            </div>
-            <div class="form-group">
-                <label for="Email">Email</label>
-                <input type="text" class="form-control" id="Email" value="@Model.Email" readonly />
-            </div>
-            <div class="form-group">
-                <label for="MaLoai">Loại Khách Hàng</label>
-                <input type="text" class="form-control" id="MaLoai" value="@Model.TenLoaiKhachHang" readonly />
-            </div>
-
-            <a asp-action="Edit" asp-route-id="@Model.MaKhachHang" class="btn btn-warning">Sửa</a>
-            <a asp-action="Index" class="btn btn-secondary">Trở Về</a>
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-secondary me-2">
+        <i class="fas fa-arrow-left"></i> Trở Về
+    </a>
+    <a asp-action="Edit" asp-route-id="@Model.MaKhachHang" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Sửa
+    </a>
+</div>

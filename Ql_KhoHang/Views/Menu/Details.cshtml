@@ -1,45 +1,55 @@
 ﻿@model Ql_KhoHang.Dtos.MenuDto
 
 @{
-    ViewData["Title"] = "Chi tiết Menu";
+    ViewData["Title"] = "Chi Tiết Menu";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+<h2 class="mb-4">Chi Tiết Menu</h2>
 
-            <h2 class="mb-4">Chi tiết Menu</h2>
+<div class="card">
+    <div class="card-header">
+        Thông Tin Menu
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered align-middle">
+            <tr>
+                <th class="text-start" style="width: 30%;">Mã Menu</th>
+                <td>@Model.MenuId</td>
+            </tr>
+            <tr>
+                <th class="text-start">Tên Menu</th>
+                <td>@Model.Name</td>
+            </tr>
+            <tr>
+                <th class="text-start">Thứ Tự</th>
+                <td>@Model.Order</td>
+            </tr>
+            <tr>
+                <th class="text-start">Liên Kết</th>
+                <td>@Model.Link</td>
+            </tr>
+            <tr>
+                <th class="text-start">Ẩn</th>
+                <td>@(Model.Hide.HasValue ? "Có" : "Không")</td>
+            </tr>
+            <tr>
+                <th class="text-start">Mã Người Dùng</th>
+                <td>@Model.MaNguoiDung</td>
+            </tr>
+            <tr>
+                <th class="text-start">Tên Người Dùng</th>
+                <td>@Model.TenNguoiDung</td>
+            </tr>
+        </table>
+    </div>
+</div>
 
-            <table class="table table-bordered">
-                <tr>
-                    <th>Mã Menu</th>
-                    <td>@Model.MenuId</td>
-                </tr>
-                <tr>
-                    <th>Tên Menu</th>
-                    <td>@Model.Name</td>
-                </tr>
-                <tr>
-                    <th>Thứ tự</th>
-                    <td>@Model.Order</td>
-                </tr>
-                <tr>
-                    <th>Liên kết</th>
-                    <td>@Model.Link</td>
-                </tr>
-                <tr>
-                    <th>Ẩn</th>
-                    <td>@(Model.Hide == true ? "Có" : "Không")</td>
-                </tr>
-                <tr>
-                    <th>Mã Người Dùng</th>
-                    <td>@Model.MaNguoiDung</td>
-                </tr>
-                <tr>
-                    <th>Tên Người Dùng</th>
-                    <td>@Model.TenNguoiDung</td>
-                </tr>
-            </table>
-
-            <div class="mt-3">
-                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
-                <a asp-action="Edit" asp-route-id="@Model.MenuId" class="btn btn-warning">Sửa</a>
-            </div>
+<div class="mt-3 text-end">
+    <a asp-action="Index" class="btn btn-secondary me-2">
+        <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+    <a asp-action="Edit" asp-route-id="@Model.MenuId" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Sửa
+    </a>
+</div>

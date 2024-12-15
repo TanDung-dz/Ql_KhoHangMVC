@@ -4,133 +4,149 @@
     ViewData["Title"] = "Chi Tiết Sản Phẩm";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
-
-<h2 class="mb-4">Chi Tiết Sản Phẩm</h2>
-
 <!-- Thông tin sản phẩm -->
-<table class="table table-bordered">
-    <tr>
-        <th>Mã Sản Phẩm</th>
-        <td>@Model.MaSanPham</td>
-    </tr>
-    <tr>
-        <th>Tên Sản Phẩm</th>
-        <td>@(!string.IsNullOrEmpty(Model.TenSanPham) ? Model.TenSanPham : "Không có thông tin") </td>
-    </tr>
-    <tr>
-        <th>Mô Tả</th>
-        <td>@(!string.IsNullOrEmpty(Model.Mota) ? Model.Mota : "Không có thông tin")</td>
-    </tr>
-    <tr>
-        <th>Số Lượng</th>
-        <td>@(Model.SoLuong?.ToString() ?? "Không có thông tin")</td>
-    </tr>
-    <tr>
-        <th>Khối Lượng</th>
-        <td>@(Model.KhoiLuong?.ToString("N2") ?? "Không có thông tin") (kg)</td>
-    </tr>
-    <tr>
-        <th>Kích Thước</th>
-        <td>@(!string.IsNullOrEmpty(Model.KichThuoc) ? Model.KichThuoc : "Không có thông tin")</td>
-    </tr>
-    <tr>
-        <th>Xuất Xứ</th>
-        <td>@(!string.IsNullOrEmpty(Model.XuatXu) ? Model.XuatXu : "Không có thông tin")</td>
-    </tr>
-    <tr>
-        <th>Loại Sản Phẩm</th>
-        <td>@(!string.IsNullOrEmpty(Model.TenLoaiSanPham) ? Model.TenLoaiSanPham : "Không có thông tin")</td>
-    </tr>
-    <tr>
-        <th>Hãng Sản Xuất</th>
-        <td>@(!string.IsNullOrEmpty(Model.TenHangSanXuat) ? Model.TenHangSanXuat : "Không có thông tin")</td>
-    </tr>
-    <tr>
-        <th>Ngày Tạo</th>
-        <td>@(Model.NgayTao?.ToString("dd/MM/yyyy") ?? "Không có thông tin")</td>
-    </tr>
-    <tr>
-        <th>Ngày Cập Nhật</th>
-        <td>@(Model.NgayCapNhat?.ToString("dd/MM/yyyy") ?? "Không có thông tin")</td>
-    </tr>
-</table>
+<div class="card mb-4">
+    <div class="card-header">
+        <h4 class="mb-0">Thông Tin Sản Phẩm</h4>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <tr>
+                <th>Mã Sản Phẩm</th>
+                <td>@Model.MaSanPham</td>
+            </tr>
+            <tr>
+                <th>Tên Sản Phẩm</th>
+                <td>@(!string.IsNullOrEmpty(Model.TenSanPham) ? Model.TenSanPham : "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th>Mô Tả</th>
+                <td>@(!string.IsNullOrEmpty(Model.Mota) ? Model.Mota : "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th>Số Lượng</th>
+                <td>@(Model.SoLuong?.ToString() ?? "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th>Khối Lượng</th>
+                <td>@(Model.KhoiLuong?.ToString("N2") ?? "Không có thông tin") (kg)</td>
+            </tr>
+            <tr>
+                <th>Kích Thước</th>
+                <td>@(!string.IsNullOrEmpty(Model.KichThuoc) ? Model.KichThuoc : "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th>Xuất Xứ</th>
+                <td>@(!string.IsNullOrEmpty(Model.XuatXu) ? Model.XuatXu : "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th>Loại Sản Phẩm</th>
+                <td>@(!string.IsNullOrEmpty(Model.TenLoaiSanPham) ? Model.TenLoaiSanPham : "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th>Hãng Sản Xuất</th>
+                <td>@(!string.IsNullOrEmpty(Model.TenHangSanXuat) ? Model.TenHangSanXuat : "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th>Ngày Tạo</th>
+                <td>@(Model.NgayTao?.ToString("dd/MM/yyyy") ?? "Không có thông tin")</td>
+            </tr>
+            <tr>
+                <th>Ngày Cập Nhật</th>
+                <td>@(Model.NgayCapNhat?.ToString("dd/MM/yyyy") ?? "Không có thông tin")</td>
+            </tr>
+        </table>
+    </div>
+</div>
 
 <!-- Vị trí sản phẩm -->
-<h4 class="mt-4">Vị trí sản phẩm</h4>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Mã Vị Trí</th>
-            <th>Số Lượng</th>
-            <th>Khu Vực</th>
-            <th>Tầng</th>
-            <th>Kệ</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (ViewBag.ViTris != null)
-        {
-            foreach (var detail in ViewBag.ViTris)
-            {
-                <tr>
-                    <td>@detail.MaViTri</td>
-                    <td>@detail.SoLuong</td>
-                    <td>@detail.KhuVuc</td>
-                    <td>@detail.Tang</td>
-                    <td>@detail.Ke</td>
-                </tr>
-            }
-        }
-        else
-        {
-            <tr>
-                <td colspan="5" class="text-center">Không có thông tin vị trí.</td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<!-- Hiển thị hình ảnh và mã vạch -->
-<div class="row mt-4">
-    <div class="col-md-6">
-        <h5>Mã Vạch:</h5>
-        @if (!string.IsNullOrEmpty(Model.MaVach))
-        {
-            <img src="@Model.MaVach" alt="Mã vạch sản phẩm" class="img-fluid" style="max-width: 100%; height: auto;" />
-        }
-        else
-        {
-            <p class="text-muted">Không có mã vạch cho sản phẩm này.</p>
-        }
+<div class="card mb-4">
+    <div class="card-header">
+        <h4 class="mb-0">Vị Trí Sản Phẩm</h4>
     </div>
-    <div class="col-md-6">
-        <h5>Hình Ảnh:</h5>
-        <div class="row">
-            @{
-                var images = new List<string> { Model.Image, Model.Image2, Model.Image3, Model.Image4, Model.Image5 }
-                .Where(img => !string.IsNullOrEmpty(img)).ToList();
-
-                if (images.Any())
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Mã Vị Trí</th>
+                    <th>Số Lượng</th>
+                    <th>Khu Vực</th>
+                    <th>Tầng</th>
+                    <th>Kệ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.ViTris != null)
                 {
-                    foreach (var image in images)
+                    foreach (var detail in ViewBag.ViTris)
                     {
-                        <div class="col-md-3 mb-3">
-                            <img src="@image" alt="@Model.TenSanPham" class="img-fluid rounded" style="max-width: 100%; height: auto;" />
-                        </div>
+                        <tr>
+                            <td>@detail.MaViTri</td>
+                            <td>@detail.SoLuong</td>
+                            <td>@detail.KhuVuc</td>
+                            <td>@detail.Tang</td>
+                            <td>@detail.Ke</td>
+                        </tr>
                     }
                 }
                 else
                 {
-                    <p class="text-muted">Không có hình ảnh nào cho sản phẩm này.</p>
+                    <tr>
+                        <td colspan="5" class="text-center">Không có thông tin vị trí.</td>
+                    </tr>
                 }
-            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Hình ảnh và mã vạch -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h4 class="mb-0">Hình Ảnh và Mã Vạch</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Mã Vạch:</h5>
+                @if (!string.IsNullOrEmpty(Model.MaVach))
+                {
+                    <img src="@Model.MaVach" alt="Mã vạch sản phẩm" class="img-fluid" style="max-width: 100%; height: auto;" />
+                }
+                else
+                {
+                    <p class="text-muted">Không có mã vạch cho sản phẩm này.</p>
+                }
+            </div>
+            <div class="col-md-6">
+                <h5>Hình Ảnh:</h5>
+                <div class="row">
+                    @{
+                        var images = new List<string> { Model.Image, Model.Image2, Model.Image3, Model.Image4, Model.Image5 }
+                        .Where(img => !string.IsNullOrEmpty(img)).ToList();
+
+                        if (images.Any())
+                        {
+                            foreach (var image in images)
+                            {
+                                <div class="col-md-4 mb-3">
+                                    <img src="@image" alt="@Model.TenSanPham" class="img-fluid rounded" />
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted">Không có hình ảnh nào cho sản phẩm này.</p>
+                        }
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-
 <!-- Nút hành động -->
-<div class="mt-4">
+<div class="text-end mt-4">
     <a asp-action="Index" class="btn btn-secondary me-2">
         <i class="fas fa-arrow-left"></i> Quay lại
     </a>

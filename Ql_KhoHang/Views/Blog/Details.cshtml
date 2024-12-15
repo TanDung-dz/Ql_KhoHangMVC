@@ -1,33 +1,57 @@
 ﻿@model Ql_KhoHang.Dtos.BlogDto
+
 @{
     ViewData["Title"] = "Chi Tiết Blog";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+<h2 class="mb-4">Chi Tiết Blog</h2>
 
-            <h2>Chi Tiết Blog</h2>
-            <div class="card">
-                <div class="card-header">Thông Tin Blog</div>
-                <div class="card-body">
-                    <p><strong>Mã Blog:</strong> @Model.BlogId</p>
-                    <p><strong>Mô Tả:</strong> @Model.Mota</p>
-                    <p><strong>Liên Kết:</strong> <a href="@Model.Link" target="_blank">@Model.Link</a></p>
-                    <p><strong>Người Dùng:</strong> @Model.TenNguoiDung</p>
-                    <p><strong>Ẩn:</strong> @(Model.Hide == true ? "Có" : "Không")</p>
-                    <p>
-                        <strong>Hình Ảnh:</strong>
-                        @if (!string.IsNullOrEmpty(Model.Anh))
-                        {
-                            <img src="@Model.Anh" alt="Blog Image" width="150" height="150" />
-                        }
-                        else
-                        {
-                            <span>Không có ảnh</span>
-                        }
-                    </p>
-                </div>
-                <div class="card-footer">
-                    <a asp-action="Index" class="btn btn-secondary">Quay Lại</a>
-                </div>
-            </div>
-
+<div class="card">
+    <div class="card-header">
+        Thông Tin Blog
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered align-middle">
+            <tr>
+                <th class="text-start" style="width: 30%;">Mã Blog</th>
+                <td>@Model.BlogId</td>
+            </tr>
+            <tr>
+                <th class="text-start">Mô Tả</th>
+                <td>@Model.Mota</td>
+            </tr>
+            <tr>
+                <th class="text-start">Liên Kết</th>
+                <td>
+                    <a href="@Model.Link" target="_blank" class="text-decoration-none">@Model.Link</a>
+                </td>
+            </tr>
+            <tr>
+                <th class="text-start">Người Dùng</th>
+                <td>@Model.TenNguoiDung</td>
+            </tr>
+            <tr>
+                <th class="text-start">Hình Ảnh</th>
+                <td>
+                    @if (!string.IsNullOrEmpty(Model.Anh))
+                    {
+                        <img src="@Model.Anh" alt="Hình ảnh Blog" class="img-thumbnail" style="width: 150px; height: 150px;" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">Không có ảnh</span>
+                    }
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="card-footer text-end">
+        <a asp-action="Index" class="btn btn-secondary me-2">
+            <i class="fas fa-arrow-left"></i> Quay Lại
+        </a>
+        <a asp-action="Edit" asp-route-id="@Model.BlogId" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Chỉnh sửa
+        </a>
+    </div>
+</div>

@@ -4,62 +4,66 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-
-            <h2>Tạo Mới Blog</h2>
-            <form asp-action="Create" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="Mota">Mô Tả</label>
-                    <textarea class="form-control" id="Mota" name="Mota" required>@Model.Mota</textarea>
-                </div>
-                <div class="form-group">
-                    <label for="Link">Liên Kết</label>
-                    <input type="text" class="form-control" id="Link" name="Link" value="@Model.Link" />
-                </div>
-                <div class="form-group" hidden>
-                    <label for="Hide">Ẩn</label>
-                    <select class="form-control" id="Hide" name="Hide">
-                        <option value="false" selected>Không</option>
-                        <option value="true">Có</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="Img">Hình Ảnh</label>
-                    <input type="file" class="form-control" id="Img" name="Img" />
-                </div>
-                <button type="submit" class="btn btn-primary">Lưu</button>
-                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-            </form>
+<h2 class="mb-4">Tạo Mới Blog</h2>
+<div class="card p-4">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="Mota" class="form-label">Mô Tả</label>
+            <textarea class="form-control" id="Mota" name="Mota" required>@Model?.Mota</textarea>
+            <div class="invalid-feedback">Vui lòng nhập mô tả.</div>
+        </div>
+        <div class="mb-3">
+            <label for="Link" class="form-label">Liên Kết</label>
+            <input type="text" class="form-control" id="Link" name="Link" value="@Model?.Link" placeholder="Nhập URL liên kết">
+        </div>
+        <div class="mb-3">
+            <label for="Img" class="form-label">Hình Ảnh</label>
+            <input type="file" class="form-control" id="Img" name="Img" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-success">Lưu</button>
+        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>
 
 @section Scripts {
-    <!-- Validation Scripts -->
     <partial name="_ValidationScriptsPartial" />
-    <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Hiển thị thông báo thành công
         @if (TempData["SuccessMessage"] != null)
         {
             <text>
-                    Swal.fire({
-                        title: 'Thành công!',
-                        text: '@Html.Raw(TempData["SuccessMessage"])',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
+                Swal.fire({
+                    title: 'Thành công!',
+                    text: '@Html.Raw(TempData["SuccessMessage"])',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
             </text>
         }
 
-        // Hiển thị thông báo lỗi
         @if (TempData["ErrorMessage"] != null)
         {
             <text>
-                    Swal.fire({
-                        title: 'Lỗi!',
-                        text: '@Html.Raw(TempData["ErrorMessage"])',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
+                Swal.fire({
+                    title: 'Lỗi!',
+                    text: '@Html.Raw(TempData["ErrorMessage"])',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             </text>
         }
+
+        document.getElementById("Img").addEventListener("change", function (e) {
+            const file = e.target.files[0];
+            if (!file.type.startsWith("image/")) {
+                Swal.fire({
+                    title: 'Lỗi!',
+                    text: 'Vui lòng chọn tệp hình ảnh hợp lệ.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                e.target.value = "";
+            }
+        });
     </script>
 }

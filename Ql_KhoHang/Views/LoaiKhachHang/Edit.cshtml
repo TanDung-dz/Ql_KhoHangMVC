@@ -5,26 +5,45 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="card-title mb-0">Sửa Loại Khách Hàng</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <!-- Hidden Field -->
+            <input type="hidden" name="MaLoai" value="@Model.MaLoai" />
 
-            <h2 class="mb-4">Sửa Loại Khách Hàng</h2>
+            <!-- Tên Loại -->
+            <div class="form-group">
+                <label for="TenLoai" class="form-label">Tên Loại</label>
+                <input type="text" id="TenLoai" name="TenLoai" class="form-control" value="@Model.TenLoai" />
+            </div>
 
-            <form asp-action="Edit" method="post">
-                <input type="hidden" name="MaLoai" value="@Model.MaLoai" />
-                <div class="mb-3">
-                    <label for="TenLoai" class="form-label">Tên Loại</label>
-                    <input type="text" id="TenLoai" name="TenLoai" class="form-control" value="@Model.TenLoai" />
-                </div>
-                <div class="mb-3">
-                    <label for="ChietKhauXuatHang" class="form-label">Chiết Khấu Xuất Hàng</label>
-                    <input type="number" id="ChietKhauXuatHang" name="ChietKhauXuatHang" class="form-control" value="@Model.ChietKhauXuatHang" />
-                </div>
-                <div class="mb-3">
-                    <label for="ChiPhiVanChuyen" class="form-label">Chi Phí Vận Chuyển</label>
-                    <input type="number" id="ChiPhiVanChuyen" name="ChiPhiVanChuyen" class="form-control" value="@Model.ChiPhiVanChuyen" />
-                </div>
-                <button type="submit" class="btn btn-primary">Lưu</button>
-                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-            </form>
+            <!-- Chiết Khấu Xuất Hàng -->
+            <div class="form-group">
+                <label for="ChietKhauXuatHang" class="form-label">Chiết Khấu Xuất Hàng</label>
+                <input type="number" id="ChietKhauXuatHang" name="ChietKhauXuatHang" class="form-control" value="@Model.ChietKhauXuatHang" />
+            </div>
+
+            <!-- Chi Phí Vận Chuyển -->
+            <div class="form-group">
+                <label for="ChiPhiVanChuyen" class="form-label">Chi Phí Vận Chuyển</label>
+                <input type="number" id="ChiPhiVanChuyen" name="ChiPhiVanChuyen" class="form-control" value="@Model.ChiPhiVanChuyen" />
+            </div>
+
+            <!-- Nút Lưu và Hủy -->
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Lưu
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Hủy
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 
 @section Scripts {
     <!-- Validation Scripts -->
@@ -38,23 +57,23 @@
             <text>
                     Swal.fire({
                         title: 'Thành công!',
-                        text: '@Html.Raw(TempData["SuccessMessage"])',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
+                    text: '@Html.Raw(TempData["SuccessMessage"])',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                                });
             </text>
         }
 
-        // Hiển thị thông báo lỗi
+            // Hiển thị thông báo lỗi
         @if (TempData["ErrorMessage"] != null)
         {
             <text>
                     Swal.fire({
                         title: 'Lỗi!',
-                        text: '@Html.Raw(TempData["ErrorMessage"])',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
+                    text: '@Html.Raw(TempData["ErrorMessage"])',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                                });
             </text>
         }
     </script>

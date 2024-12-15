@@ -1,25 +1,52 @@
 ﻿@model Ql_KhoHang.Dtos.NhacungcapDto
+
 @{
     ViewData["Title"] = "Chi Tiết Nhà Cung Cấp";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+<h2 class="mb-4">Chi Tiết Nhà Cung Cấp</h2>
 
-   
-            <h2>Chi Tiết Nhà Cung Cấp</h2>
+<div class="card">
+    <div class="card-body">
+        <!-- Ảnh Nhà Cung Cấp -->
+        <div class="text-center mb-4">
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <img src="@Model.Image" alt="Supplier Image" class="img-thumbnail rounded" style="width: 150px; height: 150px;" />
+            }
+            else
+            {
+                <img src="/images/default-supplier.png" alt="Default Supplier" class="img-thumbnail rounded" style="width: 150px; height: 150px;" />
+            }
+        </div>
 
-            <div class="card">
-                <div class="card-body">
-                    <p><strong>Tên Nhà Cung Cấp:</strong> @Model.TenNhaCungCap</p>
-                    <p><strong>Địa Chỉ:</strong> @Model.DiaChi</p>
-                    <p><strong>Email:</strong> @Model.Email</p>
-                    <p><strong>Số Điện Thoại:</strong> @Model.Sdt</p>
-                    @if (!string.IsNullOrEmpty(Model.Image))
-                    {
-                        <p><strong>Hình Ảnh:</strong></p>
-                        <img src="@Model.Image" alt="Supplier Image" width="150" height="150" />
-                    }
-                </div>
-            </div>
-
-            <a asp-action="Index" class="btn btn-secondary mt-3">Quay lại</a>
+        <!-- Thông Tin Nhà Cung Cấp -->
+        <table class="table table-bordered align-middle">
+            <tr>
+                <th class="text-start" style="width: 30%;">Tên Nhà Cung Cấp</th>
+                <td>@Model.TenNhaCungCap</td>
+            </tr>
+            <tr>
+                <th class="text-start">Địa Chỉ</th>
+                <td>@Model.DiaChi</td>
+            </tr>
+            <tr>
+                <th class="text-start">Email</th>
+                <td>@Model.Email</td>
+            </tr>
+            <tr>
+                <th class="text-start">Số Điện Thoại</th>
+                <td>@Model.Sdt</td>
+            </tr>
+        </table>
+    </div>
+    <div class="card-footer text-end">
+        <a asp-action="Index" class="btn btn-secondary me-2">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+        <a asp-action="Edit" asp-route-id="@Model.MaNhaCungCap" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Chỉnh sửa
+        </a>
+    </div>
+</div>
