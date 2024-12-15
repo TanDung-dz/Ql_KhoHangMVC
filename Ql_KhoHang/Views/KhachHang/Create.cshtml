@@ -4,34 +4,56 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+<div class="card shadow-sm mt-4" style="top:-50px">
+    <div class="card-header bg-primary text-white">
+        <h4 class="card-title mb-0">Thêm Mới Khách Hàng</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <!-- Tên Khách Hàng -->
+            <div class="form-group">
+                <label for="TenKhachHang">Tên Khách Hàng</label>
+                <input type="text" class="form-control" id="TenKhachHang" name="TenKhachHang" value="@Model.TenKhachHang" required />
+            </div>
 
-            <h2>Thêm Mới Khách Hàng</h2>
-            <form asp-action="Create" method="post">
-                <div class="form-group">
-                    <label for="TenKhachHang">Tên Khách Hàng</label>
-                    <input type="text" class="form-control" id="TenKhachHang" name="TenKhachHang" value="@Model.TenKhachHang" required />
-                </div>
-                <div class="form-group">
-                    <label for="SoDt">Số điện thoại</label>
-                    <input type="text" class="form-control" id="SoDt" name="SoDt" value="@Model.SoDt" required />
-                </div>
-                <div class="form-group">
-                    <label for="Diachi">Địa chỉ</label>
-                    <input type="text" class="form-control" id="Diachi" name="Diachi" value="@Model.Diachi" required />
-                </div>
-                <div class="form-group">
-                    <label for="Email">Email</label>
-                    <input type="text" class="form-control" id="Email" name="Email" value="@Model.Email" required />
-                </div>
-                <div class="form-group">
-                    <label for="MaLoai">Loại Khách Hàng</label>
-                    <select class="form-control" id="MaLoai" name="MaLoai" required>
-                        @foreach (var item in ViewBag.LoaiKhachHangs)
-                        {
-                            <option value="@item.MaLoai">@item.TenLoai</option>
-                        }
-                    </select>
-                </div>
+            <!-- Số điện thoại -->
+            <div class="form-group">
+                <label for="SoDt">Số điện thoại</label>
+                <input type="text" class="form-control" id="SoDt" name="SoDt" value="@Model.SoDt" required />
+            </div>
 
-                <button type="submit" class="btn btn-primary">Thêm Khách Hàng</button>
-            </form>
+            <!-- Địa chỉ -->
+            <div class="form-group">
+                <label for="Diachi">Địa chỉ</label>
+                <input type="text" class="form-control" id="Diachi" name="Diachi" value="@Model.Diachi" required />
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="Email">Email</label>
+                <input type="text" class="form-control" id="Email" name="Email" value="@Model.Email" required />
+            </div>
+
+            <!-- Loại Khách Hàng -->
+            <div class="form-group">
+                <label for="MaLoai">Loại Khách Hàng</label>
+                <select class="form-control" id="MaLoai" name="MaLoai" required>
+                    @foreach (var item in ViewBag.LoaiKhachHangs)
+                    {
+                        <option value="@item.MaLoai">@item.TenLoai</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Nút Thêm -->
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> Thêm Khách Hàng
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Hủy
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

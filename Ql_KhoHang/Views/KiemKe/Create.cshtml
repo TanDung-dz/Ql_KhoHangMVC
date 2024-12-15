@@ -4,97 +4,112 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<div class="row">
-    <h2>Thêm Phiếu Kiểm Kê</h2>
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="MaNhanVienKho">Nhân Viên Kho</label>
-            <select asp-for="MaNhanVienKho" class="form-control">
-                <option value="">-- Chọn Nhân Viên Kho --</option>
-                @if (ViewBag.Employees != null)
-                {
-                    foreach (var employee in (IEnumerable<Ql_KhoHang.Dtos.NhanVienKhoDto>)ViewBag.Employees)
-                    {
-                        <option value="@employee.MaNhanVienKho">@employee.TenNhanVien</option>
-                    }
-                }
-            </select>
-            <span asp-validation-for="MaNhanVienKho" class="text-danger"></span>
-        </div>
-
-        <h4>Chi Tiết Phiếu Kiểm Kê</h4>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Sản Phẩm</th>
-                    <th>Số Lượng Tồn</th>
-                    <th>Số Lượng Thực Tế</th>
-                    <th>Trạng Thái</th>
-                    <th>Nguyên Nhân</th>
-                    <th>Ảnh</th>
-                    <th>Thao Tác</th>
-                </tr>
-            </thead>
-            <tbody id="detail-container">
-                <tr>
-                    <td>
-                        <select name="Details[0].MaSanPham" class="form-control">
-                            <option value="">-- Chọn Sản Phẩm --</option>
-                            @if (ViewBag.Products != null)
+<div class="card shadow-sm mb-4">
+    <div class="card-header">
+        <h2 class="card-title">Thêm Phiếu Kiểm Kê</h2>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <!-- Card thông tin nhân viên kho -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h4>Thông Tin Phiếu</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="MaNhanVienKho">Nhân Viên Kho</label>
+                        <select asp-for="MaNhanVienKho" class="form-control">
+                            <option value="">-- Chọn Nhân Viên Kho --</option>
+                            @if (ViewBag.Employees != null)
                             {
-                                foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
+                                foreach (var employee in (IEnumerable<Ql_KhoHang.Dtos.NhanVienKhoDto>)ViewBag.Employees)
                                 {
-                                    <option value="@product.MaSanPham">@product.TenSanPham (@product.TenNhaCungCap)</option>
+                                    <option value="@employee.MaNhanVienKho">@employee.TenNhanVien</option>
                                 }
                             }
                         </select>
-                    </td>
-                    <td>
-                        <input name="Details[0].SoLuongTon" type="number" class="form-control" />
-                    </td>
-                    <td>
-                        <input name="Details[0].SoLuongThucTe" type="number" class="form-control" />
-                    </td>
-                    <td>
-                        <select name="Details[0].TrangThai" class="form-control">
-                            <option value="0">Chưa hoàn thành</option>
-                            <option value="1">Hoàn thành</option>
-                        </select>
-                    </td>
-                    <td>
-                        <input name="Details[0].NguyenNhan" type="text" class="form-control" />
-                    </td>
-                    <td>
-                        <input name="Details[0].Images" type="file" class="form-control" multiple />
-                        <small class="form-text text-muted">Tối đa 6 ảnh.</small>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm remove-detail">
-                            <i class="fas fa-trash"></i> <!-- Biểu tượng xóa -->
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <!-- Nút Thêm Chi Tiết -->
-        <div class="form-group mb-3">
-            <button type="button" class="btn btn-success btn-sm" id="add-detail">
-                <i class="fas fa-plus-circle"></i> Thêm Chi Tiết
-            </button>
-        </div>
+                        <span asp-validation-for="MaNhanVienKho" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Nút Lưu Phiếu Kiểm Kê và Quay Lại -->
-        <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Lưu Phiếu Kiểm Kê
-            </button>
-            <a asp-action="Index" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Quay lại
-            </a>
-        </div>
-    </form>
+            <!-- Card chi tiết phiếu kiểm kê -->
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4>Chi Tiết Phiếu Kiểm Kê</h4>
+                    <button type="button" class="btn btn-success btn-sm" id="add-detail">
+                        <i class="fas fa-plus-circle"></i> Thêm Chi Tiết
+                    </button>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Sản Phẩm</th>
+                                <th>Số Lượng Tồn</th>
+                                <th>Số Lượng Thực Tế</th>
+                                <th>Trạng Thái</th>
+                                <th>Nguyên Nhân</th>
+                                <th>Ảnh</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detail-container">
+                            <tr>
+                                <td>
+                                    <select name="Details[0].MaSanPham" class="form-control">
+                                        <option value="">-- Chọn Sản Phẩm --</option>
+                                        @if (ViewBag.Products != null)
+                                        {
+                                            foreach (var product in (IEnumerable<Ql_KhoHang.Dtos.SanPhamDto>)ViewBag.Products)
+                                            {
+                                                <option value="@product.MaSanPham">@product.TenSanPham (@product.TenNhaCungCap)</option>
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                    <input name="Details[0].SoLuongTon" type="number" class="form-control" />
+                                </td>
+                                <td>
+                                    <input name="Details[0].SoLuongThucTe" type="number" class="form-control" />
+                                </td>
+                                <td>
+                                    <select name="Details[0].TrangThai" class="form-control">
+                                        <option value="0">Chưa hoàn thành</option>
+                                        <option value="1">Hoàn thành</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input name="Details[0].NguyenNhan" type="text" class="form-control" />
+                                </td>
+                                <td>
+                                    <input name="Details[0].Images" type="file" class="form-control" multiple />
+                                    <small class="form-text text-muted">Tối đa 6 ảnh.</small>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm remove-detail">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Nút hành động -->
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Lưu Phiếu Kiểm Kê
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
-
 @section Scripts {
     <script>
         $(document).ready(function () {

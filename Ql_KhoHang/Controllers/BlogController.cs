@@ -85,6 +85,7 @@ namespace Ql_KhoHang.Controllers
             if (int.TryParse(userIdClaim, out var userId))
             {
                 newBlog.MaNguoiDung = userId;
+                newBlog.Hide = false;
             }
             else
             {

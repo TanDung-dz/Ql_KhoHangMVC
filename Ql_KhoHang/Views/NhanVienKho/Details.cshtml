@@ -4,41 +4,52 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<div class="container" style="align-content:start">
-    <div class="col-md-10">
-        <div class="content container-fluid px-3 my-3">
-            <h2>Chi Tiết Nhân Viên Kho</h2>
-            <table class="table">
-                <tr>
-                    <th>Mã Nhân Viên</th>
-                    <td>@Model.MaNhanVienKho</td>
-                </tr>
-                <tr>
-                    <th>Tên Nhân Viên</th>
-                    <td>@Model.TenNhanVien</td>
-                </tr>
-                <tr>
-                    <th>Email</th>
-                    <td>@Model.Email</td>
-                </tr>
-                <tr>
-                    <th>Số Điện Thoại</th>
-                    <td>@Model.Sdt</td>
-                </tr>
-                <tr>
-                    <th>Ngày Sinh</th>
-                    <td>@Model.NamSinh?.ToString("dd/MM/yyyy")</td>
-                </tr>
-                <tr>
-                    <th>Hình Ảnh</th>
-                    <td>
-                        @if (!string.IsNullOrEmpty(Model.Hinhanh))
-                        {
-                            <img src="@Model.Hinhanh" alt="Nhân Viên Kho" width="150" />
-                        }
-                    </td>
-                </tr>
-            </table>
+<h2 class="mb-4">Chi Tiết Nhân Viên Kho</h2>
+
+<div class="card">
+    <div class="card-body">
+        <!-- Hiển thị Hình Ảnh -->
+        <div class="text-center mb-4">
+            @if (!string.IsNullOrEmpty(Model.Hinhanh))
+            {
+                <img src="@Model.Hinhanh" alt="Nhân Viên Kho" class="img-thumbnail rounded" style="width: 150px; height: 150px;" />
+            }
+            else
+            {
+                <img src="/images/default-user.png" alt="Default Image" class="img-thumbnail rounded" style="width: 150px; height: 150px;" />
+            }
         </div>
+
+        <!-- Hiển thị Thông Tin Nhân Viên -->
+        <table class="table table-bordered align-middle">
+            <tr>
+                <th class="text-start" style="width: 30%;">Mã Nhân Viên</th>
+                <td>@Model.MaNhanVienKho</td>
+            </tr>
+            <tr>
+                <th class="text-start">Tên Nhân Viên</th>
+                <td>@Model.TenNhanVien</td>
+            </tr>
+            <tr>
+                <th class="text-start">Email</th>
+                <td>@Model.Email</td>
+            </tr>
+            <tr>
+                <th class="text-start">Số Điện Thoại</th>
+                <td>@Model.Sdt</td>
+            </tr>
+            <tr>
+                <th class="text-start">Ngày Sinh</th>
+                <td>@(Model.NamSinh?.ToString("dd/MM/yyyy") ?? "Không có thông tin")</td>
+            </tr>
+        </table>
+    </div>
+    <div class="card-footer text-end">
+        <a asp-action="Index" class="btn btn-secondary me-2">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+        <a asp-action="Edit" asp-route-id="@Model.MaNhanVienKho" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Chỉnh sửa
+        </a>
     </div>
 </div>

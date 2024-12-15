@@ -5,18 +5,31 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h2 class="mb-4">Chỉnh sửa Loại Sản Phẩm</h2>
-
-<form asp-action="Edit" method="post">
-    <div class="mb-3">
-        <label for="TenLoaiSanPham" class="form-label">Tên Loại Sản Phẩm</label>
-        <input type="text" id="TenLoaiSanPham" name="TenLoaiSanPham" asp-for="TenLoaiSanPham" class="form-control" placeholder="Nhập tên loại sản phẩm" />
-        <span asp-validation-for="TenLoaiSanPham" class="text-danger"></span>
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="card-title mb-0">Chỉnh sửa Loại Sản Phẩm</h4>
     </div>
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <!-- Tên Loại Sản Phẩm -->
+            <div class="form-group">
+                <label for="TenLoaiSanPham" class="form-label">Tên Loại Sản Phẩm</label>
+                <input type="text" id="TenLoaiSanPham" name="TenLoaiSanPham" asp-for="TenLoaiSanPham" class="form-control" placeholder="Nhập tên loại sản phẩm" />
+                <span asp-validation-for="TenLoaiSanPham" class="text-danger"></span>
+            </div>
 
-    <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
-    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-</form>
+            <!-- Nút Lưu và Hủy -->
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Lưu Thay Đổi
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Hủy
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 
 @section Scripts {
     <!-- Validation Scripts -->
@@ -30,23 +43,23 @@
             <text>
                     Swal.fire({
                         title: 'Thành công!',
-                        text: '@Html.Raw(TempData["SuccessMessage"])',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
+                    text: '@Html.Raw(TempData["SuccessMessage"])',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                                });
             </text>
         }
 
-        // Hiển thị thông báo lỗi
+            // Hiển thị thông báo lỗi
         @if (TempData["ErrorMessage"] != null)
         {
             <text>
                     Swal.fire({
                         title: 'Lỗi!',
-                        text: '@Html.Raw(TempData["ErrorMessage"])',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
+                    text: '@Html.Raw(TempData["ErrorMessage"])',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                                });
             </text>
         }
     </script>

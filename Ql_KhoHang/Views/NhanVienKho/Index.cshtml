@@ -4,102 +4,142 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<div class="row">
-    <h2>Danh Sách Nhân Viên Kho</h2>
-
-    <div class="mb-3 d-flex justify-content-between">
-        <!-- Nút thêm mới nhân viên -->
-        <a asp-action="Create" class="btn btn-primary" data-bs-toggle="tooltip" title="Thêm mới nhân viên">
-            <i class="fas fa-plus"></i>
-        </a>
-
-        <!-- Form tìm kiếm nhân viên -->
-        <form asp-action="Index" method="get" class="form-inline d-flex">
-            <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm theo tên" value="@ViewBag.Keyword" />
-            <button type="submit" class="btn btn-secondary ml-2" data-bs-toggle="tooltip" title="Tìm kiếm">
-                <i class="fas fa-search"></i>
-            </button>
+<div class="row mb-3">
+    <div class="col-md-6">
+        <!-- Form tìm kiếm -->
+        <form asp-action="Index" asp-controller="NhanVienKho" method="get">
+            <div class="input-group">
+                <input type="text" name="keyword" class="form-control" placeholder="Nhập từ khóa tìm kiếm..." value="@ViewBag.Keyword" />
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> <!-- Biểu tượng tìm kiếm -->
+                </button>
+            </div>
         </form>
     </div>
+    <div class="col-md-6 text-end">
+        <!-- Nút thêm mới nhân viên -->
+        <a asp-action="Create" asp-controller="NhanVienKho" class="btn btn-success">
+            <i class="fas fa-plus-circle"></i> Thêm nhân viên
+        </a>
+    </div>
+</div>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Mã Nhân Viên</th>
-                <th>Tên Nhân Viên</th>
-                <th>Email</th>
-                <th>SĐT</th>
-                <th>Ngày Sinh</th>
-                <th>Hình Ảnh</th>
-                <th>Thao Tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var employee in Model)
-            {
+<!-- Hiển thị thông báo nếu có -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<div class="card">
+    <div class="card-header">
+        Danh sách Nhân Viên Kho
+    </div>
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead>
                 <tr>
-                    <td>@employee.MaNhanVienKho</td>
-                    <td>@employee.TenNhanVien</td>
-                    <td>@employee.Email</td>
-                    <td>@employee.Sdt</td>
-                    <td>@employee.NamSinh?.ToString("dd/MM/yyyy")</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(employee.Hinhanh))
-                        {
-                            <img src="@employee.Hinhanh" alt="@employee.TenNhanVien" width="50" height="50" />
-                        }
-                    </td>
-                    <td>
-                        <!-- Nút hành động -->
-                        <a asp-action="Details" asp-route-id="@employee.MaNhanVienKho" class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Xem chi tiết">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a asp-action="Edit" asp-route-id="@employee.MaNhanVienKho" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Chỉnh sửa">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <form asp-action="Delete" asp-route-id="@employee.MaNhanVienKho" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?');">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
-                    </td>
+                    <th>STT</th>
+                    <th>Mã Nhân Viên</th>
+                    <th>Tên Nhân Viên</th>
+                    <th>Email</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Ngày Sinh</th>
+                    <th>Hình Ảnh</th>
+                    <th>Thao Tác</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    int index = 1;
+                    foreach (var employee in Model)
+                    {
+                        <tr>
+                            <td>@index</td>
+                            <td>@employee.MaNhanVienKho</td>
+                            <td>@(employee.TenNhanVien ?? "Không xác định")</td>
+                            <td>@(employee.Email ?? "Không xác định")</td>
+                            <td>@(employee.Sdt?.ToString() ?? "Không xác định")</td>
+                            <td>@(employee.NamSinh?.ToString("dd/MM/yyyy") ?? "Không xác định")</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(employee.Hinhanh))
+                                {
+                                    <img src="@employee.Hinhanh" alt="@employee.TenNhanVien" class="img-thumbnail" style="width: 50px; height: 50px;" />
+                                }
+                                else
+                                {
+                                    <img src="/images/default-user.png" alt="Mặc định" class="img-thumbnail" style="width: 50px; height: 50px;" />
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a asp-action="Details" asp-route-id="@employee.MaNhanVienKho" class="btn btn-info btn-sm" title="Chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@employee.MaNhanVienKho" class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@employee.MaNhanVienKho" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?');">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center">Không có nhân viên nào.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
-    <!-- Phân trang -->
-    <nav>
-        <ul class="pagination">
-            <!-- Nút quay lại -->
-            @if (ViewBag.CurrentPage > 1)
-            {
-                <li class="page-item">
-                    <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage - 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword" data-bs-toggle="tooltip" title="Trang trước">
-                        <i class="fas fa-arrow-left"></i>
-                    </a>
-                </li>
-            }
+        <!-- Phân trang -->
+        @if (ViewBag.TotalPages != null && ViewBag.TotalPages > 1)
+        {
+            <nav>
+                <ul class="pagination justify-content-center">
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", "NhanVienKho", new { pageNumber = ViewBag.CurrentPage - 1, pageSize = ViewBag.PageSize, keyword = ViewBag.Keyword })">
+                                <i class="fas fa-angle-left"></i>
+                            </a>
+                        </li>
+                    }
 
-            <!-- Danh sách các trang -->
-            @for (var i = 1; i <= ViewBag.TotalPages; i++)
-            {
-                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                    <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">@i</a>
-                </li>
-            }
+                    @for (var i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", "NhanVienKho", new { pageNumber = i, pageSize = ViewBag.PageSize, keyword = ViewBag.Keyword })">@i</a>
+                        </li>
+                    }
 
-            <!-- Nút tiến -->
-            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-            {
-                <li class="page-item">
-                    <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage + 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword" data-bs-toggle="tooltip" title="Trang sau">
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                </li>
-            }
-        </ul>
-    </nav>
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", "NhanVienKho", new { pageNumber = ViewBag.CurrentPage + 1, pageSize = ViewBag.PageSize, keyword = ViewBag.Keyword })">
+                                <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
 </div>
 
 @section Scripts {

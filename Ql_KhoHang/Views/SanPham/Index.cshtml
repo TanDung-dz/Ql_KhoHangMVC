@@ -4,29 +4,38 @@
     ViewData["Title"] = "Sản Phẩm";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
-
-<div class="row">
-    <h2>Danh Sách Sản Phẩm</h2>
-
-    <div class="form-inline d-flex">
-        <!-- Nút thêm mới sản phẩm -->
-        <a asp-action="Create" class="btn btn-primary ml-2">
-            <i class="fas fa-plus"></i> <!-- Biểu tượng thêm mới -->
-        </a>
-
-        <!-- Form tìm kiếm sản phẩm -->
-        <form asp-action="Index" method="get" class="form-inline d-flex">
-            <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm sản phẩm..." value="@ViewBag.Keyword" />
-            <button type="submit" class="btn btn-secondary ml-2">
-                <i class="fas fa-search"></i> <!-- Biểu tượng tìm kiếm -->
-            </button>
+<div class="row mb-3">
+    <div class="col-md-6 d-inline-block">
+        <!-- Form tìm kiếm -->
+        <form asp-action="Index" asp-controller="SanPham" method="get">
+            <div class="input-group">
+                <input type="text" name="keyword" class="form-control" placeholder="Nhập từ khóa tìm kiếm..." value="@ViewBag.Keyword" />
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> <!-- Biểu tượng tìm kiếm -->
+                </button>
+            </div>
         </form>
         
-        <form method="get" action="@Url.Action("Index", "SanPham")" class="form-inline d-flex" >
-    <div class="form-group" style="padding:20px">
-                <label for="loaiSanpham" class="mr-2"><h5>Lọc theo loại</h5></label>
-        <select id="loaiSanpham" name="loaiSanpham" class="form-control" onchange="this.form.submit()">
-                    @{ int kt = 0;
+    </div>
+    <div class="col-md-6 text-end">
+        <!-- Nút thêm mới sản phẩm -->
+        <a asp-action="Create" asp-controller="SanPham" class="btn btn-success">
+            <i class="fas fa-plus-circle"></i> Thêm sản phẩm
+        </a>
+    </div>
+</div>
+<div class="card">
+    <div class="d-flex justify-content-between align-items-center p-3">
+        <div class="card-header mb-0">
+            Danh sách Sản Phẩm
+        </div>
+        <!-- Lọc theo loại -->
+        <form method="get" action="@Url.Action("Index", "SanPham")" class="form-inline d-flex">
+            <div class="form-group mb-0">
+                <label for="loaiSanpham" class="mr-2"><h5 class="mb-0">Lọc theo loại</h5></label>
+                <select id="loaiSanpham" name="loaiSanpham" class="form-control" onchange="this.form.submit()">
+                    @{
+                        int kt = 0;
                         @if (ViewBag.CurrentLoaiSanPham == "tatca")
                         {
                             <option value="tatca" selected>Tất cả</option>
@@ -39,7 +48,7 @@
                             }
                         }
                         else
-                        {   
+                        {
 
                             foreach (var loaiSanPham in ViewBag.LoaiSanPhams)
                             {
@@ -53,14 +62,14 @@
 
                             }
                         }
-                        if(kt!=0)
+                        if (kt != 0)
                         {
                             <option value="tatca">Tất cả</option>
-                            
+
                         }
                         @foreach (var loaiSanPham in ViewBag.LoaiSanPhams)
                         {
-                            if(kt==1)
+                            if (kt == 1)
                             {
                                 if (loaiSanPham.TenLoaiSanPham != ViewBag.CurrentLoaiSanPham)
                                 {
@@ -71,119 +80,122 @@
                             }
                         }
                     }
-        </select>
+                </select>
+            </div>
+        </form>
     </div>
-</form>
-
-
-
-    </div>
-
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th style="width:5%;">Id</th>
-                <th style="width:15%;">Tên</th>
-                <th style="width:15%;">Hình Ảnh</th>
-                <th style="width:15%;">Mã vạch</th>
-                <th style="width:10%;">Số Lượng</th>
-                <th style="width:10%;">Khối Lượng</th>
-                <th style="width:10%;">Kích Thước</th>
-                <th style="width:10%;">Xuất Xứ</th>
-                <th style="width:10%;">Loại</th>
-                <th style="width:15%;">Hãng SX</th>
-                <th style="width:20%;">Thao Tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model != null && Model.Any())
-            {
-                foreach (var sanpham in Model)
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên</th>
+                    <th>Hình Ảnh</th>
+                    <th>Mã Vạch</th>
+                    <th>Số Lượng</th>
+                    <th>Khối Lượng</th>
+                    <th>Kích Thước</th>
+                    <th>Xuất Xứ</th>
+                    <th>Loại</th>
+                    <th>Hãng SX</th>
+                    <th>Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    int index = 1;
+                    foreach (var sanpham in Model)
+                    {
+                        <tr>
+                            <td>@index</td>
+                            <td>@sanpham.TenSanPham (@sanpham.TenNhaCungCap)</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(sanpham.Image))
+                                {
+                                    <img src="@sanpham.Image" alt="@sanpham.TenSanPham" class="img-thumbnail" style="width: 50px; height: 50px;" />
+                                }
+                                else
+                                {
+                                    <img src="/images/default-product.png" alt="Mặc định" class="img-thumbnail" style="width: 50px; height: 50px;" />
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(sanpham.MaVach))
+                                {
+                                    <img src="@sanpham.MaVach" alt="@sanpham.TenSanPham" class="img-thumbnail" style="width: 50px; height: 50px;" />
+                                }
+                            </td>
+                            <td>@sanpham.SoLuong</td>
+                            <td>@sanpham.KhoiLuong</td>
+                            <td>@sanpham.KichThuoc</td>
+                            <td>@sanpham.XuatXu</td>
+                            <td>@sanpham.TenLoaiSanPham</td>
+                            <td>@sanpham.TenHangSanXuat</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="javascript:void(0);" onclick="loadImportBatches(@sanpham.MaSanPham)" class="btn btn-danger btn-sm me-2" title="Lô Nhập">
+                                        <i class="fas fa-box"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@sanpham.MaSanPham" class="btn btn-info btn-sm" title="Chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@sanpham.MaSanPham" class="btn btn-warning btn-sm" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@sanpham.MaSanPham" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                }
+                else
                 {
                     <tr>
-                        <td>@sanpham.MaSanPham</td>
-                        <td>@sanpham.TenSanPham (@sanpham.TenNhaCungCap)</td>
-                        <td>
-                            @if (!string.IsNullOrEmpty(sanpham.Image))
-                            {
-                                <img src="@sanpham.Image" alt="@sanpham.TenSanPham" width="50" height="50" />
-                            }
-                        </td>
-                        <td>
-                            @if (!string.IsNullOrEmpty(sanpham.MaVach))
-                            {
-                                <img src="@sanpham.MaVach" alt="@sanpham.TenSanPham" width="50" height="50" />
-                            }
-                        </td>
-                        <td>@sanpham.SoLuong</td>
-                        <td>@sanpham.KhoiLuong</td>
-                        <td>@sanpham.KichThuoc</td>
-                        <td>@sanpham.XuatXu</td>
-                        <td>@sanpham.TenLoaiSanPham</td>
-                        <td>@sanpham.TenHangSanXuat</td>
-                        <td>
-                            <div class="btn-group">
-                                <a href="javascript:void(0);" onclick="loadImportBatches(@sanpham.MaSanPham)" class="btn btn-danger btn-sm me-2" title="Lô Nhập">
-                                    <i class="fas fa-box"></i>
-                                </a>
-                                <a asp-action="Details" asp-route-id="@sanpham.MaSanPham" class="btn btn-info btn-sm me-2" title="Chi tiết">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a asp-action="Edit" asp-route-id="@sanpham.MaSanPham" class="btn btn-warning btn-sm me-2" title="Sửa">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form asp-action="Delete" asp-route-id="@sanpham.MaSanPham" method="post" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                        <td colspan="11" class="text-center">Không có sản phẩm nào.</td>
                     </tr>
                 }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="13" class="text-center">Không có sản phẩm nào.</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
+        <!-- Phân trang -->
+        @if (ViewBag.TotalPages != null && ViewBag.TotalPages > 1)
+        {
+            <nav>
+                <ul class="pagination justify-content-center">
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", "SanPham", new { pageNumber = ViewBag.CurrentPage - 1, pageSize = ViewBag.PageSize, keyword = ViewBag.Keyword })">
+                                <i class="fas fa-angle-left"></i>
+                            </a>
+                        </li>
+                    }
 
-    <!-- Phân trang -->
-    <nav>
-        <ul class="pagination justify-content-center">
-            <!-- Nút quay lại -->
-            @if (ViewBag.CurrentPage > 1)
-            {
-                <li class="page-item">
-                    <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage - 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">
-                        <i class="fas fa-angle-left"></i> <!-- Biểu tượng quay lại -->
-                    </a>
-                </li>
-            }
+                    @for (var i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", "SanPham", new { pageNumber = i, pageSize = ViewBag.PageSize, keyword = ViewBag.Keyword })">@i</a>
+                        </li>
+                    }
 
-            <!-- Danh sách các trang -->
-            @for (var i = 1; i <= ViewBag.TotalPages; i++)
-            {
-                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                    <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">@i</a>
-                </li>
-            }
-
-            <!-- Nút tiến -->
-            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-            {
-                <li class="page-item">
-                    <a class="page-link" href="?pageNumber=@(ViewBag.CurrentPage + 1)&pageSize=@ViewBag.PageSize&keyword=@ViewBag.Keyword">
-                        <i class="fas fa-angle-right"></i> <!-- Biểu tượng tiến -->
-                    </a>
-                </li>
-            }
-        </ul>
-    </nav>
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", "SanPham", new { pageNumber = ViewBag.CurrentPage + 1, pageSize = ViewBag.PageSize, keyword = ViewBag.Keyword })">
+                                <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
 </div>
 <!-- Modal -->
 <div class="modal fade" id="importBatchesModal" tabindex="-1" aria-labelledby="importBatchesModalLabel" aria-hidden="true">
