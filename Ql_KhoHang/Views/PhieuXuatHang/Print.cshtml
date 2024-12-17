@@ -1,0 +1,143 @@
+﻿@model Ql_KhoHang.Dtos.PhieuXuatHangDto
+@{
+    Layout = null; /* Loại bỏ layout để in */
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title style="text-align:end">Phiếu Xuất Kho</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            margin: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .info-table, .details-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .info-table td {
+                padding: 5px;
+            }
+
+            .details-table th, .details-table td {
+                border: 1px solid black;
+                padding: 8px;
+                text-align: center;
+            }
+
+            .details-table th {
+                background-color: #f2f2f2;
+            }
+
+        .signature-section {
+            margin-top: 30px;
+        }
+
+            .signature-section table {
+                width: 100%;
+                text-align: center;
+            }
+
+            .signature-section td {
+                padding-top: 50px; /* Khoảng trống để ký tên */
+            }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h2>PHIẾU XUẤT KHO</h2>
+        <p>Ngày xuất: @(Model.NgayXuat?.ToString("dd/MM/yyyy") ?? "Chưa xác định")</p>
+        <p>Mã phiếu: @Model.MaPhieuXuatHang</p>
+    </div>
+
+    <!-- Thông tin chung -->
+    <table class="info-table">
+        <tr>
+            <td class="bold">Khách hàng:</td>
+            <td>@(Model.TenKhachHang ?? "Không có thông tin")</td>
+            <td class="bold">Nhân viên xuất:</td>
+            <td>@(Model.TenNguoiDung ?? "Không có thông tin")</td>
+        </tr>
+        <tr>
+            <td class="bold">Trạng thái:</td>
+            <td>@(Model.TrangThai == 1 ? "Hoàn thành" : "Chưa hoàn thành")</td>
+        </tr>
+    </table>
+
+    <!-- Chi tiết hàng hóa -->
+    <h4 class="text-left">Danh sách hàng xuất:</h4>
+    <table class="details-table">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewBag.Details != null)
+            {
+                int stt = 1;
+                foreach (var detail in ViewBag.Details)
+                {
+                    <tr>
+                        <td>@(stt++)</td>
+                        <td>@detail.TenSanPham</td>
+                        <td>@detail.SoLuong</td>
+                        <td>@(detail.TrangThai == 1 ? "Đạt" : "Chưa đạt")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5">Không có chi tiết hàng hóa.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Phần chữ ký -->
+    <div class="signature-section">
+        <table>
+            <tr>
+                <td><strong>Người lập phiếu</strong><br>(Ký và ghi rõ họ tên)</td>
+                <td><strong>Người giao hàng</strong><br>(Ký và ghi rõ họ tên)</td>
+                <td><strong>Thủ kho</strong><br>(Ký và ghi rõ họ tên)</td>
+                <td><strong>Kế toán trưởng</strong><br>(Ký và ghi rõ họ tên)</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Tự động mở dialog in -->
+    <script>
+        window.onload = function () {
+            window.print();
+        };
+    </script>
+</body>
+</html>

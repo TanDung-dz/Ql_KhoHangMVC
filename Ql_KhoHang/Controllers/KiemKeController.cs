@@ -81,7 +81,22 @@ namespace Ql_KhoHang.Controllers
             ViewBag.Details = details; // Danh sách chi tiết kiểm kê
             return View(kiemKe);
         }
-        
+        [HttpGet]
+        public async Task<IActionResult> Print(int id)
+        {
+            var kiemke = await _kiemKeService.GetByIdAsync(id);
+            if (kiemke == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy phiếu kiểm kê.";
+                return RedirectToAction("Index");
+            }
+
+            var details = await _chiTietKiemKeService.GetByInventoryCheckIdAsync(id);
+            ViewBag.Details = details;
+
+            // Trả về View với layout trống
+            return View("Print", kiemke);
+        }
         [HttpGet]
         public async Task<IActionResult> Create()
         {

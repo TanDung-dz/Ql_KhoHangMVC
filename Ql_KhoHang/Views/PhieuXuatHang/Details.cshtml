@@ -19,7 +19,7 @@
             gap: 10px; /* Tạo khoảng cách giữa các ảnh */
         }
 
-        .table-bordered th.text-end {
+        .table-bordered th.text-start {
             padding-right: 15px; /* Đảm bảo label gần hơn với nội dung */
             vertical-align: middle;
             white-space: nowrap; /* Không xuống dòng */
@@ -62,23 +62,23 @@
     <div class="card-body">
         <table class="table table-bordered">
             <tr>
-                <th class="text-end">Mã Phiếu</th>
+                <th class="text-start">Mã Phiếu</th>
                 <td>@(!string.IsNullOrEmpty(Model.MaPhieuXuatHang.ToString()) ? Model.MaPhieuXuatHang : "Không có thông tin")</td>
             </tr>
             <tr>
-                <th class="text-end">Ngày Xuất</th>
+                <th class="text-start">Ngày Xuất</th>
                 <td>@(Model.NgayXuat?.ToString("dd/MM/yyyy") ?? "Chưa có ngày")</td>
             </tr>
             <tr>
-                <th class="text-end">Trạng Thái</th>
+                <th class="text-start">Trạng Thái</th>
                 <td>@(Model.TrangThai == 1 ? "Hoàn thành" : "Chưa hoàn thành")</td>
             </tr>
             <tr>
-                <th class="text-end">Khách Hàng</th>
+                <th class="text-start">Khách Hàng</th>
                 <td>@(!string.IsNullOrEmpty(Model.TenKhachHang) ? Model.TenKhachHang : "Không có thông tin")</td>
             </tr>
             <tr>
-                <th class="text-end">Nhân Viên</th>
+                <th class="text-start">Nhân Viên</th>
                 <td>@(!string.IsNullOrEmpty(Model.TenNguoiDung) ? Model.TenNguoiDung : "Không có thông tin")</td>
             </tr>
         </table>
@@ -138,7 +138,10 @@
     </div>
 </div>
 
-<div class="text-end mt-4">
+<div class="text-start mt-4">
+    <a asp-action="Print" asp-route-id="@Model.MaPhieuXuatHang" target="_blank" class="btn btn-primary">
+        <i class="fas fa-print"></i> In Phiếu Xuất Kho
+    </a>
     <a asp-action="Index" class="btn btn-secondary me-2">
         <i class="fas fa-arrow-left"></i> Quay lại
     </a>
