@@ -1,173 +1,514 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-	<title>DLK Warehouse</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <title>DLK Ware House</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/img/hotel_logo.png">
 
-	<link rel="shortcut icon" type="image/x-icon" href="~/assets2/img/logo_1.png">
-	<link rel="stylesheet" href="~/assets2/css/bootstrap.min.css">
-	<link rel="stylesheet" href="~/assets2/plugins/fontawesome/css/all.min.css">
-	<link rel="stylesheet" href="~/assets2/plugins/fontawesome/css/fontawesome.min.css">
-	<link rel="stylesheet" href="~/assets2/plugins/datatables/datatables.min.css">
-	<link rel="stylesheet" href="~/assets2/css/feathericon.min.css">
-	<link rel="stylesheet" href="~/assets2/plugins/morris/morris.css">
-	<link rel="stylesheet" type="text/css" href="~/assets2/css/bootstrap-datetimepicker.min.css">
-	<link rel="stylesheet" href="~/assets2/css/style.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/plugins/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="~/css/feathericon.min.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        /* Toggle Sidebar */
+        .sidebar.collapsed {
+            width: 0;
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar {
+            width: 250px;
+            transition: width 0.3s ease; /* Hiệu ứng thu gọn sidebar */
+        }
+
+            .sidebar:not(.collapsed) {
+                width: 250px;
+                transition: width 0.3s ease;
+            }
+
+        / /* Main content adjustment */
+        .main-wrapper {
+            margin-left: 250px; /* Khoảng cách khi sidebar đang mở */
+            transition: margin-left 0.3s ease;
+        }
+
+        .sidebar.collapsed + .main-wrapper {
+            margin-left: 0; /* Trả về toàn màn hình khi sidebar thu gọn */
+        }
+        /* Submenu Styling */
+        .submenu_class {
+            display: none;
+        }
+
+        .submenu.active > .submenu_class {
+            display: block !important;
+        }
+
+        .main-wrapper {
+            margin-left: 250px; /* Khoảng cách để nhường chỗ cho sidebar */
+            padding: 20px; /* Khoảng cách bên trong để nội dung thoáng hơn */
+            max-width: 100%; /* Đảm bảo không bị tràn */
+            box-sizing: border-box; /* Tính cả padding vào kích thước */
+        }
+
+        .square-avatar {
+            width: 31px; /* Kích thước chiều rộng */
+            height: 31px; /* Kích thước chiều cao bằng chiều rộng để tạo khung vuông */
+            object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
+            border-radius: 0; /* Đặt góc cạnh vuông */
+            border: 1px solid #ccc; /* Thêm viền (tuỳ chọn) */
+        }
+        /* Sidebar cho mobile */
+        @@media (max-width: 768px) {
+            .sidebar {
+                position: fixed; /* Đặt sidebar cố định */
+                top: 0;
+                left: -250px; /* Mặc định ẩn bên ngoài */
+                width: 250px;
+                height: 100%;
+                background-color: #fff;
+                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+                z-index: 1000;
+            }
+
+                .sidebar.collapsed {
+                    left: 0; /* Hiện sidebar khi có class 'collapsed' */
+                }
+
+            .main-wrapper {
+                margin-left: 0;
+            }
+        }
+
+        .breadcrumb {
+            margin-top: 8px;
+            display: inline-flex; /* Hiển thị các mục breadcrumb trên cùng hàng */
+            background: none;
+            list-style: none;
+        }
+
+        .header {
+            display: flex;
+            background-color: #f8f9fa; /* Màu nền thanh menu */
+            border-bottom: 1px solid #ddd; /* Viền dưới */
+        }
+        /* Chatbot Styles */
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            max-height: 500px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+            display: none;
+        }
+
+        #chatbot-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+        #chatbot-messages {
+            height: 350px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #f4f7fa;
+            border-bottom: 1px solid #ddd;
+            border-radius: 0 0 8px 8px;
+        }
+
+        #chatbot-input {
+            padding: 10px;
+            background-color: #f4f7fa;
+        }
+
+        #chatbot-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+        }
+
+        .chatbot-message {
+            padding: 8px 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+        }
+
+        .user-message {
+            background-color: #e3f2fd;
+            text-align: left;
+        }
+
+        .bot-message {
+            background-color: #c8e6c9;
+            text-align: left;
+        }
+
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+
 
 </head>
-
 <body>
-	<div class="main-wrapper">
-		<div class="header">
-			<div class="header-left">
-				<a asp-area="" asp-controller="NguoiDung" asp-action="Index" class="logo"> <img src="~/assets2/img/logo.png" width="50" height="70" alt="logo"> <span class="logoclass"></span> </a>
-				<a asp-area="" asp-controller="NguoiDung" asp-action="Index" class="logo logo-small"> <img src="~/assets2/img/logo.png" alt="Logo" width="30" height="30"> </a>
-			</div>
-			<a href="javascript:void(0);" id="toggle_btn"> <i class="fe fe-text-align-left"></i> </a>
-			<a class="mobile_btn" id="mobile_btn"> <i class="fas fa-bars"></i> </a>
+    <!-- Header -->
+    <div class="header">
 
-			<ul class="nav user-menu">
-				<li class="nav-item dropdown has-arrow">
-					<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown"> <span class="user-img"><img class="rounded-circle" src="@ViewBag.HinhAnh" width="31" alt="@ViewBag.Username"></span> </a>
-					<div class="dropdown-menu">
-						<div class="user-header">
-							<div class="avatar avatar-sm"> <img src="@ViewBag.HinhAnh" alt="User Image" class="avatar-img rounded-circle"> </div>
-							<div class="user-text">
-								<h6>@ViewBag.Username</h6>
-								<p class="text-muted mb-0">
-									@(ViewBag.Role == "1" ? "Quản lý" : "Nhân viên")
-								</p>
-							</div>
-						</div> 
-						<form asp-controller="NguoiDung" asp-action="Logout" method="post" style="display: inline;">
-							<button type="submit" class="btn btn-link text-danger"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
-						</form>
-					</div>
-				</li>
-			</ul>
-		</div>
-		<div class="sidebar" id="sidebar">
-			<div class="sidebar-inner slimscroll">
-				<div id="sidebar-menu" class="sidebar-menu">
-					<ul>
-						<li>
-							<a asp-area="" asp-controller="NguoiDung" asp-action="Index">
-								<i class="fas fa-tachometer-alt"></i> <span>Trang chủ</span>
-							</a>
-						</li>
-						<li class="list-divider"></li>
-						<li class="menu-title mt-3"> <span>DANH MỤC</span> </li>
-						<li class="submenu">
-							<a href="#">
-								<i class="fas fa-barcode"></i>
-								<span> Sản phẩm </span> <span class="menu-arrow"></span>
-							</a>
-							<ul class="submenu_class" style="display: none;">
-								<li><a asp-area="" asp-controller="SanPham" asp-action="Index"> Sản phẩm </a></li>
-								<li><a asp-area="" asp-controller="LoaiSanPham" asp-action="Index"> Loại sản phẩm </a></li>
-							</ul>
-						</li>
-						<li class="submenu">
-							<a href="#">
-								<i class="fas fa-info"></i>
-								<span> Thông tin </span> <span class="menu-arrow"></span>
-							</a>
-							<ul class="submenu_class" style="display: none;">
-								<li><a asp-area="" asp-controller="ViTri" asp-action="Index"> Vị trí trong kho </a></li>
-								<li><a asp-area="" asp-controller="HangSanXuat" asp-action="Index"> Hãng Sản xuất</a></li>
-								<li><a asp-area="" asp-controller="LoaiKhachHang" asp-action="Index"> Loại khách hàng </a></li>
-								<li><a asp-area="" asp-controller="LoaiSanPham" asp-action="Index"> Loại sản phẩm </a></li>
-								<li><a asp-area="" asp-controller="Blog" asp-action="Index"> Blog </a></li>
-								<li><a asp-area="" asp-controller="Menu" asp-action="Index"> Menu </a></li>
-							</ul>
-						</li>
-
-						<!-- Submenu Tài khoản (ẩn nếu ViewBag.Role != 1) -->
-						@if (ViewBag.Role == "1")
-						{
-							<li class="submenu">
-								<a href="#">
-									<i class="fas fa-user"></i> <span> Tài khoản </span> <span class="menu-arrow"></span>
-								</a>
-								<ul class="submenu_class" style="display: none;">
-									<li><a asp-area="" asp-controller="NguoiDung" asp-action="Index2"> Tài khoản </a></li>
-									<li><a asp-area="" asp-controller="KhachHang" asp-action="Index"> Khách hàng </a></li>
-									<li><a asp-area="" asp-controller="NhanVienKho" asp-action="Index"> Nhân viên kho </a></li>
-									<li><a asp-area="" asp-controller="NhaCungCap" asp-action="Index"> Nhà cung cấp </a></li>
-								</ul>
-							</li>
-						}
-
-						<li class="list-divider"></li>
-						<li class="menu-title mt-3">
-							<span>QUẢN LÝ</span>
-						</li>
-						<li class="submenu">
-							<a href="#">
-								<i class="fas fa-warehouse"></i>
-								<span> Quản lý nhập - xuất </span> <span class="menu-arrow"></span>
-							</a>
-							<ul class="submenu_class" style="display: none;">
-								<li><a asp-area="" asp-controller="PhieuNhapHang" asp-action="Index"> Phiếu nhập kho </a></li>
-								<li><a asp-area="" asp-controller="PhieuXuatHang" asp-action="Index"> Phiếu xuất kho </a></li>
-							</ul>
-						</li>
-
-						<!-- Submenu Quản lý kiểm kê (ẩn nếu ViewBag.Role != 1) -->
-						@if (ViewBag.Role == "1")
-						{
-							<li class="submenu">
-								<a href="#">
-									<i class="fas fa-check-square"></i>
-									<span> Quản lý kiểm kê </span> <span class="menu-arrow"></span>
-								</a>
-								<ul class="submenu_class" style="display: none;">
-									<li><a asp-area="" asp-controller="KiemKe" asp-action="Index"> Phiếu Kiểm kê </a></li>
-								</ul>
-							</li>
-						}
-					</ul>
-				</div>
-			</div>
-		</div>
+        <div class="header-left" style="max-height:65px; max-width:250px">
+            <a asp-area="" asp-controller="NguoiDung" asp-action="Index" class="logo">                <img src="~/assets/img/logo/logo.png" class="logo-scrolled" alt="thumb"> </a>
+            <a asp-area="" asp-controller="NguoiDung" asp-action="Index" class="logo logo-small">     <img src="~/assets/img/logo/logo.png" class="logo-scrolled" alt="thumb"> </a>
+        </div>
+        <a href="javascript:void(0);" id="toggle_btn"> <i class="fe fe-text-align-left"></i> </a>
+        <a class="mobile_btn" id="mobile_btn"> <i class="fas fa-bars"></i> </a>
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="NguoiDung" asp-action="Index">Trang chủ</a></li>
+                <li class="breadcrumb-item">
+                    @if (ViewData["Title"] != null)
+                    {
+                        <span>@ViewData["Title"]</span>
+                    }
+                    else
+                    {
+                        <span>Không xác định</span> <!-- Giá trị mặc định nếu không có title -->
+                    }
+                </li>
+            </ol>
+        </nav>
 
 
 
-		<div class="page-wrapper" style="margin-top:60px">
-			@RenderBody()
-		</div>
-	</div>
+        <ul class="nav user-menu" style="margin-left:auto;display:flex;align-items:center">
+            @{
+                <li class="nav-item dropdown has-arrow">
+                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                        <span class="user-img">
+                            <img class="avatar square-avatar" src="@ViewBag.HinhAnh" width="31" alt="Hình ảnh">
+                        </span>
+                    </a>
+                    <div class="dropdown-menu" style="margin-left:-100px">
+                        <div class="user-header">
+                            <div class="avatar avatar-sm">
+                                <img src="@ViewBag.HinhAnh" alt="Hình ảnh" class="avatar-img rounded-circle">
+                            </div>
+                            <div class="user-text">
+                                <h6>@ViewBag.Username</h6>
+                                <p class="text-muted mb-0">
+                                    @(ViewBag.Role == "1" ? "Quản lý" : "Nhân viên")
+                                </p>
+                            </div>
+                        </div>
+                        <form asp-controller="NguoiDung" asp-action="Logout" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-link text-danger"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
+                        </form>
+
+                    </div>
+                </li>
+            }
+        </ul>
+
+    </div>
+
+    <!-- Layout with Sidebar and Content -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 sidebar">
+                <div class="sidebar-inner slimscroll">
+                    <div id="sidebar-menu" class="sidebar-menu">
+                        <!-- Sidebar -->
+
+                        <ul>
+                            <li>
+                                <a asp-area="" asp-controller="NguoiDung" asp-action="Index">
+                                    <i class="fas fa-home"></i>
+                                    <span>Trang chủ</span>
+                                </a>
+                            </li>
+                            <li class="list-divider"></li>
+                            <li class="menu-title mt-3"> <span>DANH MỤC</span> </li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fas fa-box"></i>
+                                    <span> Sản phẩm </span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="submenu_class" style="display: none;">
+                                    <li><a asp-area="" asp-controller="SanPham" asp-action="Index"> Sản phẩm </a></li>
+                                    <li><a asp-controller="LoaiSanPham" asp-action="Index"> Loại sản phẩm </a></li>
+                                </ul>
+                                <a href="#">
+                                    <i class="fas fa-user-tie"></i>
+                                    <span> Quản lý </span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="submenu_class" style="display: none;">
+                                    <li><a asp-area="" asp-controller="HangSanXuat" asp-action="Index"> Hãng sản xuất </a></li>
+                                    <li><a asp-area="" asp-controller="NhaCungCap" asp-action="Index"> Nhà cung cấp </a></li>
+                                    <li><a asp-area="" asp-controller="ViTri" asp-action="Index"> Vị trí trong kho </a></li>
+                                    <li><a asp-area="" asp-controller="LoaiKhachHang" asp-action="Index"> Loại khách hàng </a></li>
+                                    <li><a asp-area="" asp-controller="Blog" asp-action="Index"> Blog </a></li>
+                                    <li><a asp-area="" asp-controller="Menu" asp-action="Index"> Menu </a></li>
+
+                                </ul>
+                            </li>
+
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fas fa-user"></i> <span> Người dùng </span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="submenu_class" style="display: none;">
+                                    <li><a asp-area="" asp-controller="NguoiDung" asp-action="Index2"> Tài khoản </a></li>
+                                    <li><a asp-area="" asp-controller="NhanVienKho" asp-action="Index"> Nhân viên kho</a></li>
+                                    <li><a asp-area="" asp-controller="KhachHang" asp-action="Index"> Khách hàng </a></li>
+                                    @* <li><a asp-area="" asp-controller="Nhacungcaps" asp-action="Create"> Nhà cung cấp </a></li>
+                                    <li><a asp-area="" asp-controller="Donvivanchuyens" asp-action="Create"> Đơn vị vận chuyển </a></li> *@
+                                </ul>
+                            </li>
+                            @* <li class="submenu">
+                            <a href="#">
+                            <i class="fa fa-archive"></i> <span> Đóng gói </span> <span class="menu-arrow"></span>
+                            </a>
+                            <ul class="submenu_class" style="display: none;">
+                            <li><a asp-area="" asp-controller="Loaithungs" asp-action="Create"> Quy cách Sản phẩm </a></li>
+                            <li><a asp-area="" asp-controller="Quycachdonggois" asp-action="Create"> Quy cách đóng gói </a></li>
+                            </ul>
+                            </li>
+                            <li class="submenu">
+                            <a href="#">
+                            <i class="fa fa-university"></i> <span> Thanh toán </span> <span class="menu-arrow"></span>
+                            </a>
+                            <ul class="submenu_class" style="display: none;">
+                            <li><a asp-area="" asp-controller="Nganhangs" asp-action="Create"> Ngân hàng </a></li>
+                            <li><a asp-area="" asp-controller="Hinhthucthanhtoans" asp-action="Create"> Hình thức thanh toán </a></li>
+                            </ul>
+                            </li> *@
+
+                            <li class="list-divider"></li>
+                            <li class="menu-title mt-3">
+                                <span>QUẢN LÝ</span>
+                            </li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="fa fa-cubes"></i> <span> Nhập - Xuất </span> <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="submenu_class" style="display: none;">
+                                    <li><a asp-area="" asp-controller="PhieuNhapHang" asp-action="Index"> Phiếu nhập kho </a></li>
+                                    <li><a asp-area="" asp-controller="PhieuXuatHang" asp-action="Index"> Phiếu xuất kho </a></li>
+                                    <li><a asp-area="" asp-controller="KiemKe" asp-action="Index"> Phiếu kiểm kê </a></li>
+                                </ul>
+                            </li>
+                            @* <li class="submenu">
+                            <a href="#">
+                            <i class="far fa-money-bill-alt"></i> <span> Thanh toán </span> <span class="menu-arrow"></span>
+                            </a>
+                            <ul class="submenu_class" style="display: none;">
+
+                            <li><a asp-area="" asp-controller="Phieuthanhtoans" asp-action="Index"> Phiếu thanh toán </a></li>
+                            </ul>
+                            </li> *@
+                            @* <li class="list-divider"></li>
+                            <li class="menu-title mt-3">
+                            <span>BÁO CÁO</span>
+                            </li>
+                            <li>
+                            <a asp-controller="Loaithungs" asp-action="Baocaodoanhthu">
+                            <i class="fas fa-chart-bar"></i> <span> Báo cáo doanh thu </span>
+                            </a>
+                            </li>
+                            <li>
+                            <a asp-controller="Loaithungs" asp-action="Baocaotonkho">
+                            <i class="fas fa-chart-line"></i> <span> Báo cáo hàng tồn </span>
+                            </a>
+                            </li> *@
 
 
-	<script data-cfasync="false" src="../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-	<script src="~/assets2/js/jquery-3.5.1.min.js"></script>
-	<script src="~/assets2/js/popper.min.js"></script>
-	<script src="~/assets2/js/bootstrap.min.js"></script>
-	<script src="~/assets2/js/moment.min.js"></script>
-	<script src="~/assets2/js/select2.min.js"></script>
-	<script src="~/assets2/js/bootstrap-datetimepicker.min.js"></script>
-	<script src="~/assets2/plugins/datatables/jquery.dataTables.min.js"></script>
-	<script src="~/assets2/plugins/datatables/datatables.min.js"></script>
-	<script src="~/assets2/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-	<script src="~/assets2/plugins/raphael/raphael.min.js"></script>
-	<script src="~/assets2/js/script.js"></script>
-	<script>
-		$(function () {
-			$('#datetimepicker3').datetimepicker({
-				format: 'LT'
+                        </ul>
 
-			});
-		});
-	</script>
-	<script>
-		// Sidebar toggle logic
-		$("#toggle_btn").on("click", function () {
-			$(".sidebar").toggleClass("active");
-		});
-	</script>
-	@await RenderSectionAsync("Scripts", required: false)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-wrapper" style="margin-top:60px">
+                <div class="col-md-9">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Chatbot -->
+    <div id="chatbot-container">
+        <div id="chatbot-header">
+            <strong>Chatbot</strong>
+            <button id="chatbot-close" style="float: right;">&times;</button>
+        </div>
+        <div id="chatbot-messages">
+            <!-- Messages will appear here -->
+        </div>
+        <div id="chatbot-input">
+            <input id="user-message" type="text" class="form-control" placeholder="Type a message..." />
+            <button id="send-message" class="btn btn-primary">Send</button>
+        </div>
+    </div>
+
+    <button id="chatbot-toggle">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="~/js/jquery-3.5.1.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+
+    <!-- Scripts -->
+    <script src="~/js/jquery-3.5.1.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="~/js/script.js"></script>
+    <script>
+        $(document).ready(function () {
+
+
+            // Đóng sidebar khi click bên ngoài (trong chế độ mobile)
+            $(document).on('click', function (e) {
+                if ($(window).width() <= 768) {
+                    if (!$(e.target).closest('.sidebar, #toggle_btn, #mobile_btn').length) {
+                        $('.sidebar').removeClass('collapsed');
+                    }
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            // Initialize slimScroll for sidebar
+            $('.sidebar-inner').slimScroll({
+                height: '100vh',
+                size: '5px',
+                color: '#000',
+                alwaysVisible: true,
+                railVisible: true,
+                railColor: '#333',
+                railOpacity: 0.2
+            });
+        });
+        $(document).ready(function () {
+            // Toggle sidebar
+            $(document).ready(function () {
+                $('#toggle_btn, #mobile_btn').on('click', function () {
+                    $('.sidebar').toggleClass('collapsed');
+                    $('.main-wrapper').toggleClass('collapsed');
+                });
+            });
+
+            $('.sidebar-inner').slimScroll({
+                height: '100vh',
+                size: '5px',
+                color: '#000',
+                alwaysVisible: true,
+                railVisible: true,
+                railColor: '#333',
+                railOpacity: 0.2
+            });
+        });
+        $(document).ready(function () {
+            // Open or close the chatbot
+            $("#chatbot-toggle").click(function () {
+                $("#chatbot-container").toggle();
+            });
+
+            $("#chatbot-close").click(function () {
+                $("#chatbot-container").hide();
+            });
+
+            // Send message when clicking 'Send' button
+            $("#send-message").click(function () {
+                var userMessage = $("#user-message").val();
+                if (userMessage.trim() !== "") {
+                    appendMessage(userMessage, "user");
+                    $("#user-message").val("");
+
+                    // Cấu hình prompt với các thông số cần thiết
+                    var promptMessage = {
+                        "model": "gemini-1.5-flash-latest",  // Thay đổi model nếu cần
+                        "messages": [
+                            {
+                                "role": "system",
+                                "content": "Bạn là một chatbot hỗ trợ người dùng về các sản phẩm và dịch vụ của công ty,hiện tai trong kho có 6 sản phẩm . Hãy trả lời nhanh chóng và dễ hiểu."
+                            },
+                            {
+                                "role": "user",
+                                "content": userMessage  // `userMessage` cần được định nghĩa ở đâu đó trong mã của bạn
+                            }
+                        ],
+                        "max_tokens": 150,  // Điều chỉnh số lượng token nếu cần
+                        "temperature": 0.7  // Điều chỉnh độ sáng tạo trong câu trả lời
+                    };
+
+                    // Gửi yêu cầu API đến Yescale
+                    $.ajax({
+                        url: 'https://api.yescale.io/v1/chat/completions',  // URL API của Yescale
+                        type: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer sk-fkH9dNnFZIFBrz4m5PXhzNSzlJte2idIx4na14ig4jDV8vBl"  // Thay YOUR_API_KEY bằng API key thực tế của bạn
+                        },
+                        data: JSON.stringify(promptMessage),
+                        success: function (response) {
+                            // Kiểm tra phản hồi
+                            if (response && response.choices && response.choices.length > 0) {
+                                var botReply = response.choices[0].message.content;  // Đảm bảo rằng API trả về đúng định dạng
+                                appendMessage(botReply, "bot");
+                            } else {
+                                appendMessage("Sorry, I couldn't process your request. Please try again later.", "bot");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            // Xử lý lỗi chi tiết
+                            console.error("Error:", error);
+                            console.log("Status:", status);
+                            console.log("Response:", xhr.responseText);  // In chi tiết phản hồi lỗi
+                            appendMessage("Sorry, I couldn't process your request. Please try again later.", "bot");
+                        }
+                    });
+                }
+            });
+
+            // Function to append messages to the chatbot
+            function appendMessage(message, sender) {
+                var messageClass = sender === "user" ? "user-message" : "bot-message";
+                var messageHtml = `<div class="chatbot-message ${messageClass}">${message}</div>`;
+                $("#chatbot-messages").append(messageHtml);
+                $("#chatbot-messages").scrollTop($("#chatbot-messages")[0].scrollHeight);
+            }
+        });
+
+
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
-
 </html>
