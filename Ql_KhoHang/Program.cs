@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using DinkToPdf.Contracts;
+using DinkToPdf;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Ql_KhoHang.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +11,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 var connectionString =
 builder.Configuration.GetConnectionString("WebsiteQLKhohangConnection");
-
+// Đăng ký dịch vụ DinkToPdf
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
 builder.Services.AddScoped<LoaiSanPhamService>();
 builder.Services.AddScoped<NguoiDungService>();

@@ -79,7 +79,22 @@ namespace Ql_KhoHang.Controllers
             ViewBag.Details = details; // Danh sách chi tiết phiếu xuất
             return View(exportOrder);
         }
+        [HttpGet]
+        public async Task<IActionResult> Print(int id)
+        {
+            var exportOrder = await _exportOrderService.GetByIdAsync(id);
+            if (exportOrder == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy phiếu xuất hàng.";
+                return RedirectToAction("Index");
+            }
 
+            var details = await _exportOrderDetailService.GetByExportOrderIdAsync(id);
+            ViewBag.Details = details;
+
+            // Trả về View với layout trống
+            return View("Print", exportOrder);
+        }
         [HttpGet]
         public async Task<IActionResult> Create()
         {

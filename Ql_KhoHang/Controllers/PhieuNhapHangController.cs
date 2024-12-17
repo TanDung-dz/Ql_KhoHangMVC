@@ -85,6 +85,22 @@ namespace Ql_KhoHang.Controllers
             ViewBag.Details = details; // Danh sách chi tiết phiếu nhập
             return View(importOrder);
         }
+        [HttpGet]
+        public async Task<IActionResult> Print(int id)
+        {
+            var importOrder = await _importOrderService.GetByIdAsync(id);
+            if (importOrder == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy phiếu nhập hàng.";
+                return RedirectToAction("Index");
+            }
+
+            var details = await _importOrderDetailService.GetByImportOrderIdAsync(id);
+            ViewBag.Details = details;
+
+            // Trả về View với layout trống
+            return View("Print", importOrder);
+        }
 
         [HttpGet]
         public async Task<IActionResult> Create()
